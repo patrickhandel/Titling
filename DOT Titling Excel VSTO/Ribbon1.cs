@@ -23,6 +23,54 @@ namespace DOT_Titling_Excel_VSTO
 
         private void button1_Click(object sender, RibbonControlEventArgs e)
         {
+            MergeDataIntoNewFile();
+        }
+        public static void MergeDataIntoNewFile()
+        {
+            string summary = "This is the summary";
+            string JiraId = "DOTTITLNG-73";
+            string id = JiraId.Replace("DOTTITLNG-", string.Empty);
+
+            string template = @"C:\\Users\\patrick.handel\\Desktop\\MailMergeOut\\MyDoc.docx";
+            string newfile = @"C:\\Users\\patrick.handel\\Desktop\\Exported\\" + summary + " (" + id + ").docx";
+            File.Copy(template, newfile, true);
+
+            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(newfile, true))
+            {
+                string docText = null;
+                using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
+                {
+                    docText = sr.ReadToEnd();
+                }
+
+                docText = MergeField(docText, "Summary", summary);
+                docText = MergeField(docText, "DOTTITLNG", JiraId);
+                docText = MergeField(docText, "Epic", "Reset/Rollback - R2");
+                docText = MergeField(docText, "Release", "Release");
+                docText = MergeField(docText, "Sprint", "Sprint");
+                docText = MergeField(docText, "Story1", "Story1");
+                docText = MergeField(docText, "Story2", "Story2");
+                docText = MergeField(docText, "Story3", "Story3");
+                docText = MergeField(docText, "Description", "Description");
+                docText = MergeField(docText, "Web Services", "Web Services");
+                docText = MergeField(docText, "Date Approved", "12/15/2010");
+                docText = MergeField(docText, "Document Date", DateTime.Now.ToShortDateString());
+
+                using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
+                {
+                    sw.Write(docText);
+                }
+            }
+        }
+
+        private static String MergeField(string docText, string field, string newText)
+        {
+            Regex regexText = new Regex("{" + field + "}");
+            return regexText.Replace(docText, newText); ;
+        }
+
+        private void button2_Click(object sender, RibbonControlEventArgs e)
+        {
             Excel.Worksheet activeWorksheet = Globals.ThisAddIn.Application.ActiveSheet;
             Excel.Range activeCell = Globals.ThisAddIn.Application.ActiveCell;
             Excel.Range selectedRange = Globals.ThisAddIn.Application.Selection;
@@ -32,67 +80,6 @@ namespace DOT_Titling_Excel_VSTO
                 string sValue = activeCell.Value2.ToString();
                 string sText = activeCell.Text;
                 System.Windows.Forms.MessageBox.Show(sText);
-            }
-        }
-        public static void SearchAndReplace(string document)
-        {
-            using (WordprocessingDocument wordDoc = WordprocessingDocument.Open(document, true))
-            {
-                string docText = null;
-                using (StreamReader sr = new StreamReader(wordDoc.MainDocumentPart.GetStream()))
-                {
-                    docText = sr.ReadToEnd();
-                }
-
-                //{Summary}
-                Regex regexText = new Regex("xxxSummaryxxx");
-                docText = regexText.Replace(docText, "Reset by Envelope Number - After 8 PM");
-
-                //{Epic}
-                regexText = new Regex("{Epic}");
-                docText = regexText.Replace(docText, "Reset/Rollback - R2");
-
-                //{Story ID}
-                regexText = new Regex("{Story ID}");
-                docText = regexText.Replace(docText, "DOTTITLNG-73");
-
-                //{Release}
-                regexText = new Regex("XXXXXXXXXX");
-                docText = regexText.Replace(docText, "XXXXXXXXXXX");
-
-                //{Sprint}
-                regexText = new Regex("XXXXXXXXXX");
-                docText = regexText.Replace(docText, "XXXXXXXXXXX");
-
-                //{Story1}
-                regexText = new Regex("XXXXXXXXXX");
-                docText = regexText.Replace(docText, "XXXXXXXXXXX");
-
-                //{Story2}
-                regexText = new Regex("XXXXXXXXXX");
-                docText = regexText.Replace(docText, "XXXXXXXXXXX");
-
-                //{Story3}
-                regexText = new Regex("XXXXXXXXXX");
-                docText = regexText.Replace(docText, "XXXXXXXXXXX");
-
-                //{Description}
-                regexText = new Regex("XXXXXXXXXX");
-                docText = regexText.Replace(docText, "XXXXXXXXXXX");
-
-                //{Web Services}
-                regexText = new Regex("XXXXXXXXXX");
-                docText = regexText.Replace(docText, "XXXXXXXXXXX");
-
-                //{Date Approved}
-                regexText = new Regex("XXXXXXXXXX");
-                docText = regexText.Replace(docText, "XXXXXXXXXXX");
-
-
-                using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
-                {
-                    sw.Write(docText);
-                }
             }
         }
     }
