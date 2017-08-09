@@ -16,169 +16,23 @@ namespace DOT_Titling_Excel_VSTO
         {
 
         }
-
-        private void button3_Click(object sender, RibbonControlEventArgs e)
-        {
-            Excel.Application app = Globals.ThisAddIn.Application;
-            Excel.Workbook wb = app.ActiveWorkbook;
-            Excel.Worksheet activeWorksheet = app.ActiveSheet;
-            Excel.Range activeCell = app.ActiveCell;
-            Excel.Range selection = app.Selection;
-
-            if (activeCell != null && activeWorksheet.Name == "Stories")
-            {
-                app.ScreenUpdating = false;
-                Excel.Worksheet mmWorksheet = app.Worksheets.Add();
-                ApplyMailMergeHeader(mmWorksheet);
-                PopulateMailMergeWorksheet(activeWorksheet, selection, mmWorksheet);
-                string dataFile = CopyMailMergeWorksheetToNewWorkbook(mmWorksheet, app);
-                PerformMailMerge(dataFile);
-                app.ScreenUpdating = true;
-            }
-        }
-
-
         private void button1_Click(object sender, RibbonControlEventArgs e)
-        {
-            MergeDataIntoNewFile();
-        }
-
-
-        public static string CopyMailMergeWorksheetToNewWorkbook(Excel.Worksheet ws, Excel.Application app)
-        {
-            string newFileName = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeData_" + DateTime.Now.ToFileTime() + ".xlsx";
-            object newFile = newFileName;
-            Excel.Workbook newWookbook = Globals.ThisAddIn.Application.Workbooks.Add(Type.Missing);
-            ws.Copy(Type.Missing, newWookbook.Worksheets[1]);
-            Excel.Worksheet newWorksheet = newWookbook.Worksheets[2];
-            Excel.Worksheet toRemove = newWookbook.Worksheets[1];
-            newWorksheet.Name = "MailMerge";
-            app.DisplayAlerts = false;
-            toRemove.Delete();
-            newWookbook.SaveAs(newFile, Excel.XlFileFormat.xlOpenXMLWorkbook);
-            newWookbook.Close();
-            ws.Delete();
-            app.DisplayAlerts = true;
-            return newFileName;
-        }
-
-        public static void ApplyMailMergeHeader(Excel.Worksheet ws)
-        {
-            string[] sFields;
-            string sHeader = "jiraID, summary, epic, release, sprint, story1, story2, story3, description, webServices, dateSubmited, dateApproved";
-            sFields = sHeader.Split(',');
-            for (int i = 0; i < sFields.Length; i++)
-            {
-                ws.Cells[1, i + 1] = sFields[i].ToString();
-            }
-        }
-
-        public static void PopulateMailMergeWorksheet(Excel.Worksheet storiesWorksheet, Excel.Range selection, Excel.Worksheet mmWorksheet)
-        {
-            //Populate Data
-            int  mergeRow = 2;
-            for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
-            {
-                if (storiesWorksheet.Rows[row].EntireRow.Height != 0)
-                {
-                    //string sval = activeWorksheet.Rows[row].Text;
-                    int jiraIDCol = 6;
-                    string jiraID = CellGetStringValue(storiesWorksheet, row, jiraIDCol);
-                    if (jiraID.Substring(0, 10) == "DOTTITLNG-")
-                    {
-                        int epicCol = 1;
-                        int summaryCol = 5;
-                        int releaseCol = 11;
-                        int sprintCol = 13;
-                        int dateApprovedCol = 28;
-                        int dateSubmittedCol = 29;
-                        int descriptionCol = 30;
-                        int story1Col = 31;
-                        int story2Col = 32;
-                        int story3Col = 33;
-                        int webServicesCol = 34;
-
-                        string summary = CellGetStringValue(storiesWorksheet, row, summaryCol);
-                        string epic = CellGetStringValue(storiesWorksheet, row, epicCol);
-                        string release = CellGetStringValue(storiesWorksheet, row, releaseCol);
-                        string sprint = CellGetStringValue(storiesWorksheet, row, sprintCol);
-                        string story1 = CellGetStringValue(storiesWorksheet, row, story1Col);
-                        string story2 = CellGetStringValue(storiesWorksheet, row, story2Col);
-                        string story3 = CellGetStringValue(storiesWorksheet, row, story3Col);
-                        string description = CellGetStringValue(storiesWorksheet, row, descriptionCol);
-                        string webServices = CellGetStringValue(storiesWorksheet, row, webServicesCol);
-                        string dateSubmited = CellGetStringValue(storiesWorksheet, row, dateSubmittedCol);
-                        string dateApproved = CellGetStringValue(storiesWorksheet, row, dateApprovedCol);
-
-                        mmWorksheet.Cells[mergeRow, 1] = jiraID;
-                        mmWorksheet.Cells[mergeRow, 2] = summary;
-                        mmWorksheet.Cells[mergeRow, 3] = epic;
-                        mmWorksheet.Cells[mergeRow, 4] = release;
-                        mmWorksheet.Cells[mergeRow, 5] = sprint;
-                        mmWorksheet.Cells[mergeRow, 6] = story1;
-                        mmWorksheet.Cells[mergeRow, 7] = story2;
-                        mmWorksheet.Cells[mergeRow, 8] = story3;
-                        mmWorksheet.Cells[mergeRow, 9] = description;
-                        mmWorksheet.Cells[mergeRow, 10] = webServices;
-                        mmWorksheet.Cells[mergeRow, 11] = dateSubmited;
-                        mmWorksheet.Cells[mergeRow, 12] = dateApproved;
-
-                        mergeRow++;
-                    }
-                }
-                mmWorksheet.Rows.RowHeight = 15;
-                mmWorksheet.Columns.AutoFit();
-            }
-        }
-
-        private void CreateMailMergeExcelDataFile(object oDataFile)
         {
             try
             {
-                Excel.Worksheet activeWorksheet = Globals.ThisAddIn.Application.ActiveSheet;
-                Excel.Worksheet mmWorksheet = Globals.ThisAddIn.Application.Sheets["Mail Merge"];
-                Excel.Range activeCell = Globals.ThisAddIn.Application.ActiveCell;
-                Excel.Range selection = Globals.ThisAddIn.Application.Selection;
+                Excel.Application app = Globals.ThisAddIn.Application;
+                Excel.Worksheet activeWorksheet = app.ActiveSheet;
+                Excel.Range activeCell = app.ActiveCell;
+                Excel.Range selection = app.Selection;
 
-                //jiraID
-                //summary
-                //epic
-                //release
-                //sprint
-                //story1
-                //story2
-                //story3
-                //description
-                //webServices
-                //dateSubmited
-                //dateApproved
-
-                string[] sFields, sRecord;
-                string sHeader = "jiraID, summary, epic, release, sprint, story1, story2, story3, description, webServices, dateSubmited, dateApproved";
-                string sFirstRecord = "John,Roy,31 New street,320009";
-                object oQuery = "SELECT * FROM `Sheet1$`";
-
-                sFields = sHeader.Split(',');
-                sRecord = sFirstRecord.Split(',');
-                ////writing in excel you Can use datatable and Get the records and loop.here for sample i have writing keeping two strings 
-                for (int i = 0; i < sFields.Length; i++)
+                if (activeCell != null && activeWorksheet.Name == "Stories")
                 {
-                    activeWorksheet.Cells[1, i + 1] = sFields[i].ToString();
+                    app.ScreenUpdating = false;
+
+                    CreateWordDocuments(activeWorksheet, selection);
+
+                    app.ScreenUpdating = true;
                 }
-                for (int j = 0; j < sRecord.Length; j++)
-                {
-                    activeWorksheet.Cells[2, j + 1] = sRecord[j].ToString();
-                }
-
-                //saving the excel workbook
-                //excelwrbook.SaveAs(oName, MSExcel.XlFileFormat.xlTemplate, objMissing, objMissing, objMissing, objMissing, MSExcel.XlSaveAsAccessMode.xlExclusive, objMissing, objMissing, objMissing, objMissing, objMissing);
-                //excelapp.Quit();
-
-                ////opening the excel to act as a datasource for word mail merge
-                //wrdDoc.MailMerge.OpenDataSource("C:\\Users\\patri\\Dropbox\\Desktop\\TempDoc.xls", ref objMissing, ref objMissing, ref objMissing, ref objMissing, ref objMissing,
-                //    ref objMissing, ref objMissing, ref objMissing, ref objMissing, ref objMissing, ref objMissing, ref oQuery,
-                //    ref objMissing, ref objMissing, ref objMissing);
-
             }
             catch (Exception ex)
             {
@@ -186,7 +40,145 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void PerformMailMerge(string dataFile)
+        private void button3_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                Excel.Worksheet activeWorksheet = app.ActiveSheet;
+                Excel.Range activeCell = app.ActiveCell;
+                Excel.Range selection = app.Selection;
+
+                if (activeCell != null && activeWorksheet.Name == "Stories")
+                {
+                    app.ScreenUpdating = false;
+                    Excel.Worksheet mmWorksheet = app.Worksheets.Add();
+
+                    MailMerge_CreateHeader(mmWorksheet);
+                    MailMerge_CreateData(activeWorksheet, selection, mmWorksheet);
+                    string dataFile = MailMerge_CreateDataFile(mmWorksheet, app);
+                    MailMerge_PerformMerge(dataFile);
+
+                    app.ScreenUpdating = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void MailMerge_CreateHeader(Excel.Worksheet ws)
+        {
+            try
+            {
+                string[] sFields;
+                string sHeader = "jiraID, summary, epic, release, sprint, story1, story2, story3, description, webServices, dateSubmited, dateApproved";
+                sFields = sHeader.Split(',');
+                for (int i = 0; i < sFields.Length; i++)
+                {
+                    ws.Cells[1, i + 1] = sFields[i].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void MailMerge_CreateData(Excel.Worksheet storiesWorksheet, Excel.Range selection, Excel.Worksheet mmWorksheet)
+        {
+            try
+            {
+                //Populate Data
+                int mergeRow = 2;
+                for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
+                {
+                    if (storiesWorksheet.Rows[row].EntireRow.Height != 0)
+                    {
+                        //string sval = activeWorksheet.Rows[row].Text;
+                        int jiraIDCol = 6;
+                        string jiraID = CellGetStringValue(storiesWorksheet, row, jiraIDCol);
+                        if (jiraID.Substring(0, 10) == "DOTTITLNG-")
+                        {
+                            int epicCol = 1;
+                            int summaryCol = 5;
+                            int releaseCol = 11;
+                            int sprintCol = 13;
+                            int dateApprovedCol = 28;
+                            int dateSubmittedCol = 29;
+                            int descriptionCol = 30;
+                            int story1Col = 31;
+                            int story2Col = 32;
+                            int story3Col = 33;
+                            int webServicesCol = 34;
+
+                            string summary = CellGetStringValue(storiesWorksheet, row, summaryCol);
+                            string epic = CellGetStringValue(storiesWorksheet, row, epicCol);
+                            string release = CellGetStringValue(storiesWorksheet, row, releaseCol);
+                            string sprint = CellGetStringValue(storiesWorksheet, row, sprintCol);
+                            string story1 = CellGetStringValue(storiesWorksheet, row, story1Col);
+                            string story2 = CellGetStringValue(storiesWorksheet, row, story2Col);
+                            string story3 = CellGetStringValue(storiesWorksheet, row, story3Col);
+                            string description = CellGetStringValue(storiesWorksheet, row, descriptionCol);
+                            string webServices = CellGetStringValue(storiesWorksheet, row, webServicesCol);
+                            string dateSubmited = CellGetStringValue(storiesWorksheet, row, dateSubmittedCol);
+                            string dateApproved = CellGetStringValue(storiesWorksheet, row, dateApprovedCol);
+
+                            mmWorksheet.Cells[mergeRow, 1] = jiraID;
+                            mmWorksheet.Cells[mergeRow, 2] = summary;
+                            mmWorksheet.Cells[mergeRow, 3] = epic;
+                            mmWorksheet.Cells[mergeRow, 4] = release;
+                            mmWorksheet.Cells[mergeRow, 5] = sprint;
+                            mmWorksheet.Cells[mergeRow, 6] = story1;
+                            mmWorksheet.Cells[mergeRow, 7] = story2;
+                            mmWorksheet.Cells[mergeRow, 8] = story3;
+                            mmWorksheet.Cells[mergeRow, 9] = description;
+                            mmWorksheet.Cells[mergeRow, 10] = webServices;
+                            mmWorksheet.Cells[mergeRow, 11] = dateSubmited;
+                            mmWorksheet.Cells[mergeRow, 12] = dateApproved;
+
+                            mergeRow++;
+                        }
+                    }
+                    mmWorksheet.Rows.RowHeight = 15;
+                    mmWorksheet.Columns.AutoFit();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+
+        public static string MailMerge_CreateDataFile(Excel.Worksheet ws, Excel.Application app)
+        {
+            try
+            {
+                string newFileName = ThisAddIn.OutputDir + "\\MailMergeData_" + DateTime.Now.ToFileTime() + ".xlsx";
+                object newFile = newFileName;
+                Excel.Workbook newWookbook = Globals.ThisAddIn.Application.Workbooks.Add(Type.Missing);
+                ws.Copy(Type.Missing, newWookbook.Worksheets[1]);
+                Excel.Worksheet newWorksheet = newWookbook.Worksheets[2];
+                Excel.Worksheet toRemove = newWookbook.Worksheets[1];
+                newWorksheet.Name = "MailMerge";
+                app.DisplayAlerts = false;
+                toRemove.Delete();
+                newWookbook.SaveAs(newFile, Excel.XlFileFormat.xlOpenXMLWorkbook);
+                newWookbook.Close();
+                ws.Delete();
+                app.DisplayAlerts = true;
+                return newFileName;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return "";
+            }
+        }
+
+        public static void MailMerge_PerformMerge(string dataFile)
         { 
             try
             {
@@ -214,9 +206,6 @@ namespace DOT_Titling_Excel_VSTO
                     // Create a paragraph
                     wordApp.Selection.TypeText("This is some text in my new Word document.");
                     wordApp.Selection.TypeParagraph();
-
-                    // Create a MailMerge Data file using excel            
-                    //CreateMailMergeExcelDataFile(oDataFile);
 
                     // Create a string and insert it into the document.
                     wordSelection.ParagraphFormat.Alignment =
@@ -254,12 +243,10 @@ namespace DOT_Titling_Excel_VSTO
                     wordSelection.TypeParagraph();
                     wordMailMergeFields.Add(wordSelection.Range, "description");
 
-
                     //opening the excel to act as a datasource for word mail merge
                     wordDoc.MailMerge.OpenDataSource(dataFile, ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oMissing,
                         ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oQuery,
                         ref oMissing, ref oMissing, ref oMissing);
-
 
                     // Perform mail merge.
                     wordMailMerge.Destination = Word.WdMailMergeDestination.wdSendToNewDocument;
@@ -280,13 +267,7 @@ namespace DOT_Titling_Excel_VSTO
                     wordApp = null;
 
                     // Clean up temp file.
-                    //System.IO.File.Delete(oDataFile);
-
-                    //KEEP
-                    //wordSelection.TypeText(StrToAdd);
-                    //wordSelection.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphRight;
-                    //wordSelection.InsertDateTime(ref oDate, ref oFalse, ref oMissing, ref oMissing, ref oMissing);
-
+                    System.IO.File.Delete(dataFile);
                 }
                 catch (Exception ex)
                 {
@@ -299,13 +280,9 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void MergeDataIntoNewFile()
+        public static void CreateWordDocuments(Excel.Worksheet activeWorksheet, Excel.Range selection)
         {
-            Excel.Worksheet activeWorksheet = Globals.ThisAddIn.Application.ActiveSheet;
-            Excel.Range activeCell = Globals.ThisAddIn.Application.ActiveCell;
-            Excel.Range selection = Globals.ThisAddIn.Application.Selection;
-
-            if (activeCell != null && activeWorksheet.Name == "Stories")
+            try
             {
                 for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
                 {
@@ -355,8 +332,8 @@ namespace DOT_Titling_Excel_VSTO
                             }
 
                             string id = JiraId.Replace("DOTTITLNG-", string.Empty);
-                            string template = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeOut\\MyDoc.docx";
-                            string newfile = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Exported\\" + SantizeFilename(summary + " (" + id + ").docx");
+                            string template = ThisAddIn.DesktopDir + "\\MailMergeOut\\MyDoc.docx";
+                            string newfile = ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary + " (" + id + ").docx");
 
                             File.Copy(template, newfile, true);
 
@@ -388,7 +365,7 @@ namespace DOT_Titling_Excel_VSTO
                                 }
 
                                 if (selection.Rows.Count == 1)
-                                { 
+                                {
                                     if (MessageBox.Show("Open " + newfile + "?", JiraId, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
                                     {
                                         System.Diagnostics.Process.Start(newfile);
@@ -398,7 +375,30 @@ namespace DOT_Titling_Excel_VSTO
                         }
                     }
                 }
+                if (selection.Rows.Count > 1)
+                {
+                    if (MessageBox.Show("Open " + ThisAddIn.OutputDir + "?", "Files Created", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start(ThisAddIn.OutputDir);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        static string MakeValidFilename(string text)
+        {
+            text = text.Replace('\'', ' '); // U+2019 right single quotation mark
+            text = text.Replace('"', ' '); // U+201D right double quotation mark
+            text = text.Replace('/', ' ');  // U+2044 fraction slash
+            foreach (char c in Path.GetInvalidFileNameChars())
+            {
+                text = text.Replace(c, ' ');
+            }
+            return text;
         }
 
         static string SantizeFilename(string key)
@@ -420,7 +420,6 @@ namespace DOT_Titling_Excel_VSTO
                     sb.Append("_").Append(invalidCharIndex);
                     continue;
                 }
-
                 if (c == '_')
                 {
                     sb.Append("__");
@@ -431,7 +430,6 @@ namespace DOT_Titling_Excel_VSTO
             }
             return sb.ToString();
         }
-
         public static string CellGetStringValue(Excel.Worksheet sheet, int row, int column)
         {
             var result = string.Empty;
@@ -453,26 +451,5 @@ namespace DOT_Titling_Excel_VSTO
             return regexText.Replace(docText, newText); ;
         }
 
-        private void button2_Click(object sender, RibbonControlEventArgs e)
-        {
-            Excel.Worksheet activeWorksheet = Globals.ThisAddIn.Application.ActiveSheet;
-            Excel.Range activeCell = Globals.ThisAddIn.Application.ActiveCell;
-            Excel.Range selection = Globals.ThisAddIn.Application.Selection;
-
-            //Filtered selection
-            for (int rowIndex = selection.Row; rowIndex < selection.Row + selection.Rows.Count; rowIndex++)
-            {
-                if (activeWorksheet.Rows[rowIndex].EntireRow.Height != 0)
-                {
-                    string sval = activeWorksheet.Rows[rowIndex].Text;
-                }
-            }
-
-            if (activeCell != null)
-            {
-                string sValue = activeCell.Value2.ToString();
-                string sText = activeCell.Text;
-            }
-        }
     }
 }
