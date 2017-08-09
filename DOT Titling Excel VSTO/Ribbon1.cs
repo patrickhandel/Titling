@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Microsoft.Office.Tools.Ribbon;
 using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
-using Office = Microsoft.Office.Core;
-using Microsoft.Office.Tools.Excel;
 using System.Text.RegularExpressions;
-using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Wordprocessing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -33,10 +27,13 @@ namespace DOT_Titling_Excel_VSTO
 
             if (activeCell != null && activeWorksheet.Name == "Stories")
             {
+                app.ScreenUpdating = false;
                 Excel.Worksheet mmWorksheet = app.Worksheets.Add();
                 ApplyMailMergeHeader(mmWorksheet);
                 PopulateMailMergeWorksheet(activeWorksheet, selection, mmWorksheet);
-                CopyMailMergeWorksheetToNewWorkbook(mmWorksheet, app);
+                string dataFile = CopyMailMergeWorksheetToNewWorkbook(mmWorksheet, app);
+                PerformMailMerge(dataFile);
+                app.ScreenUpdating = true;
             }
         }
 
@@ -47,17 +44,22 @@ namespace DOT_Titling_Excel_VSTO
         }
 
 
-        public static void CopyMailMergeWorksheetToNewWorkbook(Excel.Worksheet ws, Excel.Application app)
+        public static string CopyMailMergeWorksheetToNewWorkbook(Excel.Worksheet ws, Excel.Application app)
         {
-            string newFile = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\TempDoc" + DateTime.Now.ToFileTime() + ".xlsx";
+            string newFileName = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeData_" + DateTime.Now.ToFileTime() + ".xlsx";
+            object newFile = newFileName;
             Excel.Workbook newWookbook = Globals.ThisAddIn.Application.Workbooks.Add(Type.Missing);
-
-            int i = newWookbook.Worksheets.Count + 1;
             ws.Copy(Type.Missing, newWookbook.Worksheets[1]);
+            Excel.Worksheet newWorksheet = newWookbook.Worksheets[2];
+            Excel.Worksheet toRemove = newWookbook.Worksheets[1];
+            newWorksheet.Name = "MailMerge";
             app.DisplayAlerts = false;
-            newWookbook.SaveAs(newFile,  Excel.XlSaveAsAccessMode.xlNoChange);
+            toRemove.Delete();
+            newWookbook.SaveAs(newFile, Excel.XlFileFormat.xlOpenXMLWorkbook);
+            newWookbook.Close();
             ws.Delete();
             app.DisplayAlerts = true;
+            return newFileName;
         }
 
         public static void ApplyMailMergeHeader(Excel.Worksheet ws)
@@ -184,7 +186,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void PerformMailMerge()
+        public static void PerformMailMerge(string dataFile)
         { 
             try
             {
@@ -193,7 +195,8 @@ namespace DOT_Titling_Excel_VSTO
                     Object oMissing = System.Reflection.Missing.Value;
                     Object oFalse = false;
                     Object oDate = "dddd, MMMM dd, yyyy";
-                    Object oDataFile = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\TempDoc.xls";
+                    Object oDataFile = @dataFile;
+                    Object oQuery = "SELECT * FROM `MailMerge$`";
 
                     Word.Application wordApp = new Word.Application();
                     Word.Document wordDoc = wordApp.Documents.Add(ref oMissing, ref oMissing, ref oMissing, ref oMissing);
@@ -250,6 +253,13 @@ namespace DOT_Titling_Excel_VSTO
                     wordMailMergeFields.Add(wordSelection.Range, "dateApproved");
                     wordSelection.TypeParagraph();
                     wordMailMergeFields.Add(wordSelection.Range, "description");
+
+
+                    //opening the excel to act as a datasource for word mail merge
+                    wordDoc.MailMerge.OpenDataSource(dataFile, ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oMissing,
+                        ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oMissing, ref oQuery,
+                        ref oMissing, ref oMissing, ref oMissing);
+
 
                     // Perform mail merge.
                     wordMailMerge.Destination = Word.WdMailMergeDestination.wdSendToNewDocument;
