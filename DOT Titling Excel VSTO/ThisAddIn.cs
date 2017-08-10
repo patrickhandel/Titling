@@ -11,8 +11,8 @@ namespace DOT_Titling_Excel_VSTO
 {
     public partial class ThisAddIn
     {
-        public static string DesktopDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        public static string OutputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Exported";
+        public static string OutputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeOut";
+        public static string InputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeIn";
 
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)

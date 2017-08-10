@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.IO;
 using Microsoft.Office.Tools.Ribbon;
 using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
-using System.Text.RegularExpressions;
 using DocumentFormat.OpenXml.Packaging;
-using System.IO;
-using System.Windows.Forms;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -52,13 +52,12 @@ namespace DOT_Titling_Excel_VSTO
                 if (activeCell != null && activeWorksheet.Name == "Stories")
                 {
                     app.ScreenUpdating = false;
-                    Excel.Worksheet mmWorksheet = app.Worksheets.Add();
-
-                    MailMerge_CreateHeader(mmWorksheet);
-                    MailMerge_CreateData(activeWorksheet, selection, mmWorksheet);
-                    string dataFile = MailMerge_CreateDataFile(mmWorksheet, app);
-                    MailMerge_PerformMerge(dataFile);
-
+                    //Excel.Worksheet mmWorksheet = app.Worksheets.Add();
+                    //MailMerge_CreateHeader(mmWorksheet);
+                    //MailMerge_CreateData(activeWorksheet, selection, mmWorksheet);
+                    //string dataFile = MailMerge_CreateDataFile(mmWorksheet, app);
+                    //MailMerge_PerformMerge_Old(dataFile);
+                    CreatedMergedDocuments(activeWorksheet, selection);
                     app.ScreenUpdating = true;
                 }
             }
@@ -67,6 +66,147 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        public static void CreatedMergedDocuments(Excel.Worksheet activeWorksheet, Excel.Range selection)
+        {
+            try
+            {
+                Object oTemplate = @ThisAddIn.InputDir + "\\MyDocMerge.docx";
+                var wordApp = new Word.Application();
+                var wordDocument = new Word.Document();
+                wordApp.Visible = false;
+
+                for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
+                {
+                    if (activeWorksheet.Rows[row].EntireRow.Height != 0)
+                    {
+                        wordDocument = wordApp.Documents.Add(Template: oTemplate);
+
+                        //string sval = activeWorksheet.Rows[row].Text;
+                        int jiraIDCol = 6;
+                        string jiraId = CellGetStringValue(activeWorksheet, row, jiraIDCol);
+                        if (jiraId.Substring(0, 10) == "DOTTITLNG-")
+                        {
+                            int epicCol = 1;
+                            int summaryCol = 5;
+                            int releaseCol = 11;
+                            int sprintCol = 13;
+                            int dateApprovedCol = 28;
+                            int dateSubmittedCol = 29;
+                            int descriptionCol = 30;
+                            int story1Col = 31;
+                            int story2Col = 32;
+                            int story3Col = 33;
+                            int webServicesCol = 34;
+
+                            string summary = CellGetStringValue(activeWorksheet, row, summaryCol);
+                            string epic = CellGetStringValue(activeWorksheet, row, epicCol);
+                            string release = CellGetStringValue(activeWorksheet, row, releaseCol);
+                            string sprint = CellGetStringValue(activeWorksheet, row, sprintCol);
+                            string story1 = CellGetStringValue(activeWorksheet, row, story1Col);
+                            string story2 = CellGetStringValue(activeWorksheet, row, story2Col);
+                            string story3 = CellGetStringValue(activeWorksheet, row, story3Col);
+                            string description = CellGetStringValue(activeWorksheet, row, descriptionCol);
+                            string webServices = CellGetStringValue(activeWorksheet, row, webServicesCol);
+                            string dateSubmited = CellGetStringValue(activeWorksheet, row, dateSubmittedCol);
+                            string dateApproved = CellGetStringValue(activeWorksheet, row, dateApprovedCol);
+                            string id = jiraId.Replace("DOTTITLNG-", string.Empty);
+
+                            foreach (Microsoft.Office.Interop.Word.Field field in wordDocument.Fields)
+                            {
+                                if (field.Code.Text.Contains("jiraID"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(jiraId);
+                                }
+                                else if (field.Code.Text.Contains("summary"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(summary);
+                                }
+                                else if (field.Code.Text.Contains("epic"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(epic);
+                                }
+                                else if (field.Code.Text.Contains("release"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(release);
+                                }
+                                else if (field.Code.Text.Contains("sprint"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(sprint);
+                                }
+                                else if (field.Code.Text.Contains("story1"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(story1);
+                                }
+                                else if (field.Code.Text.Contains("story2"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(story2);
+                                }
+                                else if (field.Code.Text.Contains("story3"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(story3);
+                                }
+                                else if (field.Code.Text.Contains("description"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(description);
+                                }
+                                else if (field.Code.Text.Contains("webServices"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(webServices);
+                                }
+                                else if (field.Code.Text.Contains("dateSubmited"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(dateSubmited);
+                                }
+                                else if (field.Code.Text.Contains("dateApproved"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(dateApproved);
+                                }
+                            }
+                            wordApp.Visible = false;
+
+                            string newfile = @ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary + " (" + id + ").docx");
+                            wordDocument.SaveAs2(newfile);
+                            wordDocument.Close(false);
+
+                            if (selection.Rows.Count == 1)
+                            {
+                                if (MessageBox.Show("Open " + newfile + "?", jiraId, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
+                                {
+                                    System.Diagnostics.Process.Start(newfile);
+                                }
+                            }
+                        }
+                    }
+                }
+                if (selection.Rows.Count > 1)
+                {
+                    if (MessageBox.Show("Open " + ThisAddIn.OutputDir + "?", selection.Rows.Count.ToString() + " Files Created", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
+                    {
+                        System.Diagnostics.Process.Start(ThisAddIn.OutputDir);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+
+
 
         public static void MailMerge_CreateHeader(Excel.Worksheet ws)
         {
@@ -151,7 +291,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-
         public static string MailMerge_CreateDataFile(Excel.Worksheet ws, Excel.Application app)
         {
             try
@@ -178,7 +317,89 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void MailMerge_PerformMerge(string dataFile)
+        public static void MailMerge_PerformMerge()
+        {
+            try
+            {
+                Object oTemplate = @ThisAddIn.InputDir + "\\MyDocMerge.docx";
+
+                var wordApp = new Word.Application();
+                var wordDocument = new Word.Document();
+                wordDocument = wordApp.Documents.Add(Template: oTemplate);
+                wordApp.Visible = true;
+
+                foreach (Microsoft.Office.Interop.Word.Field field in wordDocument.Fields)
+                {
+                    if (field.Code.Text.Contains("jiraID"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("DOTTITLNG-55");
+                    }
+                    else if (field.Code.Text.Contains("summary"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("Find Title");
+                    }
+                    else if(field.Code.Text.Contains("epic"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("Title/Registration: Wisconsin (Cash) - Happy Path");
+                    }
+                    else if(field.Code.Text.Contains("release"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("R1 - Datsun B210");
+                    }
+                    else if(field.Code.Text.Contains("sprint"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("1");
+                    }
+                    else if (field.Code.Text.Contains("story1"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("As a person");
+                    }
+                    else if (field.Code.Text.Contains("story2"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("I want to make cookies");
+                    }
+                    else if (field.Code.Text.Contains("story3"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("So that I can eat them");
+                    }
+                    else if (field.Code.Text.Contains("description"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("As an agent I would like to process Title and Registration for a WI Vehicle");
+                    }
+                    else if (field.Code.Text.Contains("webServices"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("TTAR006, TTAR007, TTAR022, TTAR023");
+                    }
+                    else if (field.Code.Text.Contains("dateSubmited"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("8/15/2017");
+                    }
+                    else if (field.Code.Text.Contains("dateApproved"))
+                    {
+                        field.Select();
+                        wordApp.Selection.TypeText("5/1/2016");
+                    }
+                }
+                wordApp.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void MailMerge_PerformMerge_Old(string dataFile)
         { 
             try
             {
@@ -332,7 +553,7 @@ namespace DOT_Titling_Excel_VSTO
                             }
 
                             string id = JiraId.Replace("DOTTITLNG-", string.Empty);
-                            string template = ThisAddIn.DesktopDir + "\\MailMergeOut\\MyDoc.docx";
+                            string template = ThisAddIn.InputDir + "\\MyDoc.docx";
                             string newfile = ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary + " (" + id + ").docx");
 
                             File.Copy(template, newfile, true);
@@ -377,7 +598,7 @@ namespace DOT_Titling_Excel_VSTO
                 }
                 if (selection.Rows.Count > 1)
                 {
-                    if (MessageBox.Show("Open " + ThisAddIn.OutputDir + "?", "Files Created", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
+                    if (MessageBox.Show("Open " + ThisAddIn.OutputDir + "?", selection.Rows.Count.ToString() + " Files Created", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
                     {
                         System.Diagnostics.Process.Start(ThisAddIn.OutputDir);
                     }
@@ -442,7 +663,7 @@ namespace DOT_Titling_Excel_VSTO
                     result = (string)rng.Text;
             }
 
-            return result;
+            return result + " ";
         }
 
         private static String MergeField(string docText, string field, string newText)
