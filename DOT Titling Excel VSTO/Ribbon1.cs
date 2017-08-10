@@ -176,8 +176,10 @@ namespace DOT_Titling_Excel_VSTO
                                 }
                             }
                             wordApp.Visible = false;
+                            string newfile = GetNewFileName(summary, id);
 
-                            string newfile = @ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary.Trim() + "( " + id.Trim() + ").docx");
+
+                            wordDocument.TrackRevisions = true;
                             wordDocument.SaveAs2(newfile);
                             wordDocument.Close(false);
 
@@ -203,6 +205,11 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
             }
+        }
+
+        private static string GetNewFileName(string summary, string id)
+        {
+            return @ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary.Trim() + " (" + id.Trim() + ").docx");
         }
 
         public static void MailMerge_CreateHeader(Excel.Worksheet ws)
@@ -469,7 +476,7 @@ namespace DOT_Titling_Excel_VSTO
 
                             string id = JiraId.Replace("DOTTITLNG-", string.Empty);
                             string template = ThisAddIn.InputDir + "\\MyDoc.docx";
-                            string newfile = ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary.Trim() + " (" + id.Trim() + ").docx");
+                            string newfile = GetNewFileName(summary, id);
 
                             File.Copy(template, newfile, true);
 
