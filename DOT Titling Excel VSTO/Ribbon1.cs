@@ -177,7 +177,7 @@ namespace DOT_Titling_Excel_VSTO
                             }
                             wordApp.Visible = false;
 
-                            string newfile = @ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary + " (" + id + ").docx");
+                            string newfile = @ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary.Trim() + "( " + id.Trim() + ").docx");
                             wordDocument.SaveAs2(newfile);
                             wordDocument.Close(false);
 
@@ -469,7 +469,7 @@ namespace DOT_Titling_Excel_VSTO
 
                             string id = JiraId.Replace("DOTTITLNG-", string.Empty);
                             string template = ThisAddIn.InputDir + "\\MyDoc.docx";
-                            string newfile = ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary + " (" + id + ").docx");
+                            string newfile = ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary.Trim() + " (" + id.Trim() + ").docx");
 
                             File.Copy(template, newfile, true);
 
