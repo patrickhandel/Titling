@@ -205,9 +205,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-
-
-
         public static void MailMerge_CreateHeader(Excel.Worksheet ws)
         {
             try
@@ -314,88 +311,6 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
                 return "";
-            }
-        }
-
-        public static void MailMerge_PerformMerge()
-        {
-            try
-            {
-                Object oTemplate = @ThisAddIn.InputDir + "\\MyDocMerge.docx";
-
-                var wordApp = new Word.Application();
-                var wordDocument = new Word.Document();
-                wordDocument = wordApp.Documents.Add(Template: oTemplate);
-                wordApp.Visible = true;
-
-                foreach (Microsoft.Office.Interop.Word.Field field in wordDocument.Fields)
-                {
-                    if (field.Code.Text.Contains("jiraID"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("DOTTITLNG-55");
-                    }
-                    else if (field.Code.Text.Contains("summary"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("Find Title");
-                    }
-                    else if(field.Code.Text.Contains("epic"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("Title/Registration: Wisconsin (Cash) - Happy Path");
-                    }
-                    else if(field.Code.Text.Contains("release"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("R1 - Datsun B210");
-                    }
-                    else if(field.Code.Text.Contains("sprint"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("1");
-                    }
-                    else if (field.Code.Text.Contains("story1"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("As a person");
-                    }
-                    else if (field.Code.Text.Contains("story2"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("I want to make cookies");
-                    }
-                    else if (field.Code.Text.Contains("story3"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("So that I can eat them");
-                    }
-                    else if (field.Code.Text.Contains("description"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("As an agent I would like to process Title and Registration for a WI Vehicle");
-                    }
-                    else if (field.Code.Text.Contains("webServices"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("TTAR006, TTAR007, TTAR022, TTAR023");
-                    }
-                    else if (field.Code.Text.Contains("dateSubmited"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("8/15/2017");
-                    }
-                    else if (field.Code.Text.Contains("dateApproved"))
-                    {
-                        field.Select();
-                        wordApp.Selection.TypeText("5/1/2016");
-                    }
-                }
-                wordApp.Visible = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
             }
         }
 
