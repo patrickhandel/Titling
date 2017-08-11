@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -28,9 +29,7 @@ namespace DOT_Titling_Excel_VSTO
                 if (activeCell != null && activeWorksheet.Name == "Stories")
                 {
                     app.ScreenUpdating = false;
-
-                    CreateWordDocuments(activeWorksheet, selection);
-
+                    CreateWordDocuments(app, activeWorksheet, selection);
                     app.ScreenUpdating = true;
                 }
             }
@@ -57,7 +56,7 @@ namespace DOT_Titling_Excel_VSTO
                     //MailMerge_CreateData(activeWorksheet, selection, mmWorksheet);
                     //string dataFile = MailMerge_CreateDataFile(mmWorksheet, app);
                     //MailMerge_PerformMerge_Old(dataFile);
-                    CreatedMergedDocuments(activeWorksheet, selection);
+                    CreatedMergedDocuments(app, activeWorksheet, selection);
                     app.ScreenUpdating = true;
                 }
             }
@@ -67,7 +66,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void CreatedMergedDocuments(Excel.Worksheet activeWorksheet, Excel.Range selection)
+        public static void CreatedMergedDocuments(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
         {
             try
             {
@@ -82,34 +81,38 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         wordDocument = wordApp.Documents.Add(Template: oTemplate);
 
-                        //string sval = activeWorksheet.Rows[row].Text;
-                        int jiraIDCol = 6;
-                        string jiraId = CellGetStringValue(activeWorksheet, row, jiraIDCol);
-                        if (jiraId.Substring(0, 10) == "DOTTITLNG-")
-                        {
-                            int epicCol = 1;
-                            int summaryCol = 5;
-                            int releaseCol = 11;
-                            int sprintCol = 13;
-                            int dateApprovedCol = 28;
-                            int dateSubmittedCol = 29;
-                            int descriptionCol = 30;
-                            int story1Col = 31;
-                            int story2Col = 32;
-                            int story3Col = 33;
-                            int webServicesCol = 34;
+                        Dictionary<string, int> dict = new Dictionary<string, int>();
+                        dict = LoadColumns(app);
 
-                            string summary = CellGetStringValue(activeWorksheet, row, summaryCol);
-                            string epic = CellGetStringValue(activeWorksheet, row, epicCol);
-                            string release = CellGetStringValue(activeWorksheet, row, releaseCol);
-                            string sprint = CellGetStringValue(activeWorksheet, row, sprintCol);
-                            string story1 = CellGetStringValue(activeWorksheet, row, story1Col);
-                            string story2 = CellGetStringValue(activeWorksheet, row, story2Col);
-                            string story3 = CellGetStringValue(activeWorksheet, row, story3Col);
-                            string description = CellGetStringValue(activeWorksheet, row, descriptionCol);
-                            string webServices = CellGetStringValue(activeWorksheet, row, webServicesCol);
-                            string dateSubmited = CellGetStringValue(activeWorksheet, row, dateSubmittedCol);
-                            string dateApproved = CellGetStringValue(activeWorksheet, row, dateApprovedCol);
+                        //string sval = activeWorksheet.Rows[row].Text;
+                        int jiraIDCol = dict["jiraID"];
+                        string jiraId = CellGetStringValue(activeWorksheet, row, jiraIDCol);
+                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
+                        {
+                            int col_epic = dict["epic"];
+                            int col_summary = dict["summary"];
+                            int col_release = dict["release"];
+                            int col_sprint = dict["sprint"];
+                            int col_dateApproved = dict["dateApproved"];
+                            int col_dateSubmitted = dict["dateSubmitted"];
+                            int col_description = dict["description"];
+                            int col_story1 = dict["story1"];
+                            int col_story2 = dict["story2"];
+                            int col_story3 = dict["story3"];
+                            int col_webServices = dict["webServices"];
+
+                            string summary = CellGetStringValue(activeWorksheet, row, col_summary);
+                            string epic = CellGetStringValue(activeWorksheet, row, col_epic);
+                            string release = CellGetStringValue(activeWorksheet, row, col_release);
+                            string sprint = CellGetStringValue(activeWorksheet, row, col_sprint);
+                            string story1 = CellGetStringValue(activeWorksheet, row, col_story1);
+                            string story2 = CellGetStringValue(activeWorksheet, row, col_story2);
+                            string story3 = CellGetStringValue(activeWorksheet, row, col_story3);
+                            string description = CellGetStringValue(activeWorksheet, row, col_description);
+                            string webServices = CellGetStringValue(activeWorksheet, row, col_webServices);
+                            string dateSubmited = CellGetStringValue(activeWorksheet, row, col_dateSubmitted);
+                            string dateApproved = CellGetStringValue(activeWorksheet, row, col_dateApproved);
+
                             string id = jiraId.Replace("DOTTITLNG-", string.Empty);
 
                             foreach (Microsoft.Office.Interop.Word.Field field in wordDocument.Fields)
@@ -230,6 +233,50 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        private static Dictionary<string, int> LoadColumns(Excel.Application app)
+        {
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            Excel.Workbook wb = app.ActiveWorkbook;
+
+            var col_dateApproved = wb.Names.Item("col_dateApproved").RefersToRange.Value;
+            dict.Add("dateApproved", (int)col_dateApproved);
+
+            var col_dateSubmitted = wb.Names.Item("col_dateSubmitted").RefersToRange.Value;
+            dict.Add("dateSubmitted", (int)col_dateSubmitted);
+
+            var col_description = wb.Names.Item("col_description").RefersToRange.Value;
+            dict.Add("description", (int)col_description);
+
+            var col_epic = wb.Names.Item("col_epic").RefersToRange.Value;
+            dict.Add("epic", (int)col_epic);
+
+            var col_jiraID = wb.Names.Item("col_jiraID").RefersToRange.Value;
+            dict.Add("jiraID", (int)col_jiraID);
+
+            var col_release = wb.Names.Item("col_release").RefersToRange.Value;
+            dict.Add("release", (int)col_release);
+
+            var col_sprint = wb.Names.Item("col_sprint").RefersToRange.Value;
+            dict.Add("sprint", (int)col_sprint);
+
+            var col_story1 = wb.Names.Item("col_story1").RefersToRange.Value;
+            dict.Add("story1", (int)col_story1);
+
+            var col_story2 = wb.Names.Item("col_story2").RefersToRange.Value;
+            dict.Add("story2", (int)col_story2);
+
+            var col_story3 = wb.Names.Item("col_story3").RefersToRange.Value;
+            dict.Add("story3", (int)col_story3);
+
+            var col_summary = wb.Names.Item("col_summary").RefersToRange.Value;
+            dict.Add("summary", (int)col_summary);
+
+            var col_webServices = wb.Names.Item("col_webServices").RefersToRange.Value;
+            dict.Add("webServices", (int)col_webServices);
+
+            return dict;
+        }
+
         public static void MailMerge_CreateData(Excel.Worksheet storiesWorksheet, Excel.Range selection, Excel.Worksheet mmWorksheet)
         {
             try
@@ -243,7 +290,7 @@ namespace DOT_Titling_Excel_VSTO
                         //string sval = activeWorksheet.Rows[row].Text;
                         int jiraIDCol = 6;
                         string jiraID = CellGetStringValue(storiesWorksheet, row, jiraIDCol);
-                        if (jiraID.Substring(0, 10) == "DOTTITLNG-")
+                        if (jiraID.Length > 10 && jiraID.Substring(0, 10) == "DOTTITLNG-")
                         {
                             int epicCol = 1;
                             int summaryCol = 5;
@@ -423,7 +470,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void CreateWordDocuments(Excel.Worksheet activeWorksheet, Excel.Range selection)
+        public static void CreateWordDocuments(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
         {
             try
             {
@@ -436,29 +483,32 @@ namespace DOT_Titling_Excel_VSTO
                         string JiraId = CellGetStringValue(activeWorksheet, row, jiraIDCol);
                         if (JiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
-                            int epicCol = 1;
-                            int summaryCol = 5;
-                            int releaseCol = 11;
-                            int sprintCol = 13;
-                            int dateApprovedCol = 28;
-                            int dateSubmittedCol = 29;
-                            int descriptionCol = 30;
-                            int story1Col = 31;
-                            int story2Col = 32;
-                            int story3Col = 33;
-                            int webServicesCol = 34;
+                            Dictionary<string, int> dict = new Dictionary<string, int>();
+                            dict = LoadColumns(app);
 
-                            string summary = CellGetStringValue(activeWorksheet, row, summaryCol);
-                            string epic = CellGetStringValue(activeWorksheet, row, epicCol);
-                            string release = CellGetStringValue(activeWorksheet, row, releaseCol);
-                            string sprint = CellGetStringValue(activeWorksheet, row, sprintCol);
-                            string story1 = CellGetStringValue(activeWorksheet, row, story1Col);
-                            string story2 = CellGetStringValue(activeWorksheet, row, story2Col);
-                            string story3 = CellGetStringValue(activeWorksheet, row, story3Col);
-                            string description = CellGetStringValue(activeWorksheet, row, descriptionCol);
-                            string webServices = CellGetStringValue(activeWorksheet, row, webServicesCol);
-                            string dateSubmited = CellGetStringValue(activeWorksheet, row, dateSubmittedCol);
-                            string dateApproved = CellGetStringValue(activeWorksheet, row, dateApprovedCol);
+                            int col_epic = dict["epic"];
+                            int col_summary = dict["summary"];
+                            int col_release = dict["release"];
+                            int col_sprint = dict["sprint"];
+                            int col_dateApproved = dict["dateApproved"];
+                            int col_dateSubmitted = dict["dateSubmitted"];
+                            int col_description = dict["description"];
+                            int col_story1 = dict["story1"];
+                            int col_story2 = dict["story2"];
+                            int col_story3 = dict["story3"];
+                            int col_webServices = dict["webServices"];
+
+                            string summary = CellGetStringValue(activeWorksheet, row, col_summary);
+                            string epic = CellGetStringValue(activeWorksheet, row, col_epic);
+                            string release = CellGetStringValue(activeWorksheet, row, col_release);
+                            string sprint = CellGetStringValue(activeWorksheet, row, col_sprint);
+                            string story1 = CellGetStringValue(activeWorksheet, row, col_story1);
+                            string story2 = CellGetStringValue(activeWorksheet, row, col_story2);
+                            string story3 = CellGetStringValue(activeWorksheet, row, col_story3);
+                            string description = CellGetStringValue(activeWorksheet, row, col_description);
+                            string webServices = CellGetStringValue(activeWorksheet, row, col_webServices);
+                            string dateSubmited = CellGetStringValue(activeWorksheet, row, col_dateSubmitted);
+                            string dateApproved = CellGetStringValue(activeWorksheet, row, col_dateApproved);
 
                             description = description.Replace("<", "[");
                             description = description.Replace("/>", "/]");
