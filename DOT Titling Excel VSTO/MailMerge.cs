@@ -155,7 +155,6 @@ namespace DOT_Titling_Excel_VSTO
                                 if (MessageBox.Show("Open " + newfile + "?", jiraId, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
                                 {
                                     System.Diagnostics.Process.Start(newfile);
-                                    
                                 }
                             }
                         }
@@ -222,7 +221,6 @@ namespace DOT_Titling_Excel_VSTO
         public static string GetCellValue(Excel.Worksheet sheet, int row, int column)
         {
             var result = string.Empty;
-
             if (sheet != null)
             {
                 var rng = sheet.Cells[row, column] as Excel.Range;
@@ -230,7 +228,6 @@ namespace DOT_Titling_Excel_VSTO
                 if (rng != null)
                     result = (string)rng.Text;
             }
-
             return result + " ";
         }
 
