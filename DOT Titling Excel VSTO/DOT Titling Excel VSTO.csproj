@@ -155,6 +155,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="MailMerge.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -167,8 +168,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Ribbon1.resx">
-      <DependentUpon>Ribbon1.cs</DependentUpon>
+    <EmbeddedResource Include="DOTTitlingRibbon.resx">
+      <DependentUpon>DOTTitlingRibbon.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="DOT Titling Excel VSTO_TemporaryKey.pfx" />
     <None Include="packages.config" />
@@ -180,11 +181,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Ribbon1.cs">
+    <Compile Include="DOTTitlingRibbon.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Ribbon1.Designer.cs">
-      <DependentUpon>Ribbon1.cs</DependentUpon>
+    <Compile Include="DOTTitlingRibbon.Designer.cs">
+      <DependentUpon>DOTTitlingRibbon.cs</DependentUpon>
     </Compile>
     <Compile Include="ThisAddIn.cs">
       <SubType>Code</SubType>

@@ -1,220 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using System.IO;
-using Microsoft.Office.Tools.Ribbon;
-using Excel = Microsoft.Office.Interop.Excel;
-using Word = Microsoft.Office.Interop.Word;
-using DocumentFormat.OpenXml.Packaging;
-
-namespace DOT_Titling_Excel_VSTO
-{
-    public partial class Ribbon1
-    {
-        private void Ribbon1_Load(object sender, RibbonUIEventArgs e)
-        {
-
-        }
-        private void button1_Click(object sender, RibbonControlEventArgs e)
-        {
-            try
-            {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                Excel.Range activeCell = app.ActiveCell;
-                Excel.Range selection = app.Selection;
-
-                if (activeCell != null && activeWorksheet.Name == "Stories")
-                {
-                    app.ScreenUpdating = false;
-                    CreateWordDocuments(app, activeWorksheet, selection);
-                    app.ScreenUpdating = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        private void button3_Click(object sender, RibbonControlEventArgs e)
-        {
-            try
-            {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                Excel.Range activeCell = app.ActiveCell;
-                Excel.Range selection = app.Selection;
-
-                if (activeCell != null && activeWorksheet.Name == "Stories")
-                {
-                    app.ScreenUpdating = false;
-                    //Excel.Worksheet mmWorksheet = app.Worksheets.Add();
-                    //MailMerge_CreateHeader(mmWorksheet);
-                    //MailMerge_CreateData(activeWorksheet, selection, mmWorksheet);
-                    //string dataFile = MailMerge_CreateDataFile(mmWorksheet, app);
-                    //MailMerge_PerformMerge_Old(dataFile);
-                    CreatedMergedDocuments(app, activeWorksheet, selection);
-                    app.ScreenUpdating = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        public static void CreatedMergedDocuments(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
-        {
-            try
-            {
-                Object oTemplate = @ThisAddIn.InputDir + "\\MyDocMerge.docx";
-                var wordApp = new Word.Application();
-                var wordDocument = new Word.Document();
-                wordApp.Visible = false;
-
-                for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
-                {
-                    if (activeWorksheet.Rows[row].EntireRow.Height != 0)
-                    {
-                        wordDocument = wordApp.Documents.Add(Template: oTemplate);
-
-                        Dictionary<string, int> dict = new Dictionary<string, int>();
-                        dict = LoadColumns(app);
-
-                        //string sval = activeWorksheet.Rows[row].Text;
-                        int jiraIDCol = dict["jiraID"];
-                        string jiraId = CellGetStringValue(activeWorksheet, row, jiraIDCol);
-                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
-                        {
-                            int col_epic = dict["epic"];
-                            int col_summary = dict["summary"];
-                            int col_release = dict["release"];
-                            int col_sprint = dict["sprint"];
-                            int col_dateApproved = dict["dateApproved"];
-                            int col_dateSubmitted = dict["dateSubmitted"];
-                            int col_description = dict["description"];
-                            int col_story1 = dict["story1"];
-                            int col_story2 = dict["story2"];
-                            int col_story3 = dict["story3"];
-                            int col_webServices = dict["webServices"];
-
-                            string summary = CellGetStringValue(activeWorksheet, row, col_summary);
-                            string epic = CellGetStringValue(activeWorksheet, row, col_epic);
-                            string release = CellGetStringValue(activeWorksheet, row, col_release);
-                            string sprint = CellGetStringValue(activeWorksheet, row, col_sprint);
-                            string story1 = CellGetStringValue(activeWorksheet, row, col_story1);
-                            string story2 = CellGetStringValue(activeWorksheet, row, col_story2);
-                            string story3 = CellGetStringValue(activeWorksheet, row, col_story3);
-                            string description = CellGetStringValue(activeWorksheet, row, col_description);
-                            string webServices = CellGetStringValue(activeWorksheet, row, col_webServices);
-                            string dateSubmited = CellGetStringValue(activeWorksheet, row, col_dateSubmitted);
-                            string dateApproved = CellGetStringValue(activeWorksheet, row, col_dateApproved);
-
-                            string id = jiraId.Replace("DOTTITLNG-", string.Empty);
-
-                            foreach (Microsoft.Office.Interop.Word.Field field in wordDocument.Fields)
-                            {
-                                if (field.Code.Text.Contains("jiraID"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(jiraId);
-                                }
-                                else if (field.Code.Text.Contains("summary"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(summary);
-                                }
-                                else if (field.Code.Text.Contains("epic"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(epic);
-                                }
-                                else if (field.Code.Text.Contains("release"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(release);
-                                }
-                                else if (field.Code.Text.Contains("sprint"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(sprint);
-                                }
-                                else if (field.Code.Text.Contains("story1"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(story1);
-                                }
-                                else if (field.Code.Text.Contains("story2"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(story2);
-                                }
-                                else if (field.Code.Text.Contains("story3"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(story3);
-                                }
-                                else if (field.Code.Text.Contains("description"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(description);
-                                }
-                                else if (field.Code.Text.Contains("webServices"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(webServices);
-                                }
-                                else if (field.Code.Text.Contains("dateSubmited"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(dateSubmited);
-                                }
-                                else if (field.Code.Text.Contains("dateApproved"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(dateApproved);
-                                }
-                            }
-                            wordApp.Visible = false;
-                            string newfile = GetNewFileName(summary, id);
-
-
-                            wordDocument.TrackRevisions = true;
-                            wordDocument.SaveAs2(newfile);
-                            wordDocument.Close(false);
-
-                            if (selection.Rows.Count == 1)
-                            {
-                                if (MessageBox.Show("Open " + newfile + "?", jiraId, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
-                                {
-                                    System.Diagnostics.Process.Start(newfile);
-                                }
-                            }
-                        }
-                    }
-                }
-                if (selection.Rows.Count > 1)
-                {
-                    if (MessageBox.Show("Open " + ThisAddIn.OutputDir + "?", selection.Rows.Count.ToString() + " Files Created", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
-                    {
-                        System.Diagnostics.Process.Start(ThisAddIn.OutputDir);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        private static string GetNewFileName(string summary, string id)
-        {
-            return @ThisAddIn.OutputDir + "\\" + MakeValidFilename(summary.Trim() + " (" + id.Trim() + ").docx");
-        }
-
         public static void MailMerge_CreateHeader(Excel.Worksheet ws)
         {
             try
@@ -233,49 +16,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static Dictionary<string, int> LoadColumns(Excel.Application app)
-        {
-            Dictionary<string, int> dict = new Dictionary<string, int>();
-            Excel.Workbook wb = app.ActiveWorkbook;
 
-            var col_dateApproved = wb.Names.Item("col_dateApproved").RefersToRange.Value;
-            dict.Add("dateApproved", (int)col_dateApproved);
-
-            var col_dateSubmitted = wb.Names.Item("col_dateSubmitted").RefersToRange.Value;
-            dict.Add("dateSubmitted", (int)col_dateSubmitted);
-
-            var col_description = wb.Names.Item("col_description").RefersToRange.Value;
-            dict.Add("description", (int)col_description);
-
-            var col_epic = wb.Names.Item("col_epic").RefersToRange.Value;
-            dict.Add("epic", (int)col_epic);
-
-            var col_jiraID = wb.Names.Item("col_jiraID").RefersToRange.Value;
-            dict.Add("jiraID", (int)col_jiraID);
-
-            var col_release = wb.Names.Item("col_release").RefersToRange.Value;
-            dict.Add("release", (int)col_release);
-
-            var col_sprint = wb.Names.Item("col_sprint").RefersToRange.Value;
-            dict.Add("sprint", (int)col_sprint);
-
-            var col_story1 = wb.Names.Item("col_story1").RefersToRange.Value;
-            dict.Add("story1", (int)col_story1);
-
-            var col_story2 = wb.Names.Item("col_story2").RefersToRange.Value;
-            dict.Add("story2", (int)col_story2);
-
-            var col_story3 = wb.Names.Item("col_story3").RefersToRange.Value;
-            dict.Add("story3", (int)col_story3);
-
-            var col_summary = wb.Names.Item("col_summary").RefersToRange.Value;
-            dict.Add("summary", (int)col_summary);
-
-            var col_webServices = wb.Names.Item("col_webServices").RefersToRange.Value;
-            dict.Add("webServices", (int)col_webServices);
-
-            return dict;
-        }
 
         public static void MailMerge_CreateData(Excel.Worksheet storiesWorksheet, Excel.Range selection, Excel.Worksheet mmWorksheet)
         {
@@ -515,8 +256,8 @@ namespace DOT_Titling_Excel_VSTO
                             description = description.Replace("\r\n\r\n\r\n\r\n", "\r\n\r\n\r\n");
                             description = description.Replace("\r\n\r\n\r\n", "\r\n\r\n");
                             description = description.Replace("\r\n", "<w:cr/>");
-                            description = description.Replace("â€¢\t", "-");
-                            description = description.Replace("â€¢", "");
+                            description = description.Replace("•\t", "-");
+                            description = description.Replace("•", "");
 
                             // Remove URLs
                             foreach (Match item in Regex.Matches(description, @"(http|ftp|https):\/\/([\w\-_]+(?:(?:\.[\w\-_]+)+))([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?"))
@@ -582,17 +323,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        static string MakeValidFilename(string text)
-        {
-            text = text.Replace('\'', ' '); // U+2019 right single quotation mark
-            text = text.Replace('"', ' '); // U+201D right double quotation mark
-            text = text.Replace('/', ' ');  // U+2044 fraction slash
-            foreach (char c in Path.GetInvalidFileNameChars())
-            {
-                text = text.Replace(c, ' ');
-            }
-            return text;
-        }
+
 
         static string SantizeFilename(string key)
         {
@@ -623,26 +354,10 @@ namespace DOT_Titling_Excel_VSTO
             }
             return sb.ToString();
         }
-        public static string CellGetStringValue(Excel.Worksheet sheet, int row, int column)
-        {
-            var result = string.Empty;
 
-            if (sheet != null)
-            {
-                var rng = sheet.Cells[row, column] as Excel.Range;
-
-                if (rng != null)
-                    result = (string)rng.Text;
-            }
-
-            return result + " ";
-        }
 
         private static String MergeField(string docText, string field, string newText)
         {
             Regex regexText = new Regex("{" + field + "}");
             return regexText.Replace(docText, newText); ;
         }
-
-    }
-}
