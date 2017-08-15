@@ -51,7 +51,7 @@ namespace DOT_Titling_Excel_VSTO
 
                         //string sval = activeWorksheet.Rows[row].Text;
                         int jiraIDCol = dict["jiraID"];
-                        string jiraId = GetCellValue(activeWorksheet, row, jiraIDCol);
+                        string jiraId = ssUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
                         if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
                             int col_epic = dict["epic"];
@@ -65,18 +65,20 @@ namespace DOT_Titling_Excel_VSTO
                             int col_story2 = dict["story2"];
                             int col_story3 = dict["story3"];
                             int col_webServices = dict["webServices"];
+                            int col_storyCode = dict["storyCode"];
 
-                            string summary = GetCellValue(activeWorksheet, row, col_summary);
-                            string epic = GetCellValue(activeWorksheet, row, col_epic);
-                            string release = GetCellValue(activeWorksheet, row, col_release);
-                            string sprint = GetCellValue(activeWorksheet, row, col_sprint);
-                            string story1 = GetCellValue(activeWorksheet, row, col_story1);
-                            string story2 = GetCellValue(activeWorksheet, row, col_story2);
-                            string story3 = GetCellValue(activeWorksheet, row, col_story3);
-                            string description = GetCellValue(activeWorksheet, row, col_description);
-                            string webServices = GetCellValue(activeWorksheet, row, col_webServices);
-                            string dateSubmited = GetCellValue(activeWorksheet, row, col_dateSubmitted);
-                            string dateApproved = GetCellValue(activeWorksheet, row, col_dateApproved);
+                            string summary = ssUtils.GetCellValue(activeWorksheet, row, col_summary);
+                            string epic = ssUtils.GetCellValue(activeWorksheet, row, col_epic);
+                            string release = ssUtils.GetCellValue(activeWorksheet, row, col_release);
+                            string sprint = ssUtils.GetCellValue(activeWorksheet, row, col_sprint);
+                            string story1 = ssUtils.GetCellValue(activeWorksheet, row, col_story1);
+                            string story2 = ssUtils.GetCellValue(activeWorksheet, row, col_story2);
+                            string story3 = ssUtils.GetCellValue(activeWorksheet, row, col_story3);
+                            string description = ssUtils.GetCellValue(activeWorksheet, row, col_description);
+                            string webServices = ssUtils.GetCellValue(activeWorksheet, row, col_webServices);
+                            string storyCode = ssUtils.GetCellValue(activeWorksheet, row, col_storyCode);
+                            string dateSubmited = ssUtils.GetCellValue(activeWorksheet, row, col_dateSubmitted);
+                            string dateApproved = ssUtils.GetCellValue(activeWorksheet, row, col_dateApproved);
 
                             string id = jiraId.Replace("DOTTITLNG-", string.Empty);
 
@@ -132,6 +134,11 @@ namespace DOT_Titling_Excel_VSTO
                                     field.Select();
                                     wordApp.Selection.TypeText(webServices);
                                 }
+                                else if (field.Code.Text.Contains("storyCode"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(storyCode);
+                                }
                                 else if (field.Code.Text.Contains("dateSubmited"))
                                 {
                                     field.Select();
@@ -144,7 +151,7 @@ namespace DOT_Titling_Excel_VSTO
                                 }
                             }
                             wordApp.Visible = false;
-                            string newfile = GetNewFileName(summary, id);
+                            string newfile = ssUtils.GetNewFileName(summary, id);
 
                             wordDocument.TrackRevisions = true;
                             wordDocument.SaveAs2(newfile);
@@ -215,37 +222,11 @@ namespace DOT_Titling_Excel_VSTO
             var col_webServices = wb.Names.Item("col_webServices").RefersToRange.Value;
             dict.Add("webServices", (int)col_webServices);
 
+            var col_storyCode = wb.Names.Item("col_storyCode").RefersToRange.Value;
+            dict.Add("storyCode", (int)col_storyCode);
+
+
             return dict;
-        }
-
-        public static string GetCellValue(Excel.Worksheet sheet, int row, int column)
-        {
-            var result = string.Empty;
-            if (sheet != null)
-            {
-                var rng = sheet.Cells[row, column] as Excel.Range;
-
-                if (rng != null)
-                    result = (string)rng.Text;
-            }
-            return result + " ";
-        }
-
-        private static string GetNewFileName(string summary, string id)
-        {
-            return @ThisAddIn.OutputDir + "\\" + GetValidFileName(summary.Trim() + " (" + id.Trim() + ").docx");
-        }
-
-        static string GetValidFileName(string text)
-        {
-            text = text.Replace('\'', ' '); // U+2019 right single quotation mark
-            text = text.Replace('"', ' '); // U+201D right double quotation mark
-            text = text.Replace('/', ' ');  // U+2044 fraction slash
-            foreach (char c in Path.GetInvalidFileNameChars())
-            {
-                text = text.Replace(c, ' ');
-            }
-            return text;
         }
     }
 }
