@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
@@ -38,6 +40,38 @@ namespace DOT_Titling_Excel_VSTO
                 text = text.Replace(c, ' ');
             }
             return text;
+        }
+
+        //// http://www.authorcode.com/search-text-in-excel-file-through-c/
+        public static void SearchText(Excel.Application app, Excel.Workbook wb, Excel.Worksheet ws)
+        {
+            try
+            {
+                Excel.Range r = GetSpecifiedRange("test", ws);
+                if (r != null)
+                {
+                    MessageBox.Show("Text found, position is Row:" + r.Row + " and column:" + r.Column);
+                }
+                else
+                {
+                    MessageBox.Show("Text is not found");
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        public static Excel.Range GetSpecifiedRange(string matchStr, Excel.Worksheet ws)
+        {
+            Excel.Range currentFind = null;
+            currentFind = ws.get_Range("A1", "AM100").Find(matchStr, Missing.Value,
+                           Excel.XlFindLookIn.xlValues,
+                           Excel.XlLookAt.xlPart,
+                           Excel.XlSearchOrder.xlByRows,
+                           Excel.XlSearchDirection.xlNext, false, Missing.Value, Missing.Value);
+            return currentFind;
         }
     }
 }
