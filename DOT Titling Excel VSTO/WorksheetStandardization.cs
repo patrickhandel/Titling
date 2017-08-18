@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
 using System.Windows.Forms;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -32,37 +33,54 @@ namespace DOT_Titling_Excel_VSTO
                         int i;
                         header = cell.Value;
                         column = cell.Column;
+                        Excel.XlHAlign align;
                         string colType = cell.Offset[-1, 0].Value;
+                        
                         switch (colType)
                         {
-                            case "TextMedium":
-                                i = ColumnType.TextMedium;
-                                break;
                             case "TextLong":
                                 i = ColumnType.TextLong;
+                                align = Excel.XlHAlign.xlHAlignLeft;
+                                cell.IndentLevel = 1;
+                                break;
+                            case "TextMedium":
+                                i = ColumnType.TextMedium;
+                                align = Excel.XlHAlign.xlHAlignCenter;
                                 break;
                             case "TextShort":
                                 i = ColumnType.TextShort;
+                                align = Excel.XlHAlign.xlHAlignCenter;
                                 break;
                             case "Number":
                                 i = ColumnType.Number;
+                                align = Excel.XlHAlign.xlHAlignCenter;
                                 break;
                             case "YesNo":
                                 i = ColumnType.YesNo;
+                                align = Excel.XlHAlign.xlHAlignCenter;
                                 break;
                             case "Percent":
                                 i = ColumnType.Percent;
+                                align = Excel.XlHAlign.xlHAlignCenter;
                                 break;
                             case "Error":
                                 i = ColumnType.Error;
+                                align = Excel.XlHAlign.xlHAlignCenter;
                                 break;
                             case "Date":
                                 i = ColumnType.Date;
+                                align = Excel.XlHAlign.xlHAlignCenter;
+                                break;
+                            case "Hidden":
+                                i = ColumnType.Hidden;
+                                align = Excel.XlHAlign.xlHAlignCenter;
                                 break;
                             default:
                                 i = ColumnType.Default;
+                                align = Excel.XlHAlign.xlHAlignCenter;
                                 break;
                         }
+                        cell.HorizontalAlignment = align;
                         cell.EntireColumn.ColumnWidth = i;
                     }
 
@@ -70,7 +88,8 @@ namespace DOT_Titling_Excel_VSTO
                     r.EntireRow.RowHeight = 60;
 
                     headerRowRange.EntireRow.RowHeight = 60;
- 
+                    headerRowRange.Offset[-1, 0].Font.Size = 10;
+                    headerRowRange.Font.Size = 10;
                     headerRowRange.EntireRow.Offset[-1, 0].Hidden = true;
 
                     app.ScreenUpdating = true;
@@ -125,6 +144,10 @@ namespace DOT_Titling_Excel_VSTO
             {
                 rn = "JiraBugData[#Headers]";
             }
+            else if (name == "DOT Releases")
+            {
+                rn = "DOTReleaseData[#Headers]";
+            }
             else
             {
                 rn = "";
@@ -145,5 +168,6 @@ namespace DOT_Titling_Excel_VSTO
         public const int Error = 8;
         public const int Date = 11;
         public const int Default = 15;
+        public const int Hidden = 0;
     }
 }
