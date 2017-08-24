@@ -10,7 +10,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
-    class ssUtils
+    class SSUtils
     {
         public static string GetCellValue(Excel.Worksheet sheet, int row, int column)
         {
@@ -25,9 +25,9 @@ namespace DOT_Titling_Excel_VSTO
             return result + " ";
         }
 
-        public static string GetNewFileName(string summary, string id)
+        public static string GetNewFileName(string summary, string epicID)
         {
-            return @ThisAddIn.OutputDir + "\\" + GetValidFileName(summary.Trim() + " (" + id.Trim() + ").docx");
+            return @ThisAddIn.OutputDir + "\\" + "Epic ID " + epicID.Trim() + " " + GetValidFileName(summary.Trim() +  ".docx");
         }
 
         public static string GetValidFileName(string text)

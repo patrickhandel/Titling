@@ -47,11 +47,12 @@ namespace DOT_Titling_Excel_VSTO
                         wordDocument = wordApp.Documents.Add(Template: oTemplate);
 
                         Dictionary<string, int> dict = new Dictionary<string, int>();
-                        dict = SetColumns(app);
+                        //dict = SetColumns(app);
+                        dict = SetColumns1(app, activeWorksheet);
 
                         //string sval = activeWorksheet.Rows[row].Text;
                         int jiraIDCol = dict["jiraID"];
-                        string jiraId = ssUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
+                        string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
                         if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
                             int col_epic = dict["epic"];
@@ -65,20 +66,22 @@ namespace DOT_Titling_Excel_VSTO
                             int col_story2 = dict["story2"];
                             int col_story3 = dict["story3"];
                             int col_webServices = dict["webServices"];
+                            int col_epicID = dict["epicID"];
                             int col_storyCode = dict["storyCode"];
 
-                            string summary = ssUtils.GetCellValue(activeWorksheet, row, col_summary);
-                            string epic = ssUtils.GetCellValue(activeWorksheet, row, col_epic);
-                            string release = ssUtils.GetCellValue(activeWorksheet, row, col_release);
-                            string sprint = ssUtils.GetCellValue(activeWorksheet, row, col_sprint);
-                            string story1 = ssUtils.GetCellValue(activeWorksheet, row, col_story1);
-                            string story2 = ssUtils.GetCellValue(activeWorksheet, row, col_story2);
-                            string story3 = ssUtils.GetCellValue(activeWorksheet, row, col_story3);
-                            string description = ssUtils.GetCellValue(activeWorksheet, row, col_description);
-                            string webServices = ssUtils.GetCellValue(activeWorksheet, row, col_webServices);
-                            string storyCode = ssUtils.GetCellValue(activeWorksheet, row, col_storyCode);
-                            string dateSubmited = ssUtils.GetCellValue(activeWorksheet, row, col_dateSubmitted);
-                            string dateApproved = ssUtils.GetCellValue(activeWorksheet, row, col_dateApproved);
+                            string summary = SSUtils.GetCellValue(activeWorksheet, row, col_summary);
+                            string epic = SSUtils.GetCellValue(activeWorksheet, row, col_epic);
+                            string release = SSUtils.GetCellValue(activeWorksheet, row, col_release);
+                            string sprint = SSUtils.GetCellValue(activeWorksheet, row, col_sprint);
+                            string story1 = SSUtils.GetCellValue(activeWorksheet, row, col_story1);
+                            string story2 = SSUtils.GetCellValue(activeWorksheet, row, col_story2);
+                            string story3 = SSUtils.GetCellValue(activeWorksheet, row, col_story3);
+                            string description = SSUtils.GetCellValue(activeWorksheet, row, col_description);
+                            string webServices = SSUtils.GetCellValue(activeWorksheet, row, col_webServices);
+                            string epicID = SSUtils.GetCellValue(activeWorksheet, row, col_epicID).Trim();
+                            string storyCode = SSUtils.GetCellValue(activeWorksheet, row, col_storyCode).Trim();
+                            string dateSubmited = SSUtils.GetCellValue(activeWorksheet, row, col_dateSubmitted);
+                            string dateApproved = SSUtils.GetCellValue(activeWorksheet, row, col_dateApproved);
 
                             string id = jiraId.Replace("DOTTITLNG-", string.Empty);
 
@@ -93,6 +96,16 @@ namespace DOT_Titling_Excel_VSTO
                                 {
                                     field.Select();
                                     wordApp.Selection.TypeText(summary);
+                                }
+                                else if (field.Code.Text.Contains("epicID"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(epicID);
+                                }
+                                else if (field.Code.Text.Contains("storyCode"))
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(storyCode);
                                 }
                                 else if (field.Code.Text.Contains("epic"))
                                 {
@@ -134,11 +147,6 @@ namespace DOT_Titling_Excel_VSTO
                                     field.Select();
                                     wordApp.Selection.TypeText(webServices);
                                 }
-                                else if (field.Code.Text.Contains("storyCode"))
-                                {
-                                    field.Select();
-                                    wordApp.Selection.TypeText(storyCode);
-                                }
                                 else if (field.Code.Text.Contains("dateSubmited"))
                                 {
                                     field.Select();
@@ -151,7 +159,7 @@ namespace DOT_Titling_Excel_VSTO
                                 }
                             }
                             wordApp.Visible = false;
-                            string newfile = ssUtils.GetNewFileName(summary, id);
+                            string newfile = SSUtils.GetNewFileName(summary, epicID);
 
                             wordDocument.TrackRevisions = true;
                             wordDocument.SaveAs2(newfile);
@@ -180,6 +188,70 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        private static Dictionary<string, int> SetColumns1(Excel.Application app, Excel.Worksheet ws)
+        {
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            string sHeaderRangeName = "StoryData[#Headers]";
+            Excel.Range headerRowRange = (Excel.Range)ws.get_Range(sHeaderRangeName, Type.Missing);
+            string header = "";
+            int column = 1;
+
+            foreach (Excel.Range cell in headerRowRange.Cells)
+            {
+                header = cell.Value;
+                column = cell.Column;
+                switch (header)
+                {
+                    case "Epic":
+                        dict.Add("epic", column);
+                        break;
+                    case "Summary":
+                        dict.Add("summary", column);
+                        break;
+                    case "Story ID":
+                        dict.Add("jiraID", column);
+                        break;
+                    case "Story Release":
+                        dict.Add("release", column);
+                        break;
+                    case "DOT Sprint":
+                        dict.Add("sprint", column);
+                        break;
+                    case "Date Submitted to DOT":
+                        dict.Add("dateSubmitted", column);
+                        break;
+                    case "Date Approved by DOT":
+                        dict.Add("dateApproved", column);
+                        break;
+                    case "Description":
+                        dict.Add("description", column);
+                        break;
+                    case "Story: As A":
+                        dict.Add("story1", column);
+                        break;
+                    case "Story: I'd Like":
+                        dict.Add("story2", column);
+                        break;
+                    case "Story: So That":
+                        dict.Add("story3", column);
+                        break;
+                    case "Story Code":
+                        dict.Add("storyCode", column);
+                        break;
+                    case "Epic ID":
+                        dict.Add("epicID", column);
+                        break;
+                    case "DOT Web Services":
+                        dict.Add("webServices", column);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return dict;
+        }
+
 
         private static Dictionary<string, int> SetColumns(Excel.Application app)
         {
@@ -222,9 +294,11 @@ namespace DOT_Titling_Excel_VSTO
             var col_webServices = wb.Names.Item("col_webServices").RefersToRange.Value;
             dict.Add("webServices", (int)col_webServices);
 
+            var col_epicID = wb.Names.Item("col_epicID").RefersToRange.Value;
+            dict.Add("epicID", (int)col_epicID);
+
             var col_storyCode = wb.Names.Item("col_storyCode").RefersToRange.Value;
             dict.Add("storyCode", (int)col_storyCode);
-
 
             return dict;
         }

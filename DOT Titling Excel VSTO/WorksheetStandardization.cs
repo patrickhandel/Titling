@@ -148,6 +148,10 @@ namespace DOT_Titling_Excel_VSTO
             {
                 rn = "DOTReleaseData[#Headers]";
             }
+            else if (name == "Milestones")
+            {
+                rn = "MilestonesToDoData[#Headers]";
+            }
             else
             {
                 rn = "";
