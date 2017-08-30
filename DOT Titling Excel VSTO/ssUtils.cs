@@ -17,7 +17,7 @@ namespace DOT_Titling_Excel_VSTO
             var result = string.Empty;
             if (sheet != null)
             {
-                var rng = sheet.Cells[row, column] as Excel.Range;
+                Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
 
                 if (rng != null)
                     result = (string)rng.Text;

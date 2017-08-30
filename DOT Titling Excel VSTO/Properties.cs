@@ -34,8 +34,8 @@ namespace DOT_Titling_Excel_VSTO
         public static List<ColumnTypes> GetColumnTypes()
         {
             var str = ConfigurationManager.AppSettings["ColumnTypes"];
-            List<ColumnTypes> l = JsonConvert.DeserializeObject<List<ColumnTypes>>(str);
-            return l;
+            List<ColumnTypes> lst = JsonConvert.DeserializeObject<List<ColumnTypes>>(str);
+            return lst;
         }
     }
 }

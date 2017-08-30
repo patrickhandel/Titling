@@ -13,8 +13,6 @@ namespace DOT_Titling_Excel_VSTO
     {
         public static string OutputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeOut";
         public static string InputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeIn";
-        public static List<WorksheetProperties> wsProps = WorksheetPropertiesManager.GetWorksheetProperties();
-        public static List<ColumnTypes> wsColumns = WorksheetPropertiesManager.GetColumnTypes();
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
