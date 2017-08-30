@@ -12,6 +12,44 @@ namespace DOT_Titling_Excel_VSTO
 {
     class SSUtils
     {
+        public static int GetMailMergeFieldColumn(Excel.Worksheet ws, string columnText)
+        {
+            try
+            {
+                string sHeaderRangeName = GetHeaderRangeName(ws.Name);
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                foreach (Excel.Range cell in headerRowRange.Cells)
+                {
+                    if (cell.Value == columnText)
+                        return cell.Column;
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return 0;
+            }
+        }
+
+        public static string GetHeaderRangeName(string name)
+        {
+            List<WorksheetProperties> wsProps = WorksheetPropertiesManager.GetWorksheetProperties();
+            var prop = wsProps.FirstOrDefault(p => p.Worksheet == name);
+            if (prop == null)
+                return "";
+            return prop.Range + "[#Headers]";
+        }
+
+        public static int GetColumnWidth(string name)
+        {
+            List<ColumnTypes> wsColumnTypes = WorksheetPropertiesManager.GetColumnTypes();
+            var prop = wsColumnTypes.FirstOrDefault(p => p.Name == name);
+            if (prop == null)
+                return 15;
+            return (int)prop.Width;
+        }
+
         public static string GetCellValue(Excel.Worksheet sheet, int row, int column)
         {
             var result = string.Empty;

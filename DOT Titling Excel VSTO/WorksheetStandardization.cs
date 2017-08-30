@@ -20,7 +20,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Workbook wb = app.ActiveWorkbook;
                 Excel.Worksheet ws = wb.ActiveSheet;
 
-                string sHeaderRangeName = GetHeaderRangeName(ws.Name);
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
                 if (sHeaderRangeName != "")
                 {
                     app.ScreenUpdating = false;
@@ -32,16 +32,16 @@ namespace DOT_Titling_Excel_VSTO
                         header = cell.Value;
                         column = cell.Column;
                         string colType = cell.Offset[-1, 0].Value;
-                        cell.EntireColumn.ColumnWidth = GetColumnWidth(colType);
+                        cell.EntireColumn.ColumnWidth = SSUtils.GetColumnWidth(colType);
                         cell.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
                         if (colType == "TextLong")
                         {
-                            cell.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+                            cell.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
+                            cell.IndentLevel = 1;
                         }
                         else
                         {
-                            cell.HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
-                            cell.IndentLevel = 1;
+                            cell.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
                         }
                     }
 
@@ -58,24 +58,6 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
             }
-        }
-
-        private static string GetHeaderRangeName(string name)
-        {
-            List<WorksheetProperties> wsProps = WorksheetPropertiesManager.GetWorksheetProperties();
-            var prop = wsProps.FirstOrDefault(p => p.Worksheet == name);
-                if (prop == null)
-                    return "";
-                return prop.Range + "[#Headers]";
-        }
-
-        private static int GetColumnWidth(string name)
-        {
-            List<ColumnTypes> wsColumnTypes = WorksheetPropertiesManager.GetColumnTypes();
-            var prop = wsColumnTypes.FirstOrDefault(p => p.Name == name);
-            if (prop == null)
-                return 15;
-            return (int)prop.Width;
         }
     }
 }

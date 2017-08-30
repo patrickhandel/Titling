@@ -23,7 +23,7 @@ namespace DOT_Titling_Excel_VSTO
                     //app.ScreenUpdating = false;
                     Excel.Worksheet wsStories = app.ActiveWorkbook.Sheets["Stories"];
                     Excel.Worksheet wsJiraStories = app.ActiveWorkbook.Sheets["Jira Stories"];
-                    string sColRangeName = "JiraStoryData[ERR Found (WIN)]";
+                    string sColRangeName = "JiraTicketData[ERR Found (WIN)]";
                     Excel.Range errColRange = (Excel.Range)wsJiraStories.get_Range(sColRangeName, Type.Missing);
                     string val = "";
                     foreach (Excel.Range cell in errColRange.Cells)
@@ -36,7 +36,7 @@ namespace DOT_Titling_Excel_VSTO
                             string id = SSUtils.GetCellValue(wsJiraStories, row, 1);
                             string summary = SSUtils.GetCellValue(wsJiraStories, row,3);
 
-                            string sStoriesRange = "StoryData";
+                            string sStoriesRange = "TicketData";
                             Excel.ListObject list = wsStories.ListObjects[sStoriesRange];
 
                             Excel.Range tbl = wsStories.Range[sStoriesRange];
