@@ -39,6 +39,7 @@
             this.group1 = this.Factory.CreateRibbonGroup();
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnCleanup = this.Factory.CreateRibbonButton();
+            this.btnAddNewStories = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -55,6 +56,7 @@
             // 
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnCleanup);
+            this.group1.Items.Add(this.btnAddNewStories);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
@@ -76,6 +78,14 @@
             this.btnCleanup.ShowImage = true;
             this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanup_Click);
             // 
+            // btnAddNewStories
+            // 
+            this.btnAddNewStories.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnAddNewStories.Label = "Add Stories";
+            this.btnAddNewStories.Name = "btnAddNewStories";
+            this.btnAddNewStories.ShowImage = true;
+            this.btnAddNewStories.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewStories_Click);
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -96,6 +106,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnMailMerge;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCleanup;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewStories;
     }
 
     partial class ThisRibbonCollection

@@ -59,7 +59,7 @@ namespace DOT_Titling_Excel_VSTO
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show("Error :" + ex);
             }
         }
 

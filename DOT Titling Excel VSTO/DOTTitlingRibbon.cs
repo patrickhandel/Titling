@@ -6,7 +6,7 @@ namespace DOT_Titling_Excel_VSTO
     {
         private void DOTTitlingRibbon_Load(object sender, RibbonUIEventArgs e)
         {
-
+            
         }
 
         private void btnMailMerge_Click(object sender, RibbonControlEventArgs e)
@@ -17,6 +17,11 @@ namespace DOT_Titling_Excel_VSTO
         private void btnCleanup_Click(object sender, RibbonControlEventArgs e)
         {
             WorksheetStandardization.ExecuteCleanup();
+        }
+
+        private void btnAddNewStories_Click(object sender, RibbonControlEventArgs e)
+        {
+            Maintenance.AddNewStories();
         }
     }
 }

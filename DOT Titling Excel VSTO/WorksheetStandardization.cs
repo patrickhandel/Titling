@@ -85,9 +85,9 @@ namespace DOT_Titling_Excel_VSTO
                     }
 
                     Excel.Range r = ws.get_Range("A1");
-                    r.EntireRow.RowHeight = 60;
+                    r.EntireRow.RowHeight = 40;
 
-                    headerRowRange.EntireRow.RowHeight = 60;
+                    headerRowRange.EntireRow.RowHeight = 66;
                     headerRowRange.Offset[-1, 0].Font.Size = 10;
                     headerRowRange.Font.Size = 10;
                     headerRowRange.EntireRow.Offset[-1, 0].Hidden = true;
@@ -103,61 +103,10 @@ namespace DOT_Titling_Excel_VSTO
 
         private static string GetHeaderRangeName(string name)
         {
-            string rn;    
-            if (name == "Stories")
-            {
-                rn = "StoryData[#Headers]";
-            }
-            else if (name == "Jira Stories")
-            {
-                rn = "JiraStoryData[#Headers]";
-            }
-            else if (name == "Epics")
-            {
-                rn = "EpicData[#Headers]";
-            }
-            else if (name == "Jira Epics")
-            {
-                rn = "JiraEpicData[#Headers]";
-            }
-            else if (name == "Sprints")
-            {
-                rn = "SprintData[#Headers]";
-            }
-            else if (name == "Releases")
-            {
-                rn = "ReleaseData[#Headers]";
-            }
-            else if (name == "Jira Web Services")
-            {
-                rn = "JiraWebServicesData[#Headers]";
-            }
-            else if (name == "Sprint Results")
-            {
-                rn = "SprintResultsData[#Headers]";
-            }
-            else if (name == "Dev Results")
-            {
-                rn = "DevResultsData[#Headers]";
-            }
-            else if (name == "Jira Bugs")
-            {
-                rn = "JiraBugData[#Headers]";
-            }
-            else if (name == "DOT Releases")
-            {
-                rn = "DOTReleaseData[#Headers]";
-            }
-            else if (name == "Milestones")
-            {
-                rn = "MilestonesToDoData[#Headers]";
-            }
-            else
-            {
-                rn = "";
-            }
-
-            return rn;
+            var prop = ThisAddIn.wsProps.FirstOrDefault(p => p.Worksheet == name);
+            if (prop == null)
+                return "";
+            return prop.Range + "[#Headers]";
         }
     }
 
@@ -169,7 +118,7 @@ namespace DOT_Titling_Excel_VSTO
         public const int Number	= 9;
         public const int YesNo = 9;
         public const int Percent = 9 ;
-        public const int Error = 8;
+        public const int Error = 9;
         public const int Date = 11;
         public const int Default = 15;
         public const int Hidden = 0;

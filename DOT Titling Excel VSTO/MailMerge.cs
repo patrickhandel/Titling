@@ -13,7 +13,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Microsoft.Office.Interop.Excel.Application app = Globals.ThisAddIn.Application;
+                Excel.Application app = Globals.ThisAddIn.Application;
                 Excel.Worksheet activeWorksheet = app.ActiveSheet;
                 Excel.Range activeCell = app.ActiveCell;
                 Excel.Range selection = app.Selection;
@@ -251,7 +251,6 @@ namespace DOT_Titling_Excel_VSTO
             }
             return dict;
         }
-
 
         private static Dictionary<string, int> SetColumns(Excel.Application app)
         {
