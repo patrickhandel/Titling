@@ -50,8 +50,8 @@ namespace DOT_Titling_Excel_VSTO
                         string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
                         if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
-                            string summary = "";
-                            string epicID = "";
+                            string summary = string.Empty;
+                            string epicID = string.Empty;
                             List<MailMergeFields> wsMailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
                             foreach (var item in wsMailMergeFields)
                             {

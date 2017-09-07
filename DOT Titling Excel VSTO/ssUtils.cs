@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
+using Atlassian.Jira;
+using Newtonsoft.Json;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -37,8 +39,17 @@ namespace DOT_Titling_Excel_VSTO
             List<WorksheetProperties> wsProps = WorksheetPropertiesManager.GetWorksheetProperties();
             var prop = wsProps.FirstOrDefault(p => p.Worksheet == name);
             if (prop == null)
-                return "";
+                return string.Empty;
             return prop.Range + "[#Headers]";
+        }
+
+        public static string GetFooterRangeName(string name)
+        {
+            List<WorksheetProperties> wsProps = WorksheetPropertiesManager.GetWorksheetProperties();
+            var prop = wsProps.FirstOrDefault(p => p.Worksheet == name);
+            if (prop == null)
+                return string.Empty;
+            return prop.Range + "[#Totals]";
         }
 
         public static int GetColumnWidth(string name)
@@ -61,6 +72,26 @@ namespace DOT_Titling_Excel_VSTO
                     result = (string)rng.Text;
             }
             return result + " ";
+        }
+
+        public static void SetCellValue(Excel.Worksheet sheet, int row, int column, string val)
+        {
+            if (sheet != null)
+            {
+                Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
+                if (rng != null)
+                    rng.Value = val;
+            }
+        }
+
+        public static void SetCellFormula(Excel.Worksheet sheet, int row, int column, string formula)
+        {
+            if (sheet != null)
+            {
+                Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
+                if (rng != null)
+                    sheet.Cells[row, column].Formula = string.Format(formula, 1);
+            }
         }
 
         public static string GetNewFileName(string summary, string epicID)
@@ -110,6 +141,17 @@ namespace DOT_Titling_Excel_VSTO
                            Excel.XlSearchOrder.xlByRows,
                            Excel.XlSearchDirection.xlNext, false, Missing.Value, Missing.Value);
             return currentFind;
+        }
+        public static string GetCustomValue(Issue i, string field)
+        {
+            try
+            {
+                return i[field].Value;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }

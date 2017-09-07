@@ -40,6 +40,7 @@
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnCleanup = this.Factory.CreateRibbonButton();
             this.btnAddNewStories = this.Factory.CreateRibbonButton();
+            this.btnImport = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -57,6 +58,7 @@
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnCleanup);
             this.group1.Items.Add(this.btnAddNewStories);
+            this.group1.Items.Add(this.btnImport);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
@@ -86,6 +88,15 @@
             this.btnAddNewStories.ShowImage = true;
             this.btnAddNewStories.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewStories_Click);
             // 
+            // btnImport
+            // 
+            this.btnImport.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImport.Image = ((System.Drawing.Image)(resources.GetObject("btnImport.Image")));
+            this.btnImport.Label = "Import";
+            this.btnImport.Name = "btnImport";
+            this.btnImport.ShowImage = true;
+            this.btnImport.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImport_Click);
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -107,6 +118,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnMailMerge;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCleanup;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewStories;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImport;
     }
 
     partial class ThisRibbonCollection

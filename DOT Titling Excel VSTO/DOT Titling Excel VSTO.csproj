@@ -165,6 +165,7 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Import.cs" />
     <Compile Include="Maintenance.cs" />
     <Compile Include="MailMerge.cs" />
     <Compile Include="Properties.cs" />

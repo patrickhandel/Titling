@@ -21,7 +21,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Worksheet ws = wb.ActiveSheet;
 
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                if (sHeaderRangeName != "")
+                if (sHeaderRangeName != string.Empty)
                 {
                     app.ScreenUpdating = false;
                     Excel.Range headerRowRange = (Excel.Range)ws.get_Range(sHeaderRangeName, Type.Missing);

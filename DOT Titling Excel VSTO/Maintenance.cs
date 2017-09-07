@@ -25,7 +25,7 @@ namespace DOT_Titling_Excel_VSTO
                     Excel.Worksheet wsJiraStories = app.ActiveWorkbook.Sheets["Jira Stories"];
                     string sColRangeName = "JiraTicketData[ERR Found (WIN)]";
                     Excel.Range errColRange = (Excel.Range)wsJiraStories.get_Range(sColRangeName, Type.Missing);
-                    string val = "";
+                    string val = string.Empty;
                     foreach (Excel.Range cell in errColRange.Cells)
                     {
                         val = cell.Value;
