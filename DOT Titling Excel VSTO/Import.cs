@@ -8,6 +8,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Atlassian.Jira;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -29,12 +30,12 @@ namespace DOT_Titling_Excel_VSTO
 
                     var jira = Jira.CreateRestClient("https://wiportal.atlassian.net", "patrick.handel@egov.com", "viPer47,,");
                     jira.MaxIssuesPerRequest = 1000;
-                    var issues = from i in jira.Issues.Queryable
+                    var issues = (from i in jira.Issues.Queryable
                                  where i.Project == "DOTTITLNG" &&
                                     (i.Type == "Story" || i.Type == "Software Bug") &&
                                     i.Summary != "DELETE"
                                  orderby i.Created
-                                 select i;
+                                 select i).ToList();
                     int cnt = issues.Count();
 
                     string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
@@ -76,6 +77,35 @@ namespace DOT_Titling_Excel_VSTO
                 app.ScreenUpdating = true;
             }
         }
+
+        public void SetColumn(Range range, string[] data)
+        {
+            range.get_Resize(data.Length, 1).Value2 = data;
+        }
+
+
+        //public void ListToColumn(Worksheet ws, List<string> list, )
+        //{
+        //    var range = sheet.get_Range("A1", "A1");
+        //    range.Value2 = "test"; //Value2 is not a typo
+
+        //    //now the list
+        //    string cellName;
+        //    int counter = 1;
+        //    foreach (var item in list)
+        //    {
+        //        cellName = "A" + counter.ToString();
+        //        var range = sheet.get_Range(cellName, cellName);
+        //        range.Value2 = item.ToString();
+        //        ++counter;
+        //    }
+
+        //    //you've probably got the point by now, so a detailed explanation about workbook.SaveAs and workbook.Close is not necessary
+        //    //important: if you did not make excel visible terminating your application will terminate excel as well - I tested it
+        //    //but if you did it - to be honest - I don't know how to close the main excel window - maybee somewhere around excapp.Windows or excapp.ActiveWindow
+        //}
+
+
 
         private static void SetStandardRowHeight(Worksheet ws, int headerRow, int footerRow)
         {
