@@ -36,5 +36,10 @@ namespace DOT_Titling_Excel_VSTO
         {
             Import.ExecuteImportAllJiraTickets();
         }
+
+        private void btnUpdate_Click(object sender, RibbonControlEventArgs e)
+        {
+            UpdateJira.ExecuteUpateSummary();
+        }
     }
 }

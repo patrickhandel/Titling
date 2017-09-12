@@ -22,12 +22,11 @@ namespace DOT_Titling_Excel_VSTO
 
                 if (activeCell != null && activeWorksheet.Name == "Jira Tickets")
                 {
-                    app.ScreenUpdating = false;
-                    app.Calculation = XlCalculation.xlCalculationManual;
+                    SSUtils.DoStandardStuff(app);
                     ImportAllJiraTickets(app, activeWorksheet, selection);
                     WorksheetStandardization.ExecuteCleanup(activeWorksheet);
-                    app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
-                    app.ScreenUpdating = true;
+                    SSUtils.DoStandardStuff(app);
+
                 }
             }
             catch (Exception ex)
@@ -35,6 +34,8 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+
 
         public static void ExecuteImportSelectedJiraTickets()
         {
@@ -196,6 +197,8 @@ namespace DOT_Titling_Excel_VSTO
                           i.Summary != "DELETE"
                           orderby i.Created
                           select i).ToList();
+
+            // try this: i.Summary == new LiteralMatch("My Title")
 
             var issuesToRemove = issues.FindAll(x => x.Summary.ToUpper().Trim() == "DELETE");
             foreach (var issueToRemove in issuesToRemove)

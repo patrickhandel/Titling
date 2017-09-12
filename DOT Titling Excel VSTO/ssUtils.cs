@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using Atlassian.Jira;
+using Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -152,5 +153,21 @@ namespace DOT_Titling_Excel_VSTO
                            Excel.XlSearchDirection.xlNext, false, Missing.Value, Missing.Value);
             return currentFind;
         }
+        public static void DoStandardStuff(Excel.Application app)
+        {
+            if (app.ScreenUpdating == true)
+            {
+                app.Cursor = XlMousePointer.xlWait;
+                app.ScreenUpdating = false;
+                app.Calculation = XlCalculation.xlCalculationManual;
+            }
+            else
+            {
+                app.Calculation = XlCalculation.xlCalculationAutomatic;
+                app.ScreenUpdating = true;
+                app.Cursor = XlMousePointer.xlDefault;
+            }
+        }
+
     }
 }

@@ -42,6 +42,7 @@
             this.btnAddNewStories = this.Factory.CreateRibbonButton();
             this.btnImportAll = this.Factory.CreateRibbonButton();
             this.btnImportSelected = this.Factory.CreateRibbonButton();
+            this.btnUpdate = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -61,6 +62,7 @@
             this.group1.Items.Add(this.btnAddNewStories);
             this.group1.Items.Add(this.btnImportAll);
             this.group1.Items.Add(this.btnImportSelected);
+            this.group1.Items.Add(this.btnUpdate);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
@@ -109,6 +111,15 @@
             this.btnImportSelected.ShowImage = true;
             this.btnImportSelected.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportSelected_Click);
             // 
+            // btnUpdate
+            // 
+            this.btnUpdate.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdate.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdate.Image")));
+            this.btnUpdate.Label = "Update Jira";
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.ShowImage = true;
+            this.btnUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_Click);
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -132,6 +143,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewStories;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportAll;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportSelected;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdate;
     }
 
     partial class ThisRibbonCollection

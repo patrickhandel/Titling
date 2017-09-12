@@ -20,10 +20,10 @@ namespace DOT_Titling_Excel_VSTO
 
                 if (activeCell != null && activeWorksheet.Name == "Tickets")
                 {
-                    app.ScreenUpdating = false;
+                    SSUtils.DoStandardStuff(app);
                     List<MailMergeFields> mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
                     CreateMailMergeDocuments(app, activeWorksheet, selection, mailMergeFields);
-                    app.ScreenUpdating = true;
+                    SSUtils.DoStandardStuff(app);
                 }
             }
             catch (Exception ex)
