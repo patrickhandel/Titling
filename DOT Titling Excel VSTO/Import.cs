@@ -1,196 +1,130 @@
-﻿using Microsoft.Office.Interop.Excel;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Windows.Forms;
 using System.Linq;
+using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 using Atlassian.Jira;
-using Newtonsoft.Json;
-using System.Text.RegularExpressions;
 using System.Data;
+using System.Collections.Generic;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class Import
     {
-        //// Atlassian.NET SDK
-        //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
-
-        public static void JiraTickets()
+        public static void ExecuteImportSelectedJiraTickets()
         {
-            Excel.Application app = Globals.ThisAddIn.Application;
-            Workbook wb = app.ActiveWorkbook;
-            Worksheet ws = wb.ActiveSheet;
             try
             {
-                if (ws.Name == "Jira Tickets")
+                Excel.Application app = Globals.ThisAddIn.Application;
+                Excel.Worksheet activeWorksheet = app.ActiveSheet;
+                Excel.Range activeCell = app.ActiveCell;
+                Excel.Range selection = app.Selection;
+
+                if (activeCell != null && activeWorksheet.Name == "Jira Tickets")
                 {
                     app.ScreenUpdating = false;
-
-                    var jira = Jira.CreateRestClient("https://wiportal.atlassian.net", "patrick.handel@egov.com", "viPer47,,");
-                    jira.MaxIssuesPerRequest = 1000;
-                    var issues = (from i in jira.Issues.Queryable
-                                 where i.Project == "DOTTITLNG" &&
-                                    (i.Type == "Story" || i.Type == "Software Bug") &&
-                                    i.Summary != "DELETE"
-                                 orderby i.Created
-                                 select i).ToList();
-                    int cnt = issues.Count();
-
-                    string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                    string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-
-                    Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
-                    Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
-
-                    int headerRow = headerRowRange.Row;
-                    int footerRow = footerRangeRange.Row;
-
-                    Range rToInsert = ws.get_Range(String.Format("{0}:{1}", footerRow, footerRow + cnt - 1), Type.Missing);
-                    Range rToDelete = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
-
-                    rToInsert.Insert();
-                    rToDelete.Delete();
-
-                    int row = headerRow + 1;
-                    foreach (var issue in issues)
-                    {
-                        //Populate the row
-                        foreach (Range cell in headerRowRange.Cells)
-                        {
-                            string header = cell.Value;
-                            int column = cell.Column;
-                            SSUtils.SetCellValue(ws, row, column, GetIssueValueForCell(issue, header));
-                        }
-                        row++;
-                    }
-
-                    SetStandardRowHeight(ws, headerRow, footerRow);
-                    SetColumnsWithFormulas(ws, headerRow, footerRow);
+                    ImportSelectedJiraTickets(app, activeWorksheet, selection);
                     app.ScreenUpdating = true;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
-                app.ScreenUpdating = true;
             }
         }
 
-        public void SetColumn(Range range, string[] data)
+        public static void ImportSelectedJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
         {
-            range.get_Resize(data.Length, 1).Value2 = data;
-        }
+            //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
+            app.ScreenUpdating = false;
+            app.Calculation = XlCalculation.xlCalculationManual;
 
-        //public void ListToColumn(Worksheet ws, List<string> list, )
-        //{
-        //    var range = sheet.get_Range("A1", "A1");
-        //    range.Value2 = "test"; //Value2 is not a typo
+            List<Issue> issues = GetAllTicketsFromJira();
+            List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("JiraStoryData");
 
-        //    //now the list
-        //    string cellName;
-        //    int counter = 1;
-        //    foreach (var item in list)
-        //    {
-        //        cellName = "A" + counter.ToString();
-        //        var range = sheet.get_Range(cellName, cellName);
-        //        range.Value2 = item.ToString();
-        //        ++counter;
-        //    }
+            string sHeaderRangeName = SSUtils.GetHeaderRangeName(activeWorksheet.Name);
+            Range headerRowRange = activeWorksheet.get_Range(sHeaderRangeName, Type.Missing);
+            int headerRow = headerRowRange.Row;
 
-        //    //you've probably got the point by now, so a detailed explanation about workbook.SaveAs and workbook.Close is not necessary
-        //    //important: if you did not make excel visible terminating your application will terminate excel as well - I tested it
-        //    //but if you did it - to be honest - I don't know how to close the main excel window - maybee somewhere around excapp.Windows or excapp.ActiveWindow
-        //}
+            int cnt = selection.Rows.Count;
 
-
-
-        private static void SetStandardRowHeight(Worksheet ws, int headerRow, int footerRow)
-        {
-            Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
-            allRows.EntireRow.RowHeight = 15;
-        }
-
-        private static void SetColumnsWithFormulas(Worksheet ws, int headerRow, int footerRow)
-        {
-            Range caclCol;
-            string formula;
-            //Epic
-            caclCol = ws.get_Range("JiraTicketData[Epic]", Type.Missing);
-            formula = "=IFERROR(INDEX(JiraEpicData[Summary],MATCH([@[Epic ID]],JiraEpicData[Jira Epic ID],0)),\"\")";
-            caclCol.Formula = string.Format(formula);
-
-            //ERR Ticket Not Found
-            caclCol = ws.get_Range("JiraTicketData[ERR Ticket Not Found]", Type.Missing);
-            formula = "=IF(ISERROR(INDEX(TicketData[Story ID],MATCH([@[Story ID]],TicketData[Story ID],0))),\"x\",\"\")";
-            caclCol.Formula = string.Format(formula);
-
-            //ERR No Epic
-            caclCol = ws.get_Range("JiraTicketData[ERR No Epic]", Type.Missing);
-            formula = "=IF([@Epic]=\"\",\"x\",\"\")";
-            caclCol.Formula = string.Format(formula);
-
-            //ERR Points but To Do
-            caclCol = ws.get_Range("JiraTicketData[ERR Points but To Do]", Type.Missing);
-            formula = "=IF(AND([@[Issue Type]]=\"Story\",[@Status]=\"To Do\",[@[Story Points]]<>0),\"x\",\"\")";
-            caclCol.Formula = string.Format(formula);
-
-            //ERR Done No Sprint
-            caclCol = ws.get_Range("JiraTicketData[ERR Done No Sprint]", Type.Missing);
-            formula = "=IF([@Status]=\"Done\",IF([@Sprint]=\"\",\"x\",\"\"),\"\")";
-            caclCol.Formula = string.Format(formula);
-
-            //ERR Bug Not Categorized
-            caclCol = ws.get_Range("JiraTicketData[ERR Bug Not Categorized]", Type.Missing);
-            formula = "=IF(AND([@[Issue Type]]=\"Software Bug\",[@[DOT Jira ID]]=\"\"),\"x\",\"\")";
-            caclCol.Formula = string.Format(formula);
-        }
-
-        private static string GetIssueValueForCell(Issue issue, string header)
-        {
-            string val = string.Empty;
-            switch (header)
+            for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
             {
-                case "Issue Type":
+                if (activeWorksheet.Rows[row].EntireRow.Height != 0)
+                {
+                    int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Story ID");
+                    string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol).Trim();
+                    if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
+                    {
+                        var issue = issues.FirstOrDefault(p => p.Key.Value == jiraId);
+                        foreach (var jiraField in jiraFields)
+                        {
+                            string columnHeader = jiraField.ColumnHeader;
+                            string type = jiraField.Type;
+                            string value = jiraField.Value;
+                            string formula = jiraField.Formula;
+                            int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
+                            if (type == "Standard")
+                                SSUtils.SetCellValue(activeWorksheet, row, column, GetStandardIssueValueForCell(issue, value));
+                            if (type == "Custom")
+                                SSUtils.SetCellValue(activeWorksheet, row, column, GetCustomIssueValueForCell(issue, value));
+                            //if (type == "Formula")
+                            //    SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
+                        }
+                        SSUtils.SetStandardRowHeight(activeWorksheet, row, row);
+                    }
+                }
+            }
+            app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
+            app.ScreenUpdating = true;
+        }
+
+        private static List<Issue> GetAllTicketsFromJira()
+        {
+            var jira = Jira.CreateRestClient(ThisAddIn.JiraSite, ThisAddIn.JiraUserName, ThisAddIn.JiraPassword);
+            jira.MaxIssuesPerRequest = 1000;
+            var issues = (from i in jira.Issues.Queryable
+                          where i.Project == "DOTTITLNG" &&
+                          (i.Type == "Story" || i.Type == "Software Bug") &&
+                          i.Summary != "DELETE"
+                          orderby i.Created
+                          select i).ToList();
+            var isssuesToDelete = issues.Find(x => x.Summary.ToUpper().Trim() == "DELETE");
+            issues.Remove(isssuesToDelete);
+            return issues;
+        }
+
+        private static List<Issue> GetSingleTicketFromJira(string id)
+        {
+            var jira = Jira.CreateRestClient(ThisAddIn.JiraSite, ThisAddIn.JiraUserName, ThisAddIn.JiraPassword);
+            jira.MaxIssuesPerRequest = 1;
+            var issues = (from i in jira.Issues.Queryable
+                          where i.Key.Value == id
+                          orderby i.Created
+                          select i).ToList();
+            return issues;
+        }
+
+        private static string GetStandardIssueValueForCell(Issue issue, string value)
+        { 
+            string val = string.Empty;
+            switch (value)
+            {
+                case "issue.Type.Name":
                     val = issue.Type.Name;
                     break;
-                case "Story ID":
+                case "issue.Key.Value":
                     val = issue.Key.Value;
                     break;
-                case "Epic ID":
-                    val = SSUtils.GetCustomValue(issue, "Epic Link");
-                    break;
-                case "Summary":
+                case "issue.Summary":
                     val = issue.Summary;
                     break;
-                case "Status":
+                case "issue.Status.Name":
                     val = issue.Status.Name;
                     break;
-                case "Story Points":
-                    val = SSUtils.GetCustomValue(issue, "Story Points");
-                    break;
-                case "Date Submitted to DOT":
-                    val = SSUtils.GetCustomValue(issue, "Date Submitted to DOT"); ;
-                    break;
-                case "Date Approved by DOT":
-                    val = SSUtils.GetCustomValue(issue, "Date Approved by DOT");
-                    break;
-                case "DOT Jira ID":
-                    val = SSUtils.GetCustomValue(issue, "DOT Jira ID");
-                    break;
-                case "Description":
+                case "issue.Description":
                     val = issue.Description;
-                    break;
-                case "Story - As An":
-                    val = SSUtils.GetCustomValue(issue, "Story: As a(n)"); ;
-                    break;
-                case "Story - Id Like":
-                    val = SSUtils.GetCustomValue(issue, "Story: I'd like to be able to");
-                    break;
-                case "Story - So That":
-                    val = SSUtils.GetCustomValue(issue, "Story: So that I can");
                     break;
                 case "Sprint":
                     val = ExtractSprintNumber(issue);
@@ -204,7 +138,21 @@ namespace DOT_Titling_Excel_VSTO
                 default:
                     break;
             }
+            return val;
+        }
 
+        private static string GetCustomIssueValueForCell(Issue issue, string value)
+        {
+            string val = string.Empty;
+            value = value.Replace(" Id ", " I'd ");
+            try
+            {
+                val = issue[value].Value;
+            }
+            catch
+            {
+                val = string.Empty;
+            }
             return val;
         }
 
@@ -234,7 +182,7 @@ namespace DOT_Titling_Excel_VSTO
 
         private static string ExtractSprintNumber(Issue issue)
         {
-            string val = SSUtils.GetCustomValue(issue, "Sprint");
+            string val = GetCustomIssueValueForCell(issue, "Sprint");
             if (val != string.Empty)
             {
                 val = string.Empty;
@@ -246,6 +194,7 @@ namespace DOT_Titling_Excel_VSTO
                 val = val.Replace("Sprint", "");
                 val = val.Replace("Ready", "");
                 val = val.Replace("Other", "");
+                val = val.Replace("Approved", "");
                 val = val.Replace("-", "");
                 val = val.Replace(" ", "");
                 for (int rev = 1; rev <= 12; rev++)

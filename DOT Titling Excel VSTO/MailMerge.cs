@@ -21,7 +21,8 @@ namespace DOT_Titling_Excel_VSTO
                 if (activeCell != null && activeWorksheet.Name == "Tickets")
                 {
                     app.ScreenUpdating = false;
-                    CreateMailMergeDocuments(app, activeWorksheet, selection);
+                    List<MailMergeFields> mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
+                    CreateMailMergeDocuments(app, activeWorksheet, selection, mailMergeFields);
                     app.ScreenUpdating = true;
                 }
             }
@@ -31,7 +32,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void CreateMailMergeDocuments(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
+        public static void CreateMailMergeDocuments(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection, List<MailMergeFields> mailMergeFields)
         {
             try
             {
@@ -46,18 +47,17 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         wordDocument = wordApp.Documents.Add(Template: oTemplate);
 
-                        int jiraIDCol = SSUtils.GetMailMergeFieldColumn(activeWorksheet, "Story ID");
+                        int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Story ID");
                         string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
                         if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
                             string summary = string.Empty;
                             string epicID = string.Empty;
-                            List<MailMergeFields> wsMailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
-                            foreach (var item in wsMailMergeFields)
+                            foreach (var mailMergeField in mailMergeFields)
                             {
-                                string name = item.Name;
-                                string text = item.Text;
-                                int col = SSUtils.GetMailMergeFieldColumn(activeWorksheet, item.Text);
+                                string name = mailMergeField.Name;
+                                string text = mailMergeField.Text;
+                                int col = SSUtils.GetColumnFromHeader(activeWorksheet, mailMergeField.Text);
                                 string value = SSUtils.GetCellValue(activeWorksheet, row, col);
                                 if (name == "summary")
                                     summary = value;
@@ -70,7 +70,7 @@ namespace DOT_Titling_Excel_VSTO
                                     fieldText = fieldText.Replace("\\* MERGEFORMAT", String.Empty);
                                     fieldText = fieldText.Replace(" ", String.Empty);
 
-                                    if (fieldText == item.Name)
+                                    if (fieldText == mailMergeField.Name)
                                     {
                                         field.Select();
                                         wordApp.Selection.TypeText(value);

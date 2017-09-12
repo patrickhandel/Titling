@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using Atlassian.Jira;
-using Newtonsoft.Json;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class SSUtils
     {
-        public static int GetMailMergeFieldColumn(Excel.Worksheet ws, string columnText)
+        public static int GetColumnFromHeader(Excel.Worksheet ws, string columnText)
         {
             try
             {
@@ -58,7 +55,7 @@ namespace DOT_Titling_Excel_VSTO
             var prop = wsColumnTypes.FirstOrDefault(p => p.Name == name);
             if (prop == null)
                 return 15;
-            return (int)prop.Width;
+            return prop.Width;
         }
 
         public static string GetCellValue(Excel.Worksheet sheet, int row, int column)
@@ -71,7 +68,7 @@ namespace DOT_Titling_Excel_VSTO
                 if (rng != null)
                     result = (string)rng.Text;
             }
-            return result + " ";
+            return (result + " ").Trim();
         }
 
         public static void SetCellValue(Excel.Worksheet sheet, int row, int column, string val)
@@ -86,6 +83,12 @@ namespace DOT_Titling_Excel_VSTO
 
         public static void SetCellFormula(Excel.Worksheet sheet, int row, int column, string formula)
         {
+            formula = formula.Replace("|", "\"");
+            formula = formula.Replace("~NE~", "<>");
+            formula = formula.Replace("~GTE~", ">=");
+            formula = formula.Replace("~LTE~", "<=");
+            formula = formula.Replace("~LT~", "<");
+            formula = formula.Replace("~GT~", ">");
             if (sheet != null)
             {
                 Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
@@ -142,16 +145,11 @@ namespace DOT_Titling_Excel_VSTO
                            Excel.XlSearchDirection.xlNext, false, Missing.Value, Missing.Value);
             return currentFind;
         }
-        public static string GetCustomValue(Issue i, string field)
+
+        public static void SetStandardRowHeight(Excel.Worksheet ws, int headerRow, int footerRow)
         {
-            try
-            {
-                return i[field].Value;
-            }
-            catch
-            {
-                return string.Empty;
-            }
+            Excel.Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
+            allRows.EntireRow.RowHeight = 15;
         }
     }
 }

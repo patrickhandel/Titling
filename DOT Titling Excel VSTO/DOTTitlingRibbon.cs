@@ -24,9 +24,14 @@ namespace DOT_Titling_Excel_VSTO
             Maintenance.AddNewStories();
         }
 
-        private void btnImport_Click(object sender, RibbonControlEventArgs e)
+        private void btnImportSelected_Click(object sender, RibbonControlEventArgs e)
         {
-            Import.JiraTickets();
+            Import.ExecuteImportSelectedJiraTickets();
+        }
+
+        private void btnImportAll_Click(object sender, RibbonControlEventArgs e)
+        {
+          //  Import.ExecuteImportAllJiraTickets();
         }
     }
 }

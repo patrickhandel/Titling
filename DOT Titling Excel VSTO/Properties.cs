@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Configuration;
 using Newtonsoft.Json;
 using System.Windows.Forms;
@@ -30,8 +27,28 @@ namespace DOT_Titling_Excel_VSTO
         public string Text { get; set; }
     }
 
+    public class JiraFields
+    {
+        public string Range { get; set; }
+
+        public string ColumnHeader { get; set;  }
+
+        public string Type { get; set; }
+
+        public string Value { get; set; }
+
+        public string Formula { get; set; }
+    }
+
     public static class WorksheetPropertiesManager
     {
+        public static List<JiraFields> GetJiraFields(string range)
+        {
+            var str = ConfigurationManager.AppSettings["JiraFields"];
+            List<JiraFields> lst = JsonConvert.DeserializeObject<List<JiraFields>>(str);
+            return lst.FindAll(y => y.Range == range);
+        }
+
         public static  List<WorksheetProperties> GetWorksheetProperties()
         {
             var str = ConfigurationManager.AppSettings["WorksheetProperties"];

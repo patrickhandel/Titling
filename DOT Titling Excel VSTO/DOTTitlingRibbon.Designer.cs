@@ -40,7 +40,8 @@
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnCleanup = this.Factory.CreateRibbonButton();
             this.btnAddNewStories = this.Factory.CreateRibbonButton();
-            this.btnImport = this.Factory.CreateRibbonButton();
+            this.btnImportAll = this.Factory.CreateRibbonButton();
+            this.btnImportSelected = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -58,7 +59,8 @@
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnCleanup);
             this.group1.Items.Add(this.btnAddNewStories);
-            this.group1.Items.Add(this.btnImport);
+            this.group1.Items.Add(this.btnImportAll);
+            this.group1.Items.Add(this.btnImportSelected);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
@@ -86,16 +88,26 @@
             this.btnAddNewStories.Label = "Add Stories";
             this.btnAddNewStories.Name = "btnAddNewStories";
             this.btnAddNewStories.ShowImage = true;
+            this.btnAddNewStories.Visible = false;
             this.btnAddNewStories.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewStories_Click);
             // 
-            // btnImport
+            // btnImportAll
             // 
-            this.btnImport.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImport.Image = ((System.Drawing.Image)(resources.GetObject("btnImport.Image")));
-            this.btnImport.Label = "Import";
-            this.btnImport.Name = "btnImport";
-            this.btnImport.ShowImage = true;
-            this.btnImport.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImport_Click);
+            this.btnImportAll.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportAll.Image = ((System.Drawing.Image)(resources.GetObject("btnImportAll.Image")));
+            this.btnImportAll.Label = "Import All";
+            this.btnImportAll.Name = "btnImportAll";
+            this.btnImportAll.ShowImage = true;
+            this.btnImportAll.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportAll_Click);
+            // 
+            // btnImportSelected
+            // 
+            this.btnImportSelected.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportSelected.Image = ((System.Drawing.Image)(resources.GetObject("btnImportSelected.Image")));
+            this.btnImportSelected.Label = "Import Selected";
+            this.btnImportSelected.Name = "btnImportSelected";
+            this.btnImportSelected.ShowImage = true;
+            this.btnImportSelected.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportSelected_Click);
             // 
             // DOTTitlingRibbon
             // 
@@ -118,7 +130,8 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnMailMerge;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCleanup;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewStories;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImport;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportAll;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportSelected;
     }
 
     partial class ThisRibbonCollection
