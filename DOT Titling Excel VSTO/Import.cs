@@ -11,6 +11,30 @@ namespace DOT_Titling_Excel_VSTO
 {
     class Import
     {
+        public static void ExecuteImportAllJiraTickets()
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                Excel.Worksheet activeWorksheet = app.ActiveSheet;
+                Excel.Range activeCell = app.ActiveCell;
+                Excel.Range selection = app.Selection;
+
+                if (activeCell != null && activeWorksheet.Name == "Jira Tickets")
+                {
+                    app.ScreenUpdating = false;
+                    app.Calculation = XlCalculation.xlCalculationManual;
+                    ImportAllJiraTickets(app, activeWorksheet, selection);
+                    app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
+                    app.ScreenUpdating = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         public static void ExecuteImportSelectedJiraTickets()
         {
             try
@@ -23,7 +47,9 @@ namespace DOT_Titling_Excel_VSTO
                 if (activeCell != null && activeWorksheet.Name == "Jira Tickets")
                 {
                     app.ScreenUpdating = false;
+                    app.Calculation = XlCalculation.xlCalculationManual;
                     ImportSelectedJiraTickets(app, activeWorksheet, selection);
+                    app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
                     app.ScreenUpdating = true;
                 }
             }
@@ -33,12 +59,42 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ImportSelectedJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
+        public static void ImportAllJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
-            app.ScreenUpdating = false;
-            app.Calculation = XlCalculation.xlCalculationManual;
+            List<Issue> issues = GetAllTicketsFromJira();
+            List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("JiraStoryData");
+
+            int cnt = issues.Count();
+
+            string sHeaderRangeName = SSUtils.GetHeaderRangeName(activeWorksheet.Name);
+            Range headerRowRange = activeWorksheet.get_Range(sHeaderRangeName, Type.Missing);
+            int headerRow = headerRowRange.Row;
+
+            string sFooterRowRange = SSUtils.GetFooterRangeName(activeWorksheet.Name);
+            Range footerRangeRange = activeWorksheet.get_Range(sFooterRowRange, Type.Missing);
+            int footerRow = footerRangeRange.Row;
+
+            Range rToInsert = activeWorksheet.get_Range(String.Format("{0}:{1}", footerRow, footerRow + cnt - 1), Type.Missing);
+            Range rToDelete = activeWorksheet.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
+
+            rToInsert.Insert();
+            rToDelete.Delete();
+
+            int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Story ID");
+            int row = headerRow + 1;
+            foreach (var issue in issues)
+            {
+                UpdateValues(activeWorksheet, jiraFields, row, issue);
+                SSUtils.SetStandardRowHeight(activeWorksheet, row, row);
+                row++;
+            }
+        }
+
+        public static void ImportSelectedJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
+        {
+            //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
             List<Issue> issues = GetAllTicketsFromJira();
             List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("JiraStoryData");
@@ -58,26 +114,29 @@ namespace DOT_Titling_Excel_VSTO
                     if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                     {
                         var issue = issues.FirstOrDefault(p => p.Key.Value == jiraId);
-                        foreach (var jiraField in jiraFields)
-                        {
-                            string columnHeader = jiraField.ColumnHeader;
-                            string type = jiraField.Type;
-                            string value = jiraField.Value;
-                            string formula = jiraField.Formula;
-                            int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
-                            if (type == "Standard")
-                                SSUtils.SetCellValue(activeWorksheet, row, column, GetStandardIssueValueForCell(issue, value));
-                            if (type == "Custom")
-                                SSUtils.SetCellValue(activeWorksheet, row, column, GetCustomIssueValueForCell(issue, value));
-                            //if (type == "Formula")
-                            //    SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
-                        }
+                        UpdateValues(activeWorksheet, jiraFields, row, issue);
                         SSUtils.SetStandardRowHeight(activeWorksheet, row, row);
                     }
                 }
             }
-            app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
-            app.ScreenUpdating = true;
+        }
+
+        private static void UpdateValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue)
+        {
+            foreach (var jiraField in jiraFields)
+            {
+                string columnHeader = jiraField.ColumnHeader;
+                string type = jiraField.Type;
+                string value = jiraField.Value;
+                string formula = jiraField.Formula;
+                int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
+                if (type == "Standard")
+                    SSUtils.SetCellValue(activeWorksheet, row, column, GetStandardIssueValueForCell(issue, value));
+                if (type == "Custom")
+                    SSUtils.SetCellValue(activeWorksheet, row, column, GetCustomIssueValueForCell(issue, value));
+                if (type == "Formula")
+                    SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
+            }
         }
 
         private static List<Issue> GetAllTicketsFromJira()

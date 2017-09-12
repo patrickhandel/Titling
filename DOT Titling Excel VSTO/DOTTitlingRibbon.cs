@@ -31,7 +31,7 @@ namespace DOT_Titling_Excel_VSTO
 
         private void btnImportAll_Click(object sender, RibbonControlEventArgs e)
         {
-          //  Import.ExecuteImportAllJiraTickets();
+            Import.ExecuteImportAllJiraTickets();
         }
     }
 }
