@@ -25,6 +25,7 @@ namespace DOT_Titling_Excel_VSTO
                     app.ScreenUpdating = false;
                     app.Calculation = XlCalculation.xlCalculationManual;
                     ImportAllJiraTickets(app, activeWorksheet, selection);
+                    WorksheetStandardization.ExecuteCleanup();
                     app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
                     app.ScreenUpdating = true;
                 }
@@ -49,6 +50,7 @@ namespace DOT_Titling_Excel_VSTO
                     app.ScreenUpdating = false;
                     app.Calculation = XlCalculation.xlCalculationManual;
                     ImportSelectedJiraTickets(app, activeWorksheet, selection);
+                    WorksheetStandardization.ExecuteCleanup();
                     app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
                     app.ScreenUpdating = true;
                 }
@@ -149,8 +151,12 @@ namespace DOT_Titling_Excel_VSTO
                           i.Summary != "DELETE"
                           orderby i.Created
                           select i).ToList();
-            var isssuesToDelete = issues.Find(x => x.Summary.ToUpper().Trim() == "DELETE");
-            issues.Remove(isssuesToDelete);
+
+            var issuesToRemove = issues.FindAll(x => x.Summary.ToUpper().Trim() == "DELETE");
+            foreach (var issueToRemove in issuesToRemove)
+            {
+                issues.Remove(issues.FirstOrDefault(x => x.Key.Value == issueToRemove.Key.Value));
+            }
             return issues;
         }
 
