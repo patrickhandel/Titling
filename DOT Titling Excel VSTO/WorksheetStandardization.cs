@@ -12,14 +12,11 @@ namespace DOT_Titling_Excel_VSTO
 {
     class WorksheetStandardization
     {
-        public static void ExecuteCleanup()
+        public static void ExecuteCleanup(Excel.Worksheet ws)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Workbook wb = app.ActiveWorkbook;
-                Excel.Worksheet ws = wb.ActiveSheet;
-
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
                 if (sHeaderRangeName != string.Empty)
                 {

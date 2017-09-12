@@ -25,7 +25,7 @@ namespace DOT_Titling_Excel_VSTO
                     app.ScreenUpdating = false;
                     app.Calculation = XlCalculation.xlCalculationManual;
                     ImportAllJiraTickets(app, activeWorksheet, selection);
-                    WorksheetStandardization.ExecuteCleanup();
+                    WorksheetStandardization.ExecuteCleanup(activeWorksheet);
                     app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
                     app.ScreenUpdating = true;
                 }
@@ -50,7 +50,7 @@ namespace DOT_Titling_Excel_VSTO
                     app.ScreenUpdating = false;
                     app.Calculation = XlCalculation.xlCalculationManual;
                     ImportSelectedJiraTickets(app, activeWorksheet, selection);
-                    WorksheetStandardization.ExecuteCleanup();
+                    WorksheetStandardization.ExecuteCleanup(activeWorksheet);
                     app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
                     app.ScreenUpdating = true;
                 }
@@ -61,12 +61,57 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ImportAllJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
+
+        public static void ExecuteImportSingleJiraTicket(string jiraId)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                Excel.Worksheet ws = app.Sheets["Jira Tickets"];
+                app.ScreenUpdating = false;
+                app.Calculation = XlCalculation.xlCalculationManual;
+                ImportSingleJiraTicket(app, ws, jiraId);
+                WorksheetStandardization.ExecuteCleanup(ws);
+                app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
+                app.ScreenUpdating = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void ImportSingleJiraTicket(Excel.Application app, Excel.Worksheet ws, string jiraId)
+        {
+            try
+            {
+                List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("JiraTicketData");
+                List<Issue> issues = GetSingleTicketFromJira(jiraId);
+
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
+                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+
+                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
+                int row = SSUtils.FindTextInColumn(ws, "JiraTicketData[Story ID]", jiraId);
+
+                foreach (var issue in issues)
+                { 
+                    UpdateValues(ws, jiraFields, row, issue);
+                    SSUtils.SetStandardRowHeight(ws, row, row);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void ImportAllJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
             List<Issue> issues = GetAllTicketsFromJira();
-            List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("JiraStoryData");
+            List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("JiraTicketData");
 
             int cnt = issues.Count();
 
@@ -94,12 +139,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ImportSelectedJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
+        private static void ImportSelectedJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
             List<Issue> issues = GetAllTicketsFromJira();
-            List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("JiraStoryData");
+            List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("JiraTicketData");
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(activeWorksheet.Name);
             Range headerRowRange = activeWorksheet.get_Range(sHeaderRangeName, Type.Missing);
@@ -160,15 +205,22 @@ namespace DOT_Titling_Excel_VSTO
             return issues;
         }
 
-        private static List<Issue> GetSingleTicketFromJira(string id)
+        private static List<Issue> GetSingleTicketFromJira(string jiraId)
         {
-            var jira = Jira.CreateRestClient(ThisAddIn.JiraSite, ThisAddIn.JiraUserName, ThisAddIn.JiraPassword);
-            jira.MaxIssuesPerRequest = 1;
-            var issues = (from i in jira.Issues.Queryable
-                          where i.Key.Value == id
-                          orderby i.Created
-                          select i).ToList();
-            return issues;
+            try
+            {
+                var jira = Jira.CreateRestClient(ThisAddIn.JiraSite, ThisAddIn.JiraUserName, ThisAddIn.JiraPassword);
+                jira.MaxIssuesPerRequest = 1000;
+                var issues = (from i in jira.Issues.Queryable
+                              where i.Key == jiraId
+                              select i).ToList();
+                return issues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
         }
 
         private static string GetStandardIssueValueForCell(Issue issue, string value)

@@ -114,42 +114,43 @@ namespace DOT_Titling_Excel_VSTO
             return text;
         }
 
+        public static void SetStandardRowHeight(Excel.Worksheet ws, int headerRow, int footerRow)
+        {
+            Excel.Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
+            allRows.EntireRow.RowHeight = 15;
+        }
+
         //// http://www.authorcode.com/search-text-in-excel-file-through-c/
-        public static void SearchText(Excel.Application app, Excel.Workbook wb, Excel.Worksheet ws)
+        public static int FindTextInColumn(Excel.Worksheet ws, string colRangeName, string valueToFind)
         {
             try
             {
-                Excel.Range r = GetSpecifiedRange("test", ws);
+                Excel.Range r = GetSpecifiedRange(valueToFind, ws, colRangeName);
                 if (r != null)
                 {
-                    MessageBox.Show("Text found, position is Row:" + r.Row + " and column:" + r.Column);
+                    return r.Row;
                 }
                 else
                 {
-                    MessageBox.Show("Text is not found");
+                    return 0;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return 0;
             }
         }
 
-        public static Excel.Range GetSpecifiedRange(string matchStr, Excel.Worksheet ws)
+        public static Excel.Range GetSpecifiedRange(string valueToFind, Excel.Worksheet ws, string namedRange)
         {
             Excel.Range currentFind = null;
-            currentFind = ws.get_Range("A1", "AM100").Find(matchStr, Missing.Value,
+            currentFind = ws.get_Range(namedRange).Find(valueToFind, Missing.Value,
                            Excel.XlFindLookIn.xlValues,
                            Excel.XlLookAt.xlPart,
                            Excel.XlSearchOrder.xlByRows,
                            Excel.XlSearchDirection.xlNext, false, Missing.Value, Missing.Value);
             return currentFind;
-        }
-
-        public static void SetStandardRowHeight(Excel.Worksheet ws, int headerRow, int footerRow)
-        {
-            Excel.Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
-            allRows.EntireRow.RowHeight = 15;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Tools.Ribbon;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -16,7 +17,9 @@ namespace DOT_Titling_Excel_VSTO
 
         private void btnCleanup_Click(object sender, RibbonControlEventArgs e)
         {
-            WorksheetStandardization.ExecuteCleanup();
+            Excel.Application app = Globals.ThisAddIn.Application;
+            Excel.Worksheet activeWorksheet = app.ActiveSheet;
+            WorksheetStandardization.ExecuteCleanup(activeWorksheet);
         }
 
         private void btnAddNewStories_Click(object sender, RibbonControlEventArgs e)
