@@ -1,4 +1,5 @@
 ﻿using Microsoft.Office.Tools.Ribbon;
+using System.Windows;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
@@ -22,9 +23,10 @@ namespace DOT_Titling_Excel_VSTO
             WorksheetStandardization.ExecuteCleanup(activeWorksheet);
         }
 
-        private void btnAddNewStories_Click(object sender, RibbonControlEventArgs e)
+        private void btnAddNewTickets_Click(object sender, RibbonControlEventArgs e)
         {
-            Maintenance.AddNewStories();
+            //MessageBox.Show("Not Implemented");
+            Import.ExecuteAddNewTickets();
         }
 
         private void btnImportSelected_Click(object sender, RibbonControlEventArgs e)
@@ -34,7 +36,7 @@ namespace DOT_Titling_Excel_VSTO
 
         private void btnImportAll_Click(object sender, RibbonControlEventArgs e)
         {
-            Import.ExecuteImportAllJiraTickets();
+            //Import.ExecuteImportAllJiraTickets();
         }
 
         private void btnUpdate_Click(object sender, RibbonControlEventArgs e)

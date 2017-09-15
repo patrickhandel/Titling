@@ -36,7 +36,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Object oTemplate = @ThisAddIn.InputDir + "\\MyDocMerge.docx";
+                Object oTemplate = @ThisAddIn.InputDir + "\\Requirement.docx";
                 var wordApp = new Word.Application();
                 var wordDocument = new Word.Document();
                 wordApp.Visible = false;

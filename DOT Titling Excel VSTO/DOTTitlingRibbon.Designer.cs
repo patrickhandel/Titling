@@ -39,7 +39,7 @@
             this.group1 = this.Factory.CreateRibbonGroup();
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnCleanup = this.Factory.CreateRibbonButton();
-            this.btnAddNewStories = this.Factory.CreateRibbonButton();
+            this.btnAddNewTickets = this.Factory.CreateRibbonButton();
             this.btnImportAll = this.Factory.CreateRibbonButton();
             this.btnImportSelected = this.Factory.CreateRibbonButton();
             this.btnUpdate = this.Factory.CreateRibbonButton();
@@ -59,7 +59,7 @@
             // 
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnCleanup);
-            this.group1.Items.Add(this.btnAddNewStories);
+            this.group1.Items.Add(this.btnAddNewTickets);
             this.group1.Items.Add(this.btnImportAll);
             this.group1.Items.Add(this.btnImportSelected);
             this.group1.Items.Add(this.btnUpdate);
@@ -84,29 +84,29 @@
             this.btnCleanup.ShowImage = true;
             this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanup_Click);
             // 
-            // btnAddNewStories
+            // btnAddNewTickets
             // 
-            this.btnAddNewStories.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnAddNewStories.Label = "Add Stories";
-            this.btnAddNewStories.Name = "btnAddNewStories";
-            this.btnAddNewStories.ShowImage = true;
-            this.btnAddNewStories.Visible = false;
-            this.btnAddNewStories.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewStories_Click);
+            this.btnAddNewTickets.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnAddNewTickets.Label = "Add Tickets";
+            this.btnAddNewTickets.Name = "btnAddNewTickets";
+            this.btnAddNewTickets.ShowImage = true;
+            this.btnAddNewTickets.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewTickets_Click);
             // 
             // btnImportAll
             // 
             this.btnImportAll.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnImportAll.Image = ((System.Drawing.Image)(resources.GetObject("btnImportAll.Image")));
-            this.btnImportAll.Label = "Import All";
+            this.btnImportAll.Label = "All";
             this.btnImportAll.Name = "btnImportAll";
             this.btnImportAll.ShowImage = true;
+            this.btnImportAll.Visible = false;
             this.btnImportAll.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportAll_Click);
             // 
             // btnImportSelected
             // 
             this.btnImportSelected.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnImportSelected.Image = ((System.Drawing.Image)(resources.GetObject("btnImportSelected.Image")));
-            this.btnImportSelected.Label = "Import Selected";
+            this.btnImportSelected.Label = "Selected";
             this.btnImportSelected.Name = "btnImportSelected";
             this.btnImportSelected.ShowImage = true;
             this.btnImportSelected.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportSelected_Click);
@@ -140,7 +140,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnMailMerge;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCleanup;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewStories;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewTickets;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportAll;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportSelected;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdate;

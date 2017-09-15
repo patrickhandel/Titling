@@ -4,8 +4,8 @@ namespace DOT_Titling_Excel_VSTO
 {
     public partial class ThisAddIn
     {
-        public static string OutputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeOut";
-        public static string InputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\MailMergeIn";
+        public static string OutputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Out";
+        public static string InputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\In";
         public static string JiraSite = "https://wiportal.atlassian.net";
         public static string JiraUserName = "patrick.handel@egov.com";
         public static string JiraPassword = "viPer47,,";
