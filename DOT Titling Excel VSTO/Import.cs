@@ -57,8 +57,13 @@ namespace DOT_Titling_Excel_VSTO
                     rToInsert.Insert();
                     UpdateValues(ws, jiraFields, footerRow, issue, false);
                     SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value);
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary);
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Story Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Story Release")));
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Epic")));
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")));
                     SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                 }
+                MessageBox.Show(issues.Count() + " Tickets Added.");
             }
             catch (Exception ex)
             {
@@ -81,9 +86,6 @@ namespace DOT_Titling_Excel_VSTO
                     ImportAllJiraTickets(app, activeWorksheet, selection);
                     WorksheetStandardization.ExecuteCleanup(activeWorksheet);
                     SSUtils.DoStandardStuff(app);
-
-
-
                 }
             }
             catch (Exception ex)
