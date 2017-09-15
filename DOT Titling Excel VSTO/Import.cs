@@ -340,6 +340,9 @@ namespace DOT_Titling_Excel_VSTO
                 case "Fix Release":
                     val = ExtractFixRelease(issue);
                     break;
+                case "DOT Web Services":
+                    val = ExtractDOTWebServices(issue);
+                    break;
                 default:
                     break;
             }
@@ -385,6 +388,21 @@ namespace DOT_Titling_Excel_VSTO
             }
             return val;
         }
+
+        private static string ExtractDOTWebServices(Issue issue)
+        {
+            string val = string.Empty;
+            if (issue["DOT Web Services"] != null)
+            { 
+                foreach (var ver in issue.CustomFields["DOT Web Services"].Values)
+                {
+                    val = val + " " + ver;
+                }
+                val = val.Trim().Replace(" ", ", ");
+            }
+            return val;
+        }
+
 
         private static string ExtractSprintNumber(Issue issue)
         {
