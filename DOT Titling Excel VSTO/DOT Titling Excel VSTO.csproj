@@ -101,7 +101,7 @@
   <ItemGroup>
     <Reference Include="Accessibility" />
     <Reference Include="Atlassian.Jira, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Atlassian.SDK.9.6.0\lib\Atlassian.Jira.dll</HintPath>
+      <HintPath>..\packages\Atlassian.SDK.9.7.0\lib\Atlassian.Jira.dll</HintPath>
     </Reference>
     <Reference Include="Dapplo.Confluence, Version=0.6.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapplo.Confluence.0.6.5\lib\net45\Dapplo.Confluence.dll</HintPath>
@@ -189,16 +189,15 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Import.cs" />
+    <Compile Include="ImportFromJira.cs" />
     <Compile Include="JiraUtils.cs" />
-    <Compile Include="Maintenance.cs" />
     <Compile Include="MailMerge.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ssUtils.cs" />
-    <Compile Include="UpdateJira.cs" />
+    <Compile Include="ExportToJira.cs" />
     <Compile Include="WorksheetStandardization.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

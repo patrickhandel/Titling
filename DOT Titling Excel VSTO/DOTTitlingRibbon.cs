@@ -26,12 +26,12 @@ namespace DOT_Titling_Excel_VSTO
         private void btnAddNewTickets_Click(object sender, RibbonControlEventArgs e)
         {
             //MessageBox.Show("Not Implemented");
-            Import.ExecuteAddNewTickets();
+            ImportFromJira.ExecuteAddNewTickets();
         }
 
         private void btnImportSelected_Click(object sender, RibbonControlEventArgs e)
         {
-            Import.ExecuteImportSelectedJiraTickets();
+            ImportFromJira.ExecuteImportSelectedJiraTickets();
         }
 
         private void btnImportAll_Click(object sender, RibbonControlEventArgs e)
@@ -41,7 +41,7 @@ namespace DOT_Titling_Excel_VSTO
 
         private void btnUpdate_Click(object sender, RibbonControlEventArgs e)
         {
-            UpdateJira.ExecuteUpateSummary();
+            ExportToJira.ExecuteSaveSummary();
         }
     }
 }

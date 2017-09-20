@@ -4,20 +4,19 @@ using System.Linq;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 using Atlassian.Jira;
-using System.Data;
 using System.Collections.Generic;
 
 namespace DOT_Titling_Excel_VSTO
 {
-    class Import
+    class ImportFromJira
     {
         public static void ExecuteAddNewTickets()
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
+                var app = Globals.ThisAddIn.Application;
                 SSUtils.DoStandardStuff(app);
-                Worksheet ws = app.Sheets["Tickets"];
+                var ws = app.Sheets["Tickets"];
                 AddNewTickets(app, ws);
                 WorksheetStandardization.ExecuteCleanup(ws);
                 SSUtils.DoStandardStuff(app);
@@ -32,13 +31,13 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                List<Issue> issues = GetAllTicketsFromJira().ToList();
-                string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-                int column = SSUtils.GetColumnFromHeader(ws, "Story ID");
-                List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
+                var issues = JiraUtils.GetAllIssues().Result;
+                var wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                var column = SSUtils.GetColumnFromHeader(ws, "Story ID");
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
 
-                List<string> listOfStoryIDs = new List<string>();
-                Range storyIDColumnRange = ws.get_Range(wsRangeName + "[Story ID]", Type.Missing);
+                var listOfStoryIDs = new List<string>();
+                var storyIDColumnRange = ws.get_Range(wsRangeName + "[Story ID]", Type.Missing);
                 foreach (Range cell in storyIDColumnRange.Cells)
                 {
                     listOfStoryIDs.Add(cell.Value);
@@ -51,9 +50,9 @@ namespace DOT_Titling_Excel_VSTO
                 string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
                 foreach (var issue in issues)
                 {
-                    Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                    var footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                     int footerRow = footerRangeRange.Row;
-                    Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                    var rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                     rToInsert.Insert();
                     UpdateValues(ws, jiraFields, footerRow, issue, false);
                     SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value);
@@ -75,10 +74,10 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                Excel.Range activeCell = app.ActiveCell;
-                Excel.Range selection = app.Selection;
+                var app = Globals.ThisAddIn.Application;
+                var activeWorksheet = app.ActiveSheet;
+                var activeCell = app.ActiveCell;
+                var selection = app.Selection;
 
                 if (activeCell != null && (activeWorksheet.Name == "Tickets"))
                 {
@@ -99,9 +98,9 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                Excel.Range activeCell = app.ActiveCell;
-                Excel.Range selection = app.Selection;
+                var activeWorksheet = app.ActiveSheet;
+                var activeCell = app.ActiveCell;
+                var selection = app.Selection;
 
                 if (activeCell != null && (activeWorksheet.Name == "Tickets"))
                 {
@@ -123,13 +122,13 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                Worksheet ws = app.Sheets["Tickets"];
+                var app = Globals.ThisAddIn.Application;
+                var ws = app.Sheets["Tickets"];
                 app.ScreenUpdating = false;
                 app.Calculation = XlCalculation.xlCalculationManual;
                 ImportSingleJiraTicket(app, ws, jiraId);
                 WorksheetStandardization.ExecuteCleanup(ws);
-                app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
+                app.Calculation = XlCalculation.xlCalculationAutomatic;
                 app.ScreenUpdating = true;
             }
             catch (Exception ex)
@@ -138,25 +137,22 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void ImportSingleJiraTicket(Excel.Application app, Excel.Worksheet ws, string jiraId)
+        private static void ImportSingleJiraTicket(Excel.Application app, Worksheet ws, string jiraId)
         {
             try
             {
-                List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
-                List<Issue> issues = GetSingleTicketFromJira(jiraId);
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
+                var issue  = JiraUtils.GetIssue(jiraId).Result;
 
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                var headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
 
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
                 int row = SSUtils.FindTextInColumn(ws, "TicketData[Story ID]", jiraId);
 
-                foreach (var issue in issues)
-                {
-                    bool notFound = issue == null;
-                    UpdateValues(ws, jiraFields, row, issue, notFound);
-                    SSUtils.SetStandardRowHeight(ws, row, row);
-                }
+                bool notFound = issue == null;
+                UpdateValues(ws, jiraFields, row, issue, notFound);
+                SSUtils.SetStandardRowHeight(ws, row, row);
             }
             catch (Exception ex)
             {
@@ -168,21 +164,21 @@ namespace DOT_Titling_Excel_VSTO
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
-            List<Issue> issues = GetAllTicketsFromJira();
-            List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
+            var issues = JiraUtils.GetAllIssues().Result;
+            var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
 
             int cnt = issues.Count();
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(activeWorksheet.Name);
-            Range headerRowRange = activeWorksheet.get_Range(sHeaderRangeName, Type.Missing);
+            var headerRowRange = activeWorksheet.get_Range(sHeaderRangeName, Type.Missing);
             int headerRow = headerRowRange.Row;
 
             string sFooterRowRange = SSUtils.GetFooterRangeName(activeWorksheet.Name);
-            Range footerRangeRange = activeWorksheet.get_Range(sFooterRowRange, Type.Missing);
+            var footerRangeRange = activeWorksheet.get_Range(sFooterRowRange, Type.Missing);
             int footerRow = footerRangeRange.Row;
 
-            Range rToInsert = activeWorksheet.get_Range(String.Format("{0}:{1}", footerRow, footerRow + cnt - 1), Type.Missing);
-            Range rToDelete = activeWorksheet.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
+            var rToInsert = activeWorksheet.get_Range(String.Format("{0}:{1}", footerRow, footerRow + cnt - 1), Type.Missing);
+            var rToDelete = activeWorksheet.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
 
             rToInsert.Insert();
             rToDelete.Delete();
@@ -202,13 +198,13 @@ namespace DOT_Titling_Excel_VSTO
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
-            List<Issue> issues = GetAllTicketsFromJira();
+            var issues = JiraUtils.GetAllIssues().Result;
 
             string rangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-            List<JiraFields> jiraFields = WorksheetPropertiesManager.GetJiraFields(rangeName);
+            var jiraFields = WorksheetPropertiesManager.GetJiraFields(rangeName);
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-            Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+            var headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
             int headerRow = headerRowRange.Row;
 
             int cnt = selection.Rows.Count;
@@ -258,45 +254,6 @@ namespace DOT_Titling_Excel_VSTO
                 }
                 if (type == "Formula")
                     SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
-            }
-        }
-
-        private static List<Issue> GetAllTicketsFromJira()
-        {
-            var jira = Jira.CreateRestClient(ThisAddIn.JiraSite, ThisAddIn.JiraUserName, ThisAddIn.JiraPassword);
-            jira.MaxIssuesPerRequest = 1000;
-            var issues = (from i in jira.Issues.Queryable
-                          where i.Project == "DOTTITLNG" &&
-                          (i.Type == "Story" || i.Type == "Software Bug") &&
-                          i.Summary != "DELETE"
-                          orderby i.Created
-                          select i).ToList();
-
-            // try this: i.Summary == new LiteralMatch("My Title")
-
-            var issuesToRemove = issues.FindAll(x => x.Summary.ToUpper().Trim() == "DELETE");
-            foreach (var issueToRemove in issuesToRemove)
-            {
-                issues.Remove(issues.FirstOrDefault(x => x.Key.Value == issueToRemove.Key.Value));
-            }
-            return issues;
-        }
-
-        private static List<Issue> GetSingleTicketFromJira(string jiraId)
-        {
-            try
-            {
-                var jira = Jira.CreateRestClient(ThisAddIn.JiraSite, ThisAddIn.JiraUserName, ThisAddIn.JiraPassword);
-                jira.MaxIssuesPerRequest = 1000;
-                var issues = (from i in jira.Issues.Queryable
-                              where i.Key == jiraId
-                              select i).ToList();
-                return issues;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return null;
             }
         }
 

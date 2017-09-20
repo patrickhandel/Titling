@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
@@ -13,15 +12,15 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                Excel.Range activeCell = app.ActiveCell;
-                Excel.Range selection = app.Selection;
+                var app = Globals.ThisAddIn.Application;
+                var activeWorksheet = app.ActiveSheet;
+                var activeCell = app.ActiveCell;
+                var selection = app.Selection;
 
                 if (activeCell != null && activeWorksheet.Name == "Tickets")
                 {
                     SSUtils.DoStandardStuff(app);
-                    List<MailMergeFields> mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
+                    var mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
                     CreateMailMergeDocuments(app, activeWorksheet, selection, mailMergeFields);
                     SSUtils.DoStandardStuff(app);
                 }
@@ -36,7 +35,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Object oTemplate = @ThisAddIn.InputDir + "\\Requirement.docx";
+                object template = @ThisAddIn.InputDir + "\\Requirement.docx";
                 var wordApp = new Word.Application();
                 var wordDocument = new Word.Document();
                 wordApp.Visible = false;
@@ -45,13 +44,13 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     if (activeWorksheet.Rows[row].EntireRow.Height != 0)
                     {
-                        wordDocument = wordApp.Documents.Add(Template: oTemplate);
+                        wordDocument = wordApp.Documents.Add(Template: template);
 
                         int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Story ID");
                         string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
                         if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
-                            Import.ExecuteImportSingleJiraTicket(jiraId);
+                            ImportFromJira.ExecuteImportSingleJiraTicket(jiraId);
                             string summary = string.Empty;
                             string epicID = string.Empty;
                             foreach (var mailMergeField in mailMergeFields)

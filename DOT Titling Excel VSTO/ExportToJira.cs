@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Linq;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.Data;
-using System.Collections.Generic;
-using Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
-    class UpdateJira
+    class ExportToJira
     {
-        public static void ExecuteUpateSummary()
+        public static void ExecuteSaveSummary()
         {
             try
             {
@@ -21,7 +17,7 @@ namespace DOT_Titling_Excel_VSTO
                 if (activeCell != null && activeWorksheet.Name == "Tickets")
                 {
                     SSUtils.DoStandardStuff(app);
-                    UpdateSummaryAsync(activeWorksheet, activeCell);
+                    SaveSummary(activeWorksheet, activeCell);
                     SSUtils.DoStandardStuff(app);
                 }
             }
@@ -31,12 +27,10 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static async void UpdateSummaryAsync(Worksheet ws, Range activeCell)
+        private static void SaveSummary(Worksheet ws, Range activeCell)
         {
             try
             {
-                var jira = Jira.CreateRestClient(ThisAddIn.JiraSite, ThisAddIn.JiraUserName, ThisAddIn.JiraPassword);
-
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
                 Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
@@ -44,14 +38,14 @@ namespace DOT_Titling_Excel_VSTO
                 int row = activeCell.Row;
                 string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
                 string newSummary = SSUtils.GetCellValue(ws, row, column);
-                var issue = await jira.Issues.GetIssueAsync(jiraId);
-                issue.Summary = newSummary;
-                issue.SaveChanges();
+                JiraUtils.SaveSummary(jiraId, newSummary);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+
     }
 }
