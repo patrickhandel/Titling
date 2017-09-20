@@ -403,7 +403,6 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-
         private static string ExtractSprintNumber(Issue issue)
         {
             string val = GetCustomIssueValueForCell(issue, "Sprint");

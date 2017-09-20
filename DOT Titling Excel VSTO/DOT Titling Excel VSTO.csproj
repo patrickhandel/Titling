@@ -190,6 +190,7 @@
   -->
   <ItemGroup>
     <Compile Include="Import.cs" />
+    <Compile Include="JiraUtils.cs" />
     <Compile Include="Maintenance.cs" />
     <Compile Include="MailMerge.cs" />
     <Compile Include="Properties.cs" />

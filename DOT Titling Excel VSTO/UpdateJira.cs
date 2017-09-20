@@ -3,9 +3,9 @@ using System.Windows.Forms;
 using System.Linq;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
-using Atlassian.Jira;
 using System.Data;
 using System.Collections.Generic;
+using Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -16,8 +16,8 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                Excel.Range activeCell = app.ActiveCell;
+                Worksheet activeWorksheet = app.ActiveSheet;
+                Range activeCell = app.ActiveCell;
                 if (activeCell != null && activeWorksheet.Name == "Tickets")
                 {
                     SSUtils.DoStandardStuff(app);
@@ -31,7 +31,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static async void UpdateSummaryAsync(Excel.Worksheet ws, Excel.Range activeCell)
+        private static async void UpdateSummaryAsync(Worksheet ws, Range activeCell)
         {
             try
             {
