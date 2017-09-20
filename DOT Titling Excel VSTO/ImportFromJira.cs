@@ -10,6 +10,27 @@ namespace DOT_Titling_Excel_VSTO
 {
     class ImportFromJira
     {
+        public static void ExecuteUpdateSelectedTickets()
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                var activeWorksheet = app.ActiveSheet;
+                var activeCell = app.ActiveCell;
+                var selection = app.Selection;
+
+                if (activeCell != null && (activeWorksheet.Name == "Tickets"))
+                {
+                    UpdateSelectedTickets(app, activeWorksheet, selection);
+                    WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         public static void ExecuteAddNewTickets()
         {
             try
@@ -18,7 +39,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.DoStandardStuff(app);
                 var ws = app.Sheets["Tickets"];
                 AddNewTickets(app, ws);
-                WorksheetStandardization.ExecuteCleanup(ws);
+                WorksheetStandardization.ExecuteCleanupWorksheet(ws);
                 SSUtils.DoStandardStuff(app);
             }
             catch (Exception ex)
@@ -37,7 +58,7 @@ namespace DOT_Titling_Excel_VSTO
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
 
                 var listOfStoryIDs = new List<string>();
-                var storyIDColumnRange = ws.get_Range(wsRangeName + "[Story ID]", Type.Missing);
+                Range storyIDColumnRange = ws.get_Range(wsRangeName + "[Story ID]", Type.Missing);
                 foreach (Range cell in storyIDColumnRange.Cells)
                 {
                     listOfStoryIDs.Add(cell.Value);
@@ -50,9 +71,9 @@ namespace DOT_Titling_Excel_VSTO
                 string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
                 foreach (var issue in issues)
                 {
-                    var footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                    Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                     int footerRow = footerRangeRange.Row;
-                    var rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                    Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                     rToInsert.Insert();
                     UpdateValues(ws, jiraFields, footerRow, issue, false);
                     SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value);
@@ -70,47 +91,14 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteImportAllJiraTickets()
-        {
-            try
-            {
-                var app = Globals.ThisAddIn.Application;
-                var activeWorksheet = app.ActiveSheet;
-                var activeCell = app.ActiveCell;
-                var selection = app.Selection;
-
-                if (activeCell != null && (activeWorksheet.Name == "Tickets"))
-                {
-                    SSUtils.DoStandardStuff(app);
-                    ImportAllJiraTickets(app, activeWorksheet, selection);
-                    WorksheetStandardization.ExecuteCleanup(activeWorksheet);
-                    SSUtils.DoStandardStuff(app);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        public static void ExecuteImportSelectedJiraTickets()
+        public static void ExecuteUpdateAllTickets()
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                var activeWorksheet = app.ActiveSheet;
-                var activeCell = app.ActiveCell;
-                var selection = app.Selection;
-
-                if (activeCell != null && (activeWorksheet.Name == "Tickets"))
-                {
-                    app.ScreenUpdating = false;
-                    app.Calculation = XlCalculation.xlCalculationManual;
-                    ImportSelectedJiraTickets(app, activeWorksheet, selection);
-                    WorksheetStandardization.ExecuteCleanup(activeWorksheet);
-                    app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
-                    app.ScreenUpdating = true;
-                }
+                Worksheet ws = app.Worksheets["Tickets"];
+                UpdateAllTickets(app, ws);
+                WorksheetStandardization.ExecuteCleanupWorksheet(ws);
             }
             catch (Exception ex)
             {
@@ -127,7 +115,7 @@ namespace DOT_Titling_Excel_VSTO
                 app.ScreenUpdating = false;
                 app.Calculation = XlCalculation.xlCalculationManual;
                 ImportSingleJiraTicket(app, ws, jiraId);
-                WorksheetStandardization.ExecuteCleanup(ws);
+                WorksheetStandardization.ExecuteCleanupWorksheet(ws);
                 app.Calculation = XlCalculation.xlCalculationAutomatic;
                 app.ScreenUpdating = true;
             }
@@ -145,7 +133,7 @@ namespace DOT_Titling_Excel_VSTO
                 var issue  = JiraUtils.GetIssue(jiraId).Result;
 
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                var headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
 
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
                 int row = SSUtils.FindTextInColumn(ws, "TicketData[Story ID]", jiraId);
@@ -160,41 +148,42 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void ImportAllJiraTickets(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection)
+        private static void UpdateAllTickets(Excel.Application app, Worksheet ws)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
-
-            var issues = JiraUtils.GetAllIssues().Result;
-            var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
-
-            int cnt = issues.Count();
-
-            string sHeaderRangeName = SSUtils.GetHeaderRangeName(activeWorksheet.Name);
-            var headerRowRange = activeWorksheet.get_Range(sHeaderRangeName, Type.Missing);
-            int headerRow = headerRowRange.Row;
-
-            string sFooterRowRange = SSUtils.GetFooterRangeName(activeWorksheet.Name);
-            var footerRangeRange = activeWorksheet.get_Range(sFooterRowRange, Type.Missing);
-            int footerRow = footerRangeRange.Row;
-
-            var rToInsert = activeWorksheet.get_Range(String.Format("{0}:{1}", footerRow, footerRow + cnt - 1), Type.Missing);
-            var rToDelete = activeWorksheet.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
-
-            rToInsert.Insert();
-            rToDelete.Delete();
-
-            int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Story ID");
-            int row = headerRow + 1;
-            foreach (var issue in issues)
+            try
             {
-                bool notFound = issue == null;
-                UpdateValues(activeWorksheet, jiraFields, row, issue, notFound);
-                SSUtils.SetStandardRowHeight(activeWorksheet, row, row);
-                row++;
+                var issues = JiraUtils.GetAllIssues().Result;
+                string rangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(rangeName);
+
+                int cnt = issues.Count();
+
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
+                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                int headerRow = headerRowRange.Row;
+
+                string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                int footerRow = footerRangeRange.Row;
+
+                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
+                for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
+                {
+                    string jiraID = SSUtils.GetCellValue(ws, currentRow, jiraIDCol);
+                    var issue = issues.FirstOrDefault(i => i.Key == jiraID);
+                    bool notFound = issue == null;
+                    UpdateValues(ws, jiraFields, currentRow, issue, notFound);
+                }
+                SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
             }
         }
 
-        private static void ImportSelectedJiraTickets(Excel.Application app, Worksheet ws, Range selection)
+        private static void UpdateSelectedTickets(Excel.Application app, Worksheet ws, Range selection)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
@@ -204,7 +193,7 @@ namespace DOT_Titling_Excel_VSTO
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(rangeName);
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-            var headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+            Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
             int headerRow = headerRowRange.Row;
 
             int cnt = selection.Rows.Count;
@@ -305,7 +294,6 @@ namespace DOT_Titling_Excel_VSTO
             }
             return val;
         }
-
 
         private static string GetCustomIssueValueForCell(Issue issue, string value)
         {

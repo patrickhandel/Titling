@@ -57,12 +57,12 @@
             // 
             // group1
             // 
-            this.group1.Items.Add(this.btnMailMerge);
-            this.group1.Items.Add(this.btnCleanup);
-            this.group1.Items.Add(this.btnAddNewTickets);
             this.group1.Items.Add(this.btnImportAll);
             this.group1.Items.Add(this.btnImportSelected);
+            this.group1.Items.Add(this.btnAddNewTickets);
             this.group1.Items.Add(this.btnUpdate);
+            this.group1.Items.Add(this.btnMailMerge);
+            this.group1.Items.Add(this.btnCleanup);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
@@ -70,7 +70,7 @@
             // 
             this.btnMailMerge.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnMailMerge.Image = ((System.Drawing.Image)(resources.GetObject("btnMailMerge.Image")));
-            this.btnMailMerge.Label = "Merge";
+            this.btnMailMerge.Label = "Mail Merge";
             this.btnMailMerge.Name = "btnMailMerge";
             this.btnMailMerge.ShowImage = true;
             this.btnMailMerge.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnMailMerge_Click);
@@ -79,15 +79,16 @@
             // 
             this.btnCleanup.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnCleanup.Image = ((System.Drawing.Image)(resources.GetObject("btnCleanup.Image")));
-            this.btnCleanup.Label = "Cleanup";
+            this.btnCleanup.Label = "Cleanup Worksheet";
             this.btnCleanup.Name = "btnCleanup";
             this.btnCleanup.ShowImage = true;
-            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanup_Click);
+            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupWorksheet_Click);
             // 
             // btnAddNewTickets
             // 
             this.btnAddNewTickets.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnAddNewTickets.Label = "Add Tickets";
+            this.btnAddNewTickets.Image = ((System.Drawing.Image)(resources.GetObject("btnAddNewTickets.Image")));
+            this.btnAddNewTickets.Label = "Add New Tickets";
             this.btnAddNewTickets.Name = "btnAddNewTickets";
             this.btnAddNewTickets.ShowImage = true;
             this.btnAddNewTickets.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewTickets_Click);
@@ -96,26 +97,25 @@
             // 
             this.btnImportAll.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnImportAll.Image = ((System.Drawing.Image)(resources.GetObject("btnImportAll.Image")));
-            this.btnImportAll.Label = "All";
+            this.btnImportAll.Label = "Update All Tickets";
             this.btnImportAll.Name = "btnImportAll";
             this.btnImportAll.ShowImage = true;
-            this.btnImportAll.Visible = false;
-            this.btnImportAll.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportAll_Click);
+            this.btnImportAll.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportAllTickets_Click);
             // 
             // btnImportSelected
             // 
             this.btnImportSelected.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnImportSelected.Image = ((System.Drawing.Image)(resources.GetObject("btnImportSelected.Image")));
-            this.btnImportSelected.Label = "Selected";
+            this.btnImportSelected.Label = "Update Selected Tickets";
             this.btnImportSelected.Name = "btnImportSelected";
             this.btnImportSelected.ShowImage = true;
-            this.btnImportSelected.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportSelected_Click);
+            this.btnImportSelected.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportSelectedTickets_Click);
             // 
             // btnUpdate
             // 
             this.btnUpdate.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnUpdate.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdate.Image")));
-            this.btnUpdate.Label = "Update Jira";
+            this.btnUpdate.Label = "Save Selected";
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.ShowImage = true;
             this.btnUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_Click);

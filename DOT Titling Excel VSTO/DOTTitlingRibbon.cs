@@ -16,27 +16,26 @@ namespace DOT_Titling_Excel_VSTO
             MailMerge.ExecuteMailMerge();
         }
 
-        private void btnCleanup_Click(object sender, RibbonControlEventArgs e)
+        private void btnCleanupWorksheet_Click(object sender, RibbonControlEventArgs e)
         {
             Excel.Application app = Globals.ThisAddIn.Application;
             Excel.Worksheet activeWorksheet = app.ActiveSheet;
-            WorksheetStandardization.ExecuteCleanup(activeWorksheet);
+            WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
         }
 
         private void btnAddNewTickets_Click(object sender, RibbonControlEventArgs e)
         {
-            //MessageBox.Show("Not Implemented");
             ImportFromJira.ExecuteAddNewTickets();
         }
 
-        private void btnImportSelected_Click(object sender, RibbonControlEventArgs e)
+        private void btnImportSelectedTickets_Click(object sender, RibbonControlEventArgs e)
         {
-            ImportFromJira.ExecuteImportSelectedJiraTickets();
+            ImportFromJira.ExecuteUpdateSelectedTickets();
         }
 
-        private void btnImportAll_Click(object sender, RibbonControlEventArgs e)
+        private void btnImportAllTickets_Click(object sender, RibbonControlEventArgs e)
         {
-            //Import.ExecuteImportAllJiraTickets();
+            ImportFromJira.ExecuteUpdateAllTickets();
         }
 
         private void btnUpdate_Click(object sender, RibbonControlEventArgs e)

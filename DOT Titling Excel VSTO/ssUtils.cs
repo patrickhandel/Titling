@@ -67,7 +67,7 @@ namespace DOT_Titling_Excel_VSTO
             return prop.Width;
         }
 
-        public static string GetCellValue(Excel.Worksheet sheet, int row, int column)
+        public static string GetCellValue(Worksheet sheet, int row, int column)
         {
             var result = string.Empty;
             if (sheet != null)
@@ -125,7 +125,7 @@ namespace DOT_Titling_Excel_VSTO
 
         public static void SetStandardRowHeight(Worksheet ws, int headerRow, int footerRow)
         {
-            Excel.Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
+            Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
             allRows.EntireRow.RowHeight = 15;
         }
 
@@ -153,7 +153,7 @@ namespace DOT_Titling_Excel_VSTO
 
         public static Range GetSpecifiedRange(string valueToFind, Worksheet ws, string namedRange)
         {
-            Excel.Range currentFind = null;
+            Range currentFind = null;
             currentFind = ws.get_Range(namedRange).Find(valueToFind, Missing.Value,
                            Excel.XlFindLookIn.xlValues,
                            Excel.XlLookAt.xlPart,

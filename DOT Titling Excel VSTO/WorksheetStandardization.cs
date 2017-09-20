@@ -12,7 +12,7 @@ namespace DOT_Titling_Excel_VSTO
 {
     class WorksheetStandardization
     {
-        public static void ExecuteCleanup(Excel.Worksheet ws)
+        public static void ExecuteCleanupWorksheet(Excel.Worksheet ws)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace DOT_Titling_Excel_VSTO
                 if (sHeaderRangeName != string.Empty)
                 {
                     SSUtils.DoStandardStuff(app);
-                    Excel.Range headerRowRange = (Excel.Range)ws.get_Range(sHeaderRangeName, Type.Missing);
+                    Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
                     string header;
                     int column;
                     foreach (Excel.Range cell in headerRowRange.Cells)

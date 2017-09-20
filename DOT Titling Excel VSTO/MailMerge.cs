@@ -73,6 +73,8 @@ namespace DOT_Titling_Excel_VSTO
                                     if (fieldText == mailMergeField.Name)
                                     {
                                         field.Select();
+                                        if (value == string.Empty)
+                                            value = " ";
                                         wordApp.Selection.TypeText(value);
                                     }
                                 }
