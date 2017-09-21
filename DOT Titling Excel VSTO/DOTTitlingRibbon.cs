@@ -40,7 +40,7 @@ namespace DOT_Titling_Excel_VSTO
 
         private void btnUpdate_Click(object sender, RibbonControlEventArgs e)
         {
-            ExportToJira.ExecuteSaveSummary();
+            ExportToJira.ExecuteSaveTicket();
         }
     }
 }

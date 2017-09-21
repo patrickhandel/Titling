@@ -35,12 +35,10 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var app = Globals.ThisAddIn.Application;
-                SSUtils.DoStandardStuff(app);
-                var ws = app.Sheets["Tickets"];
+                Excel.Application app = Globals.ThisAddIn.Application;
+                Worksheet ws = app.Sheets["Tickets"];
                 AddNewTickets(app, ws);
                 WorksheetStandardization.ExecuteCleanupWorksheet(ws);
-                SSUtils.DoStandardStuff(app);
             }
             catch (Exception ex)
             {
@@ -53,11 +51,11 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 var issues = JiraUtils.GetAllIssues().Result;
-                var wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-                var column = SSUtils.GetColumnFromHeader(ws, "Story ID");
+                string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                int column = SSUtils.GetColumnFromHeader(ws, "Story ID");
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
 
-                var listOfStoryIDs = new List<string>();
+                List<string> listOfStoryIDs = new List<string>();
                 Range storyIDColumnRange = ws.get_Range(wsRangeName + "[Story ID]", Type.Missing);
                 foreach (Range cell in storyIDColumnRange.Cells)
                 {
@@ -98,6 +96,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 Worksheet ws = app.Worksheets["Tickets"];
                 UpdateAllTickets(app, ws);
+                AddNewTickets(app, ws);
                 WorksheetStandardization.ExecuteCleanupWorksheet(ws);
             }
             catch (Exception ex)

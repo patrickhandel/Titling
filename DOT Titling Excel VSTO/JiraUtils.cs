@@ -118,11 +118,110 @@ namespace DOT_Titling_Excel_VSTO
                 return null;
             }
         }
-        public static void SaveSummary(string jiraId, string newSummary)
+
+        public static bool SaveSummary(string jiraId, string newValue)
         {
-            var issue = GetIssue(jiraId).Result;
-            issue.Summary = newSummary;
-            issue.SaveChanges();
+            try
+            {
+                var issue = GetIssue(jiraId).Result;
+                if (issue.Summary == newValue)
+                {
+                    MessageBox.Show("No change needed.");
+                    return true;
+                }
+                issue.Summary = newValue;
+                issue.SaveChanges();
+                MessageBox.Show("Summary updated successfully updated.");
+                return true;
+            }
+            catch
+            {
+                MessageBox.Show("Summary could NOT successfully updated.");
+                return false;
+            }
+        }
+
+        public static bool SaveRelease(string jiraId, string newValue)
+        {
+            try
+            {
+                var issue = GetIssue(jiraId).Result;
+
+                string curRelease = string.Empty;
+                int c = 0;
+                foreach (var ver in issue.AffectsVersions)
+                {
+                    curRelease = issue.AffectsVersions[c].Name;
+                    c++;
+                }
+                if (curRelease == newValue)
+                {
+                    MessageBox.Show("No change needed.");
+                    return true;
+                }
+                issue.AffectsVersions.Add(newValue);
+                issue.SaveChanges();
+                MessageBox.Show("Release updated successfully updated.");
+                return true;
+            }
+            catch
+            {
+                MessageBox.Show("Release could NOT successfully updated.");
+                return false;
+            }
+        }
+
+
+        public static bool SaveStatus(string jiraId, string newValue)
+        {
+            try
+            {
+                var issue = GetIssue(jiraId).Result;
+                if (issue.Status.Name == newValue)
+                {
+                    MessageBox.Show("No change needed.");
+                    return true;
+                }
+                issue.WorkflowTransitionAsync(newValue);
+                MessageBox.Show("Status transitioned successfully.");
+                return true;
+            }
+            catch
+            {
+                MessageBox.Show("Status could NOT be transitioned to " + newValue);
+                return true;
+            }
+        }
+
+        public static bool SaveCustomField(string jiraId, string field, string newValue)
+        {
+            try
+            {
+                newValue = newValue.Trim();
+                var issue = GetIssue(jiraId).Result;
+                if (issue[field] == newValue)
+                {
+                    MessageBox.Show("No change needed.");
+                    return true;
+                }
+                if (newValue == string.Empty)
+                {
+                    issue[field] = null;
+                }
+                else
+                {
+                    issue[field] = newValue;
+                }
+                issue.SaveChanges();
+                MessageBox.Show(field + " successfully updated.");
+                return true;
+            }
+            catch //(Exception ex)
+            {
+                //MessageBox.Show("Error :" + ex);
+                MessageBox.Show(field + " could NOT successfully updated.");
+                return false;
+            }
         }
     }
 }

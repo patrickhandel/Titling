@@ -20,7 +20,6 @@ namespace DOT_Titling_Excel_VSTO
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
                 if (sHeaderRangeName != string.Empty)
                 {
-                    SSUtils.DoStandardStuff(app);
                     Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
                     string header;
                     int column;
@@ -48,7 +47,6 @@ namespace DOT_Titling_Excel_VSTO
                     headerRowRange.Offset[-1, 0].Font.Size = 10;
                     headerRowRange.Font.Size = 10;
                     headerRowRange.EntireRow.Offset[-1, 0].Hidden = true;
-                    SSUtils.DoStandardStuff(app);
                 }               
             }
             catch (Exception ex)

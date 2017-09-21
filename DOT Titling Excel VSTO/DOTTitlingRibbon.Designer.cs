@@ -37,12 +37,12 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DOTTitlingRibbon));
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
-            this.btnMailMerge = this.Factory.CreateRibbonButton();
-            this.btnCleanup = this.Factory.CreateRibbonButton();
-            this.btnAddNewTickets = this.Factory.CreateRibbonButton();
             this.btnImportAll = this.Factory.CreateRibbonButton();
             this.btnImportSelected = this.Factory.CreateRibbonButton();
+            this.btnAddNewTickets = this.Factory.CreateRibbonButton();
             this.btnUpdate = this.Factory.CreateRibbonButton();
+            this.btnMailMerge = this.Factory.CreateRibbonButton();
+            this.btnCleanup = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -66,33 +66,6 @@
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
-            // btnMailMerge
-            // 
-            this.btnMailMerge.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnMailMerge.Image = ((System.Drawing.Image)(resources.GetObject("btnMailMerge.Image")));
-            this.btnMailMerge.Label = "Mail Merge";
-            this.btnMailMerge.Name = "btnMailMerge";
-            this.btnMailMerge.ShowImage = true;
-            this.btnMailMerge.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnMailMerge_Click);
-            // 
-            // btnCleanup
-            // 
-            this.btnCleanup.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnCleanup.Image = ((System.Drawing.Image)(resources.GetObject("btnCleanup.Image")));
-            this.btnCleanup.Label = "Cleanup Worksheet";
-            this.btnCleanup.Name = "btnCleanup";
-            this.btnCleanup.ShowImage = true;
-            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupWorksheet_Click);
-            // 
-            // btnAddNewTickets
-            // 
-            this.btnAddNewTickets.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnAddNewTickets.Image = ((System.Drawing.Image)(resources.GetObject("btnAddNewTickets.Image")));
-            this.btnAddNewTickets.Label = "Add New Tickets";
-            this.btnAddNewTickets.Name = "btnAddNewTickets";
-            this.btnAddNewTickets.ShowImage = true;
-            this.btnAddNewTickets.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewTickets_Click);
-            // 
             // btnImportAll
             // 
             this.btnImportAll.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -111,6 +84,15 @@
             this.btnImportSelected.ShowImage = true;
             this.btnImportSelected.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportSelectedTickets_Click);
             // 
+            // btnAddNewTickets
+            // 
+            this.btnAddNewTickets.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnAddNewTickets.Image = ((System.Drawing.Image)(resources.GetObject("btnAddNewTickets.Image")));
+            this.btnAddNewTickets.Label = "Add New Tickets";
+            this.btnAddNewTickets.Name = "btnAddNewTickets";
+            this.btnAddNewTickets.ShowImage = true;
+            this.btnAddNewTickets.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewTickets_Click);
+            // 
             // btnUpdate
             // 
             this.btnUpdate.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -119,6 +101,24 @@
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.ShowImage = true;
             this.btnUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_Click);
+            // 
+            // btnMailMerge
+            // 
+            this.btnMailMerge.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnMailMerge.Image = ((System.Drawing.Image)(resources.GetObject("btnMailMerge.Image")));
+            this.btnMailMerge.Label = "Mail Merge";
+            this.btnMailMerge.Name = "btnMailMerge";
+            this.btnMailMerge.ShowImage = true;
+            this.btnMailMerge.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnMailMerge_Click);
+            // 
+            // btnCleanup
+            // 
+            this.btnCleanup.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnCleanup.Image = ((System.Drawing.Image)(resources.GetObject("btnCleanup.Image")));
+            this.btnCleanup.Label = "Cleanup Worksheet";
+            this.btnCleanup.Name = "btnCleanup";
+            this.btnCleanup.ShowImage = true;
+            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupWorksheet_Click);
             // 
             // DOTTitlingRibbon
             // 

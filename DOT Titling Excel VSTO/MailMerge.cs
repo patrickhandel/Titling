@@ -19,10 +19,8 @@ namespace DOT_Titling_Excel_VSTO
 
                 if (activeCell != null && activeWorksheet.Name == "Tickets")
                 {
-                    SSUtils.DoStandardStuff(app);
                     var mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
                     CreateMailMergeDocuments(app, activeWorksheet, selection, mailMergeFields);
-                    SSUtils.DoStandardStuff(app);
                 }
             }
             catch (Exception ex)
