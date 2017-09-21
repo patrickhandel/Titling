@@ -220,154 +220,29 @@ namespace DOT_Titling_Excel_VSTO
             {
                 string columnHeader = jiraField.ColumnHeader;
                 string type = jiraField.Type;
-                string value = jiraField.Value;
+                string item = jiraField.Value;
                 string formula = jiraField.Formula;
                 int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
                 
                 if (notFound)
                 {
                     string valueToSave = string.Empty;
-                    if (value == "issue.Summary")
+                    if (item == "issue.Summary")
                         valueToSave = "{DELETED}";
                     SSUtils.SetCellValue(activeWorksheet, row, column, valueToSave);
                 }
                 else
                 {
                     if (type == "Standard")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, GetStandardIssueValueForCell(issue, value));
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractStandardValue(issue, item));
                     if (type == "Custom")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, GetCustomIssueValueForCell(issue, value));
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractCustomValue(issue, item));
                     if (type == "Function")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, GetFunctionIssueValueForCell(issue, value));
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractValueBasedOnFunction(issue, item));
                 }
                 if (type == "Formula")
                     SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
             }
-        }
-
-        private static string GetStandardIssueValueForCell(Issue issue, string value)
-        { 
-            string val = string.Empty;
-            switch (value)
-            {
-                case "issue.Type.Name":
-                    val = issue.Type.Name;
-                    break;
-                case "issue.Key.Value":
-                    val = issue.Key.Value;
-                    break;
-                case "issue.Summary":
-                    val = issue.Summary;
-                    break;
-                case "issue.Status.Name":
-                    val = issue.Status.Name;
-                    break;
-                case "issue.Description":
-                    val = issue.Description;
-                    break;
-                default:
-                    break;
-            }
-            return val;
-        }
-
-        private static string GetFunctionIssueValueForCell(Issue issue, string value)
-        {
-            string val = string.Empty;
-            switch (value)
-            {
-                case "Sprint":
-                    val = ExtractSprintNumber(issue);
-                    break;
-                case "Release":
-                    val = ExtractRelease(issue);
-                    break;
-                case "Fix Release":
-                    val = ExtractFixRelease(issue);
-                    break;
-                case "DOT Web Services":
-                    val = ExtractDOTWebServices(issue);
-                    break;
-                default:
-                    break;
-            }
-            return val;
-        }
-
-        private static string GetCustomIssueValueForCell(Issue issue, string value)
-        {
-            string val = string.Empty;
-            value = value.Replace(" Id ", " I'd ");
-            try
-            {
-                val = issue[value].Value;
-            }
-            catch
-            {
-                val = string.Empty;
-            }
-            return val;
-        }
-
-        private static string ExtractRelease(Issue issue)
-        {
-            string val = string.Empty;
-            int c = 0;
-            foreach (var ver in issue.AffectsVersions)
-            {
-                val = issue.AffectsVersions[c].Name;
-                c++;
-            }
-            return val;
-        }
-
-        private static string ExtractFixRelease(Issue issue)
-        {
-            string val = string.Empty;
-            int c = 0;
-            foreach (var ver in issue.FixVersions)
-            {
-                val = issue.FixVersions[c].Name;
-                c++;
-            }
-            return val;
-        }
-
-        private static string ExtractDOTWebServices(Issue issue)
-        {
-            string val = string.Empty;
-            if (issue["DOT Web Services"] != null)
-            { 
-                foreach (var ver in issue.CustomFields["DOT Web Services"].Values)
-                {
-                    val = val + " " + ver;
-                }
-                val = val.Trim().Replace(" ", ", ");
-            }
-            return val;
-        }
-
-        private static string ExtractSprintNumber(Issue issue)
-        {
-            string val = GetCustomIssueValueForCell(issue, "Sprint");
-            if (val != string.Empty)
-            {
-                val = string.Empty;
-                foreach (var value in issue.CustomFields["Sprint"].Values)
-                    val = value;
-                val = val.Replace("DOT", "");
-                val = val.Replace("Backlog", "");
-                val = val.Replace("Hufflepuff", "");
-                val = val.Replace("Sprint", "");
-                val = val.Replace("Ready", "");
-                val = val.Replace("Other", "");
-                val = val.Replace("Approved", "");
-                val = val.Replace("-", "");
-                val = val.Replace(" ", "");
-                for (int rev = 1; rev <= 12; rev++)
-                    val = val.Replace("R" + rev.ToString(), "");
-            }
-            return val;
         }
     }
 }

@@ -223,5 +223,130 @@ namespace DOT_Titling_Excel_VSTO
                 return false;
             }
         }
+
+        public static string ExtractRelease(Issue issue)
+        {
+            string val = string.Empty;
+            int c = 0;
+            foreach (var ver in issue.AffectsVersions)
+            {
+                val = issue.AffectsVersions[c].Name;
+                c++;
+            }
+            return val;
+        }
+
+        public static string ExtractFixRelease(Issue issue)
+        {
+            string val = string.Empty;
+            int c = 0;
+            foreach (var ver in issue.FixVersions)
+            {
+                val = issue.FixVersions[c].Name;
+                c++;
+            }
+            return val;
+        }
+
+        public static string ExtractDOTWebServices(Issue issue)
+        {
+            string val = string.Empty;
+            if (issue["DOT Web Services"] != null)
+            {
+                foreach (var ver in issue.CustomFields["DOT Web Services"].Values)
+                {
+                    val = val + " " + ver;
+                }
+                val = val.Trim().Replace(" ", ", ");
+            }
+            return val;
+        }
+
+        public static string ExtractSprintNumber(Issue issue)
+        {
+            string val = ExtractCustomValue(issue, "Sprint");
+            if (val != string.Empty)
+            {
+                val = string.Empty;
+                foreach (var value in issue.CustomFields["Sprint"].Values)
+                    val = value;
+                val = val.Replace("DOT", "");
+                val = val.Replace("Backlog", "");
+                val = val.Replace("Hufflepuff", "");
+                val = val.Replace("Sprint", "");
+                val = val.Replace("Ready", "");
+                val = val.Replace("Other", "");
+                val = val.Replace("Approved", "");
+                val = val.Replace("-", "");
+                val = val.Replace(" ", "");
+                for (int rev = 1; rev <= 12; rev++)
+                    val = val.Replace("R" + rev.ToString(), "");
+            }
+            return val;
+        }
+
+        public static string ExtractCustomValue(Issue issue, string item)
+        {
+            string val = string.Empty;
+            item = item.Replace(" Id ", " I'd ");
+            try
+            {
+                val = issue[item].Value;
+            }
+            catch
+            {
+                val = string.Empty;
+            }
+            return val;
+        }
+
+        public static string ExtractStandardValue(Issue issue, string item)
+        {
+            string val = string.Empty;
+            switch (item)
+            {
+                case "issue.Type.Name":
+                    val = issue.Type.Name;
+                    break;
+                case "issue.Key.Value":
+                    val = issue.Key.Value;
+                    break;
+                case "issue.Summary":
+                    val = issue.Summary;
+                    break;
+                case "issue.Status.Name":
+                    val = issue.Status.Name;
+                    break;
+                case "issue.Description":
+                    val = issue.Description;
+                    break;
+                default:
+                    break;
+            }
+            return val;
+        }
+
+        public static string ExtractValueBasedOnFunction(Issue issue, string item)
+        {
+            string val = string.Empty;
+            switch (item)
+            {
+                case "Sprint":
+                    val = ExtractSprintNumber(issue);
+                    break;
+                case "Release":
+                    val = ExtractRelease(issue);
+                    break;
+                case "Fix Release":
+                    val = ExtractFixRelease(issue);
+                    break;
+                case "DOT Web Services":
+                    val = ExtractDOTWebServices(issue);
+                    break;
+                default:
+                    break;
+            }
+            return val;
+        }
     }
 }
