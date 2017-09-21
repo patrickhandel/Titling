@@ -37,7 +37,7 @@ namespace DOT_Titling_Excel_VSTO
                 string fieldToSave = SSUtils.GetCellValue(ws, headerRowRange.Row, column);
                 string newValue = SSUtils.GetCellValue(ws, row, column).Trim();
 
-                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
+                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                 string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
 
                 int typeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
@@ -126,8 +126,8 @@ namespace DOT_Titling_Excel_VSTO
                                 MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
                             }
                             break;
-                        case "Story Points":
-                            JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
+                        case "Points":
+                            JiraUtils.SaveCustomField(jiraId, "Story Points", newValue);
                             break;
                         case "DOT Jira ID":
                             if (type == "Software Bug")
@@ -139,7 +139,7 @@ namespace DOT_Titling_Excel_VSTO
                                 MessageBox.Show(fieldToSave + " can't be updated because it is not a Software Bug.");
                             }
                             break;
-                        case "Jira Story Release":
+                        case "Jira Release":
                             JiraUtils.SaveRelease(jiraId, newValue);
                             break;
                         case "Jira Epic ID":

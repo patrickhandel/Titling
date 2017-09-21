@@ -52,18 +52,18 @@ namespace DOT_Titling_Excel_VSTO
             {
                 var issues = JiraUtils.GetAllIssues().Result;
                 string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-                int column = SSUtils.GetColumnFromHeader(ws, "Story ID");
+                int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
 
-                List<string> listOfStoryIDs = new List<string>();
-                Range storyIDColumnRange = ws.get_Range(wsRangeName + "[Story ID]", Type.Missing);
-                foreach (Range cell in storyIDColumnRange.Cells)
+                List<string> listOfTicketIDs = new List<string>();
+                Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Ticket ID]", Type.Missing);
+                foreach (Range cell in ticketIDColumnRange.Cells)
                 {
-                    listOfStoryIDs.Add(cell.Value);
+                    listOfTicketIDs.Add(cell.Value);
                 }
-                foreach (var storyID in listOfStoryIDs)
+                foreach (var ticketID in listOfTicketIDs)
                 {
-                    issues.Remove(issues.FirstOrDefault(x => x.Key.Value == storyID.ToString()));
+                    issues.Remove(issues.FirstOrDefault(x => x.Key.Value == ticketID.ToString()));
                 }
 
                 string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
@@ -76,7 +76,7 @@ namespace DOT_Titling_Excel_VSTO
                     UpdateValues(ws, jiraFields, footerRow, issue, false);
                     SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value);
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary);
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Story Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Story Release")));
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")));
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Epic")));
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")));
                     SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
@@ -134,8 +134,8 @@ namespace DOT_Titling_Excel_VSTO
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
                 Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
 
-                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
-                int row = SSUtils.FindTextInColumn(ws, "TicketData[Story ID]", jiraId);
+                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
+                int row = SSUtils.FindTextInColumn(ws, "TicketData[Ticket ID]", jiraId);
 
                 bool notFound = issue == null;
                 UpdateValues(ws, jiraFields, row, issue, notFound);
@@ -166,7 +166,7 @@ namespace DOT_Titling_Excel_VSTO
                 Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
-                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
+                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                 for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
                 {
                     string jiraID = SSUtils.GetCellValue(ws, currentRow, jiraIDCol);
@@ -201,7 +201,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 if (ws.Rows[row].EntireRow.Height != 0)
                 {
-                    int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Story ID");
+                    int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                     string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol).Trim();
                     if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                     {

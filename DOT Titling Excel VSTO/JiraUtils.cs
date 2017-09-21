@@ -146,14 +146,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 var issue = GetIssue(jiraId).Result;
-
-                string curRelease = string.Empty;
-                int c = 0;
-                foreach (var ver in issue.AffectsVersions)
-                {
-                    curRelease = issue.AffectsVersions[c].Name;
-                    c++;
-                }
+                string curRelease = ExtractRelease(issue);
                 if (curRelease == newValue)
                 {
                     MessageBox.Show("No change needed.");
@@ -170,7 +163,6 @@ namespace DOT_Titling_Excel_VSTO
                 return false;
             }
         }
-
 
         public static bool SaveStatus(string jiraId, string newValue)
         {

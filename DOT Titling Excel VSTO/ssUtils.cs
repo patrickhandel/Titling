@@ -162,20 +162,20 @@ namespace DOT_Titling_Excel_VSTO
             return currentFind;
         }
 
-        public static void DoStandardStuff(Excel.Application app)
+        public static void BeginExcelOperation(Excel.Application app)
         {
-            //if (app.ScreenUpdating == true)
-            //{
-            //    app.Cursor = XlMousePointer.xlWait;
-            //    app.ScreenUpdating = false;
-            //    app.Calculation = XlCalculation.xlCalculationManual;
-            //}
-            //else
-            //{
-            //    app.Calculation = XlCalculation.xlCalculationAutomatic;
-            //    app.ScreenUpdating = true;
-            //    app.Cursor = XlMousePointer.xlDefault;
-            //}
+            app.Cursor = XlMousePointer.xlWait;
+            app.Calculation = XlCalculation.xlCalculationManual;
+            app.ScreenUpdating = false;
+        }
+
+        public static void EndExcelOperation(Excel.Application app, string operationName)
+        {
+            app.Cursor = XlMousePointer.xlDefault;
+            app.Calculation = XlCalculation.xlCalculationAutomatic;
+            app.ScreenUpdating = true;
+            if (operationName != string.Empty)
+                MessageBox.Show(operationName + " - Operation Complete");
         }
     }
 }

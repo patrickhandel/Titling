@@ -44,7 +44,7 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         wordDocument = wordApp.Documents.Add(Template: template);
 
-                        int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Story ID");
+                        int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Ticket ID");
                         string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
                         if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
