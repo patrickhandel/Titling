@@ -82,11 +82,18 @@ namespace DOT_Titling_Excel_VSTO
 
         public static void SetCellValue(Worksheet sheet, int row, int column, string val)
         {
-            if (sheet != null)
+            try
             {
-                Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
-                if (rng != null)
-                    rng.Value = val;
+                if (sheet != null)
+                {
+                    Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
+                    if (rng != null)
+                        rng.Value = val;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
             }
         }
 
@@ -167,6 +174,7 @@ namespace DOT_Titling_Excel_VSTO
             app.Cursor = XlMousePointer.xlWait;
             app.Calculation = XlCalculation.xlCalculationManual;
             app.ScreenUpdating = false;
+            UnProtect(app);
         }
 
         public static void EndExcelOperation(Excel.Application app, string operationName)
@@ -176,6 +184,31 @@ namespace DOT_Titling_Excel_VSTO
             app.ScreenUpdating = true;
             if (operationName != string.Empty)
                 MessageBox.Show(operationName + " - Operation Complete");
+            Protect(app);
+        }
+
+        private static void Protect(Excel.Application app)
+        {
+            if (app.Worksheets["DOT Releases"] != null)
+                app.Worksheets["DOT Releases"].Protect(Password: "dot333", 
+                        UserInterfaceOnly: false, 
+                        AllowFormattingCells: false, 
+                        AllowInsertingHyperlinks: false,
+                        AllowDeletingColumns: false, 
+                        AllowDeletingRows: false,
+                        AllowFormattingRows: true,
+                        AllowInsertingColumns: true,
+                        AllowInsertingRows: true,
+                        AllowSorting: true, 
+                        AllowFiltering: true,
+                        AllowFormattingColumns: true,
+                        AllowUsingPivotTables: true);
+        }
+        private static void UnProtect(Excel.Application app)
+        {
+            // https://msdn.microsoft.com/library/microsoft.office.interop.excel._worksheet.protect(v=office.15).aspx
+            if (app.Worksheets["DOT Releases"] != null)
+                app.Worksheets["DOT Releases"].Unprotect(Password: "dot333");
         }
     }
 }

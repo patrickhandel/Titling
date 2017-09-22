@@ -14,7 +14,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 Worksheet activeWorksheet = app.ActiveSheet;
                 Range activeCell = app.ActiveCell;
-                if (activeCell != null && activeWorksheet.Name == "Tickets")
+                if (activeCell != null && (activeWorksheet.Name == "Tickets" || activeWorksheet.Name == "DOT Releases"))
                 {
                     SaveTicket(activeWorksheet, activeCell);
                 }
@@ -40,7 +40,7 @@ namespace DOT_Titling_Excel_VSTO
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                 string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
 
-                int typeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
+                int typeCol = SSUtils.GetColumnFromHeader(ws, "Ticket Type");
                 string type = SSUtils.GetCellValue(ws, row, typeCol);
 
                 int summaryCol = SSUtils.GetColumnFromHeader(ws, "Jira Summary");
@@ -147,7 +147,7 @@ namespace DOT_Titling_Excel_VSTO
                             break;
                         default:
                             //DO NOT UPDATE THE FOLLOWING:
-                            //Issue Type
+                            //Ticket Type
                             //Jira Fix Release
                             //Jira Hufflepuff Sprint
                             //Jira Epic

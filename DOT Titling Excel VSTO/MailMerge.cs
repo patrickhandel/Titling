@@ -48,7 +48,7 @@ namespace DOT_Titling_Excel_VSTO
                         string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
                         if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
-                            ImportFromJira.ExecuteImportSingleJiraTicket(jiraId);
+                            ImportFromJira.ExecuteUpateTicketBeforeMailMerge(jiraId);
                             string summary = string.Empty;
                             string epicID = string.Empty;
                             foreach (var mailMergeField in mailMergeFields)

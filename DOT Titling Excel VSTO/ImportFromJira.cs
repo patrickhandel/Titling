@@ -19,7 +19,7 @@ namespace DOT_Titling_Excel_VSTO
                 var activeCell = app.ActiveCell;
                 var selection = app.Selection;
 
-                if (activeCell != null && (activeWorksheet.Name == "Tickets"))
+                if (activeCell != null && ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases")))
                 {
                     UpdateSelectedTickets(app, activeWorksheet, selection);
                     WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
@@ -36,9 +36,12 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Worksheet ws = app.Sheets["Tickets"];
-                AddNewTickets(app, ws);
-                WorksheetStandardization.ExecuteCleanupWorksheet(ws);
+                var activeWorksheet = app.ActiveSheet;
+                if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
+                {
+                    AddNewTickets(app, activeWorksheet);
+                    WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
+                }
             }
             catch (Exception ex)
             {
@@ -53,7 +56,7 @@ namespace DOT_Titling_Excel_VSTO
                 var issues = JiraUtils.GetAllIssues().Result;
                 string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                 int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields();
 
                 List<string> listOfTicketIDs = new List<string>();
                 Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Ticket ID]", Type.Missing);
@@ -94,10 +97,13 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Worksheet ws = app.Worksheets["Tickets"];
-                UpdateAllTickets(app, ws);
-                AddNewTickets(app, ws);
-                WorksheetStandardization.ExecuteCleanupWorksheet(ws);
+                var activeWorksheet = app.ActiveSheet;
+                if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
+                {
+                    UpdateAllTickets(app, activeWorksheet);
+                    AddNewTickets(app, activeWorksheet);
+                    WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
+                }
             }
             catch (Exception ex)
             {
@@ -105,7 +111,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteImportSingleJiraTicket(string jiraId)
+        public static void ExecuteUpateTicketBeforeMailMerge(string jiraId)
         {
             try
             {
@@ -113,7 +119,7 @@ namespace DOT_Titling_Excel_VSTO
                 var ws = app.Sheets["Tickets"];
                 app.ScreenUpdating = false;
                 app.Calculation = XlCalculation.xlCalculationManual;
-                ImportSingleJiraTicket(app, ws, jiraId);
+                UpdateTicketBeforeMailMerge(app, ws, jiraId);
                 WorksheetStandardization.ExecuteCleanupWorksheet(ws);
                 app.Calculation = XlCalculation.xlCalculationAutomatic;
                 app.ScreenUpdating = true;
@@ -124,18 +130,18 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void ImportSingleJiraTicket(Excel.Application app, Worksheet ws, string jiraId)
+        private static void UpdateTicketBeforeMailMerge(Excel.Application app, Worksheet ws, string jiraId)
         {
             try
             {
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields();
                 var issue  = JiraUtils.GetIssue(jiraId).Result;
 
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
                 Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
 
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
-                int row = SSUtils.FindTextInColumn(ws, "TicketData[Ticket ID]", jiraId);
+                int row = SSUtils.FindTextInColumn(ws, sHeaderRangeName + "[Ticket ID]", jiraId);
 
                 bool notFound = issue == null;
                 UpdateValues(ws, jiraFields, row, issue, notFound);
@@ -153,8 +159,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 var issues = JiraUtils.GetAllIssues().Result;
-                string rangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields(rangeName);
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields();
 
                 int cnt = issues.Count();
 
@@ -187,9 +192,7 @@ namespace DOT_Titling_Excel_VSTO
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
             var issues = JiraUtils.GetAllIssues().Result;
-
-            string rangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-            var jiraFields = WorksheetPropertiesManager.GetJiraFields(rangeName);
+            var jiraFields = WorksheetPropertiesManager.GetJiraFields();
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
             Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
@@ -228,7 +231,11 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     string valueToSave = string.Empty;
                     if (item == "issue.Summary")
+                    {
                         valueToSave = "{DELETED}";
+                        int ticketTypeCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Ticket Type");
+                        SSUtils.SetCellValue(activeWorksheet, row, ticketTypeCol, valueToSave);
+                    }
                     SSUtils.SetCellValue(activeWorksheet, row, column, valueToSave);
                 }
                 else
