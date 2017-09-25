@@ -189,7 +189,8 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void Protect(Excel.Application app)
         {
-            if (app.Worksheets["DOT Releases"] != null)
+            Worksheet ws = app.Worksheets.OfType<Worksheet>().FirstOrDefault(w => w.Name == "DOT Releases");
+            if (ws != null)
                 app.Worksheets["DOT Releases"].Protect(Password: "dot333", 
                         UserInterfaceOnly: false, 
                         AllowFormattingCells: false, 
@@ -207,7 +208,8 @@ namespace DOT_Titling_Excel_VSTO
         private static void UnProtect(Excel.Application app)
         {
             // https://msdn.microsoft.com/library/microsoft.office.interop.excel._worksheet.protect(v=office.15).aspx
-            if (app.Worksheets["DOT Releases"] != null)
+            Worksheet ws = app.Worksheets.OfType<Worksheet>().FirstOrDefault(w => w.Name == "DOT Releases");
+            if (ws != null)
                 app.Worksheets["DOT Releases"].Unprotect(Password: "dot333");
         }
     }

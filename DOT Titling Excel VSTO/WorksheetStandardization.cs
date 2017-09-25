@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
-using Word = Microsoft.Office.Interop.Word;
 using System.Windows.Forms;
-using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace DOT_Titling_Excel_VSTO
 {

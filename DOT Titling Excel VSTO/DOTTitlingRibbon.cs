@@ -102,5 +102,21 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        private void button1_Click(object sender, RibbonControlEventArgs e)
+        {
+            Excel.Application app = Globals.ThisAddIn.Application;
+            //BgWorker.Form1.EnableVisualStyles();
+            //app.SetCompatibleTextRenderingDefault(false);
+            //app.Run(new BgWorker.Form1());
+            //Form2.ActiveForm;
+
+            //Form2 frm = new Form2();
+
+            //frm.Activate();
+
+            app.Run(new Form2());
+
+        }
     }
 }
