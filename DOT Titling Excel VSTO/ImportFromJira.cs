@@ -117,12 +117,8 @@ namespace DOT_Titling_Excel_VSTO
             {
                 var app = Globals.ThisAddIn.Application;
                 var ws = app.Sheets["Tickets"];
-                app.ScreenUpdating = false;
-                app.Calculation = XlCalculation.xlCalculationManual;
                 UpdateTicketBeforeMailMerge(app, ws, jiraId);
                 WorksheetStandardization.ExecuteCleanupWorksheet(ws);
-                app.Calculation = XlCalculation.xlCalculationAutomatic;
-                app.ScreenUpdating = true;
             }
             catch (Exception ex)
             {
@@ -136,13 +132,9 @@ namespace DOT_Titling_Excel_VSTO
             {
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields();
                 var issue  = JiraUtils.GetIssue(jiraId).Result;
-
-                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
-
+                string tableName = SSUtils.GetWorksheetRangeName(ws.Name);
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
-                int row = SSUtils.FindTextInColumn(ws, sHeaderRangeName + "[Ticket ID]", jiraId);
-
+                int row = SSUtils.FindTextInColumn(ws, tableName + "[Ticket ID]", jiraId);
                 bool notFound = issue == null;
                 UpdateValues(ws, jiraFields, row, issue, notFound);
                 SSUtils.SetStandardRowHeight(ws, row, row);
