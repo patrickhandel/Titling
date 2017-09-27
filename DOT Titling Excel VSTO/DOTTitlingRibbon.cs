@@ -12,14 +12,29 @@ namespace DOT_Titling_Excel_VSTO
             
         }
 
+        private void btnUpdateRoadMap_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                RoadMap.ExecuteUpdateRoadMap();
+                SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private void btnMailMerge_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-            SSUtils.BeginExcelOperation(app);
-            MailMerge.ExecuteMailMerge();
-            SSUtils.EndExcelOperation(app, string.Empty);
+                SSUtils.BeginExcelOperation(app);
+                MailMerge.ExecuteMailMerge();
+                SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
             {
@@ -118,5 +133,7 @@ namespace DOT_Titling_Excel_VSTO
             app.Run(new Form2());
 
         }
+
+
     }
 }

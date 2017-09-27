@@ -212,5 +212,30 @@ namespace DOT_Titling_Excel_VSTO
             if (ws != null)
                 app.Worksheets["DOT Releases"].Unprotect(Password: "dot333");
         }
+
+        public static int GetLastRow(Worksheet ws)
+        {
+            return ws.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing).Row;
+        }
+
+        public static int GetLastColumn(Worksheet ws)
+        {
+            return ws.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing).Column;
+        }
+
+        public static void SortTable(Excel.Application app, Worksheet ws, string rangeName, string column)
+        {
+            try
+            {
+                Range rng = ws.get_Range(rangeName);
+                ListObject list = ws.ListObjects.Add(XlListObjectSourceType.xlSrcRange, rng, Type.Missing, XlYesNoGuess.xlYes, Type.Missing);
+                list.Range.Sort(list.ListColumns[column].Range, XlSortOrder.xlAscending);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
     }
 }
