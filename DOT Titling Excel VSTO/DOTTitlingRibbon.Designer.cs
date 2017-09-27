@@ -44,6 +44,7 @@
             this.btnCleanup = this.Factory.CreateRibbonButton();
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.button1 = this.Factory.CreateRibbonButton();
+            this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -64,6 +65,7 @@
             this.group1.Items.Add(this.btnUpdate);
             this.group1.Items.Add(this.btnCleanup);
             this.group1.Items.Add(this.btnMailMerge);
+            this.group1.Items.Add(this.btnUpdateRoadMap);
             this.group1.Items.Add(this.button1);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
@@ -128,6 +130,15 @@
             this.button1.Name = "button1";
             this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
             // 
+            // btnUpdateRoadMap
+            // 
+            this.btnUpdateRoadMap.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdateRoadMap.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateRoadMap.Image")));
+            this.btnUpdateRoadMap.Label = "Update Roadmap";
+            this.btnUpdateRoadMap.Name = "btnUpdateRoadMap";
+            this.btnUpdateRoadMap.ShowImage = true;
+            this.btnUpdateRoadMap.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateRoadMap_Click);
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -153,6 +164,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportSelected;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdate;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton button1;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdateRoadMap;
     }
 
     partial class ThisRibbonCollection
