@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -11,11 +7,8 @@ namespace DOT_Titling_Excel_VSTO
         #region Private Members
         private string _EpicName;
         private string _ReleaseName;
-        private Int32 _Release;
-        private Int32 _SprintFrom;
-        private Int32 _SprintTo;
+        private Int32 _ReleaseNumber;
         private Int32 _Priority;
-        private string _MidLong;
         private string _Status;
         #endregion
 
@@ -30,31 +23,18 @@ namespace DOT_Titling_Excel_VSTO
             get { return _ReleaseName; }
             set { _ReleaseName = value; }
         }
-        public Int32 Release
+        public Int32 ReleaseNumber
         {
-            get { return _Release; }
-            set { _Release = value; }
+            get { return _ReleaseNumber; }
+            set { _ReleaseNumber = value; }
         }
-        public Int32 SprintFrom
-        {
-            get { return _SprintFrom; }
-            set { _SprintFrom = value; }
-        }
-        public Int32 SprintTo
-        {
-            get { return _SprintTo; }
-            set { _SprintTo = value; }
-        }
+
         public Int32 Priority
         {
             get { return _Priority; }
             set { _Priority = value; }
         }
-        public string MidLong
-        {
-            get { return _MidLong; }
-            set { _MidLong = value; }
-        }
+
         public string Status
         {
             get { return _Status; }
@@ -64,15 +44,12 @@ namespace DOT_Titling_Excel_VSTO
 
 
         #region Contructors
-        public Epic(string epicName, string releaseName, Int32 release, Int32 sprintFrom, Int32 sprintTo, Int32 priority, string midLong, string status)
+        public Epic(string epicName, string releaseName, Int32 releaseNumber, Int32 priority, string status)
         {
             _EpicName = epicName;
             _ReleaseName = releaseName;
-            _Release = release;
-            _SprintFrom = sprintFrom;
-            _SprintTo = sprintTo;
+            _ReleaseNumber = releaseNumber;
             _Priority = priority;
-            _MidLong = midLong;
             _Status = status;
         }
         #endregion

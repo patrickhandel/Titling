@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -11,11 +7,13 @@ namespace DOT_Titling_Excel_VSTO
         #region Private Members
         private Int32 _Number;
         private string _Name;
-        private Int32 _DevSprintFrom;
-        private Int32 _DevSprintTo;
+        private string _Status;
+        private string _MidLong;
+        private Int32 _SprintFrom;
+        private Int32 _SprintTo;
         private Int32 _UATSprintFrom;
         private Int32 _UATSprintTo;
-        private string _Status;
+        
         #endregion
 
         #region Properties
@@ -29,15 +27,20 @@ namespace DOT_Titling_Excel_VSTO
             get { return _Name; }
             set { _Name = value; }
         }
-        public Int32 DevSprintFrom
+        public string MidLong
         {
-            get { return _DevSprintFrom; }
-            set { _DevSprintFrom = value; }
+            get { return _MidLong; }
+            set { _MidLong = value; }
         }
-        public Int32 DevSprintTo
+        public Int32 SprintFrom
         {
-            get { return _DevSprintTo; }
-            set { _DevSprintTo = value; }
+            get { return _SprintFrom; }
+            set { _SprintFrom = value; }
+        }
+        public Int32 SprintTo
+        {
+            get { return _SprintTo; }
+            set { _SprintTo = value; }
         }
         public Int32 UATSprintFrom
         {
@@ -49,6 +52,7 @@ namespace DOT_Titling_Excel_VSTO
             get { return _UATSprintTo; }
             set { _UATSprintTo = value; }
         }
+
         public string Status
         {
             get { return _Status; }
@@ -58,12 +62,13 @@ namespace DOT_Titling_Excel_VSTO
 
 
         #region Contructors
-        public Release(Int32 number, string name, Int32 devSprintFrom, Int32 devSprintTo, Int32 uatSprintFrom, Int32 uatSprintTo, string status)
+        public Release(Int32 number, string name, string midLong, Int32 sprintFrom, Int32 sprintTo, Int32 uatSprintFrom, Int32 uatSprintTo, string status)
         {
             _Number = number;
             _Name = name;
-            _DevSprintFrom = devSprintFrom;
-            _DevSprintTo = devSprintTo;
+            _MidLong = midLong;
+            _SprintFrom = sprintFrom;
+            _SprintTo = sprintTo;
             _UATSprintFrom = uatSprintFrom;
             _UATSprintTo = uatSprintTo;
             _Status = status;
