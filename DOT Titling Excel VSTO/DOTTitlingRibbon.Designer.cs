@@ -43,7 +43,6 @@
             this.btnUpdate = this.Factory.CreateRibbonButton();
             this.btnCleanup = this.Factory.CreateRibbonButton();
             this.btnMailMerge = this.Factory.CreateRibbonButton();
-            this.button1 = this.Factory.CreateRibbonButton();
             this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
@@ -66,7 +65,6 @@
             this.group1.Items.Add(this.btnCleanup);
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnUpdateRoadMap);
-            this.group1.Items.Add(this.button1);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
@@ -124,12 +122,6 @@
             this.btnMailMerge.ShowImage = true;
             this.btnMailMerge.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnMailMerge_Click);
             // 
-            // button1
-            // 
-            this.button1.Label = "button1";
-            this.button1.Name = "button1";
-            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
-            // 
             // btnUpdateRoadMap
             // 
             this.btnUpdateRoadMap.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -163,7 +155,6 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportAll;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportSelected;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdate;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton button1;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdateRoadMap;
     }
 

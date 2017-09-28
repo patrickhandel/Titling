@@ -223,6 +223,48 @@ namespace DOT_Titling_Excel_VSTO
             return ws.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing).Column;
         }
 
+        public static string ColumnNumberToName(Int32 col_num)
+        {
+            // See if it's out of bounds.
+            if (col_num < 1) return "A";
+
+            // Calculate the letters.
+            string result = "";
+            while (col_num > 0)
+            {
+                // Get the least significant digit.
+                col_num -= 1;
+                int digit = col_num % 26;
+
+                // Convert the digit into a letter.
+                result = (char)((Int32)'A' + digit) + result;
+
+                col_num = (Int32)(col_num / 26);
+            }
+
+            return result;
+        }
+
+        public static Int32 ColumnNameToNumber(string col_name)
+        {
+            int result = 0;
+
+            // Process each letter.
+            for (Int32 i = 0; i < col_name.Length; i++)
+            {
+                result *= 26;
+                char letter = col_name[i];
+
+                // See if it's out of bounds.
+                if (letter < 'A') letter = 'A';
+                if (letter > 'Z') letter = 'Z';
+
+                // Add in the value of this letter.
+                result += (Int32)letter - (Int32)'A' + 1;
+            }
+            return result;
+        }
+
         public static void SortTable(Excel.Application app, Worksheet ws, string rangeName, string column)
         {
             try

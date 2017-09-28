@@ -210,6 +210,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Release.cs" />
     <Compile Include="Roadmap.cs" />
     <Compile Include="ssUtils.cs" />
     <Compile Include="ExportToJira.cs" />

@@ -15,6 +15,8 @@ namespace DOT_Titling_Excel_VSTO
         private Int32 _SprintFrom;
         private Int32 _SprintTo;
         private Int32 _Priority;
+        private string _MidLong;
+        private string _Status;
         #endregion
 
         #region Properties
@@ -48,11 +50,21 @@ namespace DOT_Titling_Excel_VSTO
             get { return _Priority; }
             set { _Priority = value; }
         }
+        public string MidLong
+        {
+            get { return _MidLong; }
+            set { _MidLong = value; }
+        }
+        public string Status
+        {
+            get { return _Status; }
+            set { _Status = value; }
+        }
         #endregion
 
 
         #region Contructors
-        public Epic(string epicName, string releaseName, Int32 release, Int32 sprintFrom, Int32 sprintTo, Int32 priority)
+        public Epic(string epicName, string releaseName, Int32 release, Int32 sprintFrom, Int32 sprintTo, Int32 priority, string midLong, string status)
         {
             _EpicName = epicName;
             _ReleaseName = releaseName;
@@ -60,6 +72,8 @@ namespace DOT_Titling_Excel_VSTO
             _SprintFrom = sprintFrom;
             _SprintTo = sprintTo;
             _Priority = priority;
+            _MidLong = midLong;
+            _Status = status;
         }
         #endregion
 
