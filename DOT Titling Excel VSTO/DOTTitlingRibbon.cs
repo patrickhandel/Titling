@@ -17,9 +17,9 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                SSUtils.BeginExcelOperation(app);
+                //SSUtils.BeginExcelOperation(app);
                 RoadMap.ExecuteUpdateRoadMap();
-                SSUtils.EndExcelOperation(app, string.Empty);
+                //SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
             {

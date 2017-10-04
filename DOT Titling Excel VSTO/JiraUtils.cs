@@ -25,6 +25,22 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        //public async static Task<List<IssueChangeLog>> GetChangeLog(string jiraId)
+        //{
+        //    try
+        //    {
+        //        ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = 1000;
+        //        IssueChangeLog changes = await ThisAddIn.GlobalJira.Issues.GetChangeLogsAsync(jiraId);
+        //        return changes;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error :" + ex);
+        //        return null;
+        //    }
+        //}
+
+
         [Obsolete("GetIssueWithLinq is deprecated, please use GetIssue instead.")]
         public static List<Issue> GetIssueWithLinq(string jiraId)
         {
@@ -42,6 +58,13 @@ namespace DOT_Titling_Excel_VSTO
                 return null;
             }
         }
+
+        //public async static void GetHistory()
+        //{
+        //    ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+        //    var issue = GetIssue("DOTTITLNG-165").Result;
+        //    var changes = GetChangeLog("DOTTITLNG-165").Result;
+        //}
 
         public async static Task<List<Issue>> GetAllIssues()
         {

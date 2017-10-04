@@ -80,7 +80,14 @@ namespace DOT_Titling_Excel_VSTO
                     SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value);
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary);
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")));
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Epic")));
+                    //TO DO FIX
+
+                    app.Calculation = XlCalculation.xlCalculationAutomatic;
+                    int jiraEpicColumn = SSUtils.GetColumnFromHeader(ws, "Jira Epic");
+                    string newEpic = SSUtils.GetCellValue(ws, footerRow, jiraEpicColumn);
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), newEpic);
+                    app.Calculation = XlCalculation.xlCalculationManual;
+
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")));
                     SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                 }
@@ -208,6 +215,15 @@ namespace DOT_Titling_Excel_VSTO
                 }
             }
         }
+
+        private static void GetHistory()
+        {
+            //https://community.atlassian.com/t5/Answers-Developer-Questions/Is-it-possible-to-get-the-issue-history-using-the-REST-API/qaq-p/510094
+
+
+
+        }
+
 
         private static void UpdateValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue, bool notFound)
         {

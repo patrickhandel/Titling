@@ -83,8 +83,11 @@ namespace DOT_Titling_Excel_VSTO
                         }
 
                         // UAT
-                        CreateRow(wsRoadmap, "UAT", rmRow, "", releaseName, "", releaseNumber, uatSprintFrom, uatSprintTo);
-                        rmRow++;
+                        if (uatSprintTo != 0)
+                        {
+                            CreateRow(wsRoadmap, "UAT", rmRow, "", releaseName, "", releaseNumber, uatSprintFrom, uatSprintTo);
+                            rmRow++;
+                        }
                     }
                     prevReleaseName = releaseName;
                     prevSprintTo = sprintTo;
@@ -182,7 +185,6 @@ namespace DOT_Titling_Excel_VSTO
                 int sprintToColumn = SSUtils.GetColumnFromHeader(wsReleases, "To");
                 int uatSprintFromColumn = SSUtils.GetColumnFromHeader(wsReleases, "UAT From");
                 int uatSprintToColumn = SSUtils.GetColumnFromHeader(wsReleases, "UAT To");
-                
 
                 var releases = new List<Release>();
                 for (int row = headerRow + 1; row < footerRow; row++)
