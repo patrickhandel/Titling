@@ -13,7 +13,11 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 var app = Globals.ThisAddIn.Application;
-                UpdateRoadMap(app);
+                var activeWorksheet = app.ActiveSheet;
+                if (activeWorksheet.Name == "Road Map")
+                {
+                    UpdateRoadMap(app, activeWorksheet);
+                }
             }
             catch (Exception ex)
             {
@@ -21,13 +25,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateRoadMap(Excel.Application app)
+        private static void UpdateRoadMap(Excel.Application app, Worksheet wsRoadmap)
         {
             try
             {
                 Worksheet wsEpics = app.Sheets["Epics"];
                 Worksheet wsReleases = app.Sheets["Releases"];
-                Worksheet wsRoadmap = app.Sheets["Road Map"];
 
                 Int32 firstRow = 5;
                 Int32 rmRow = firstRow;

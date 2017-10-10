@@ -66,7 +66,7 @@ namespace DOT_Titling_Excel_VSTO
         //    var changes = GetChangeLog("DOTTITLNG-165").Result;
         //}
 
-        public async static Task<List<Issue>> GetAllIssues()
+        public async static Task<List<Issue>> GetAllIssues(string type = "Tickets")
         {
             try
             {
@@ -76,7 +76,16 @@ namespace DOT_Titling_Excel_VSTO
                 var jql = new System.Text.StringBuilder();
                 jql.Append("project = DOTTITLNG");
                 jql.Append(" && ");
-                jql.Append("issuetype in (\"Software Bug\", Story)");
+
+                if (type == "Epics")
+                {
+                    jql.Append("issuetype in (\"Epic\")");
+                }
+                if (type == "Tickets")
+                {
+                    jql.Append("issuetype in (\"Software Bug\", Story)");
+                }
+
                 jql.Append(" && ");
                 jql.Append("summary ~ \"!DELETE\"");
 
@@ -288,6 +297,7 @@ namespace DOT_Titling_Excel_VSTO
                 val = val.Replace("DOT", "");
                 val = val.Replace("Backlog", "");
                 val = val.Replace("Hufflepuff", "");
+                val = val.Replace("for", "");
                 val = val.Replace("Sprint", "");
                 val = val.Replace("Ready", "");
                 val = val.Replace("Other", "");

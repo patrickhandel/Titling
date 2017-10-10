@@ -86,7 +86,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 if (sheet != null)
                 {
-                    Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
+                    Range rng = sheet.Cells[row, column] as Range;
                     if (rng != null)
                         rng.Value = val;
                 }

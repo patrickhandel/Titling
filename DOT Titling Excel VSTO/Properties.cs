@@ -42,11 +42,11 @@ namespace DOT_Titling_Excel_VSTO
 
     public static class WorksheetPropertiesManager
     {
-        public static List<JiraFields> GetJiraFields()
+        public static List<JiraFields> GetJiraFields(string range)
         {
             var str = ConfigurationManager.AppSettings["JiraFields"];
             List<JiraFields> lst = JsonConvert.DeserializeObject<List<JiraFields>>(str);
-            return lst; //.FindAll(y => y.Range == range);
+            return lst.FindAll(y => y.Range == range);
         }
 
         public static  List<WorksheetProperties> GetWorksheetProperties()

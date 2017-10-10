@@ -134,6 +134,16 @@ namespace DOT_Titling_Excel_VSTO
 
         }
 
-
+        private void btnImportEpics_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                ImportFromJira.ExecuteUpdateEpics();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
     }
 }

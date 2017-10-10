@@ -18,6 +18,47 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     SaveTicket(activeWorksheet, activeCell);
                 }
+                if (activeCell != null && activeWorksheet.Name == "Epics")
+                {
+                    SaveEpic(activeWorksheet, activeCell);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void SaveEpic(Worksheet ws, Range activeCell)
+        {
+            try
+            {
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
+                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+
+                int column = activeCell.Column;
+                int row = activeCell.Row;
+                string fieldToSave = SSUtils.GetCellValue(ws, headerRowRange.Row, column);
+                string newValue = SSUtils.GetCellValue(ws, row, column).Trim();
+
+                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Epic ID");
+                string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
+
+                switch (fieldToSave)
+                {
+                    case "Jira Epic Summary":
+                        JiraUtils.SaveSummary(jiraId, newValue);
+                        break;
+                    case "Jira Status":
+                        JiraUtils.SaveStatus(jiraId, newValue);
+                        break;
+                    case "Jira Epic Points":
+                        JiraUtils.SaveCustomField(jiraId, "Story Points", newValue);
+                        break;
+                    default:
+                        MessageBox.Show(fieldToSave + " can't be updated.");
+                        break;
+                }
             }
             catch (Exception ex)
             {
