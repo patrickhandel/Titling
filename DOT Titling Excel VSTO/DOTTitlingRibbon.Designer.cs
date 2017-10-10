@@ -63,10 +63,10 @@
             this.group1.Items.Add(this.btnImportSelected);
             this.group1.Items.Add(this.btnAddNewTickets);
             this.group1.Items.Add(this.btnUpdate);
+            this.group1.Items.Add(this.btnImportEpics);
             this.group1.Items.Add(this.btnCleanup);
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnUpdateRoadMap);
-            this.group1.Items.Add(this.btnImportEpics);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
@@ -135,6 +135,8 @@
             // 
             // btnImportEpics
             // 
+            this.btnImportEpics.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportEpics.Image = ((System.Drawing.Image)(resources.GetObject("btnImportEpics.Image")));
             this.btnImportEpics.Label = "Update Epics";
             this.btnImportEpics.Name = "btnImportEpics";
             this.btnImportEpics.ShowImage = true;
