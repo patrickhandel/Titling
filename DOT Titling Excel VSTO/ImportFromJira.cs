@@ -56,7 +56,7 @@ namespace DOT_Titling_Excel_VSTO
                 var issues = JiraUtils.GetAllIssues("Epics").Result;
                 string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                 int column = SSUtils.GetColumnFromHeader(ws, "Epic ID");
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields(wsRangeName);
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 List<string> listOfTicketIDs = new List<string>();
                 Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Epic ID]", Type.Missing);
@@ -96,7 +96,7 @@ namespace DOT_Titling_Excel_VSTO
                 var issues = JiraUtils.GetAllIssues().Result;
                 string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                 int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields(wsRangeName);
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 List<string> listOfTicketIDs = new List<string>();
                 Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Ticket ID]", Type.Missing);
@@ -117,17 +117,24 @@ namespace DOT_Titling_Excel_VSTO
                     Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                     rToInsert.Insert();
                     UpdateValues(ws, jiraFields, footerRow, issue, false);
+
+                    //Ticket ID (2)
                     SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value);
+
+                    //Summary (5)
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary);
+
                     //TO DO FIX
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")));
 
+                    //Epic
                     app.Calculation = XlCalculation.xlCalculationAutomatic;
                     int jiraEpicColumn = SSUtils.GetColumnFromHeader(ws, "Jira Epic");
                     string newEpic = SSUtils.GetCellValue(ws, footerRow, jiraEpicColumn);
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), newEpic);
                     app.Calculation = XlCalculation.xlCalculationManual;
 
+                    //Hufflepuff Sprint
                     SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")));
                     SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                 }
@@ -209,7 +216,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 string rangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields(rangeName);
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
                 var issue  = JiraUtils.GetIssue(jiraId).Result;
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                 int row = SSUtils.FindTextInColumn(ws, rangeName + "[Ticket ID]", jiraId);
@@ -228,7 +235,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 var epics = JiraUtils.GetAllIssues("Epics").Result;
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields("EpicData");
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 int cnt = epics.Count();
 
@@ -262,7 +269,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 var issues = JiraUtils.GetAllIssues().Result;
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 int cnt = issues.Count();
 
@@ -295,7 +302,7 @@ namespace DOT_Titling_Excel_VSTO
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
             var issues = JiraUtils.GetAllIssues().Result;
-            var jiraFields = WorksheetPropertiesManager.GetJiraFields("TicketData");
+            var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
             Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);

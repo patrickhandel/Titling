@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using Newtonsoft.Json;
 using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -42,10 +43,11 @@ namespace DOT_Titling_Excel_VSTO
 
     public static class WorksheetPropertiesManager
     {
-        public static List<JiraFields> GetJiraFields(string range)
+        public static List<JiraFields> GetJiraFields(Excel.Worksheet ws)
         {
             var str = ConfigurationManager.AppSettings["JiraFields"];
             List<JiraFields> lst = JsonConvert.DeserializeObject<List<JiraFields>>(str);
+            string range = (ws.Name == "Epics") ? "EpicData" : "TicketData";
             return lst.FindAll(y => y.Range == range);
         }
 
