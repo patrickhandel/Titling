@@ -202,6 +202,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="History.cs" />
     <Compile Include="ImportFromJira.cs" />
     <Compile Include="JiraUtils.cs" />
     <Compile Include="MailMerge.cs" />

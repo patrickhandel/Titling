@@ -145,5 +145,17 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        private void btnGetHistory_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                History.ExecuteGetHistory();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
     }
 }

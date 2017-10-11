@@ -320,11 +320,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void GetHistory()
-        {
-            //https://community.atlassian.com/t5/Answers-Developer-Questions/Is-it-possible-to-get-the-issue-history-using-the-REST-API/qaq-p/510094
-        }
-
         private static void UpdateValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue, bool notFound)
         {
             foreach (var jiraField in jiraFields)

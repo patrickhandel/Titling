@@ -59,13 +59,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        //public async static void GetHistory()
-        //{
-        //    ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-        //    var issue = GetIssue("DOTTITLNG-165").Result;
-        //    var changes = GetChangeLog("DOTTITLNG-165").Result;
-        //}
-
         public async static Task<List<Issue>> GetAllIssues(string type = "Tickets")
         {
             try

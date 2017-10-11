@@ -41,10 +41,11 @@
             this.btnImportSelected = this.Factory.CreateRibbonButton();
             this.btnAddNewTickets = this.Factory.CreateRibbonButton();
             this.btnUpdate = this.Factory.CreateRibbonButton();
+            this.btnImportEpics = this.Factory.CreateRibbonButton();
             this.btnCleanup = this.Factory.CreateRibbonButton();
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
-            this.btnImportEpics = this.Factory.CreateRibbonButton();
+            this.btnGetHistory = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -66,6 +67,7 @@
             this.group1.Items.Add(this.btnImportEpics);
             this.group1.Items.Add(this.btnCleanup);
             this.group1.Items.Add(this.btnMailMerge);
+            this.group1.Items.Add(this.btnGetHistory);
             this.group1.Items.Add(this.btnUpdateRoadMap);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
@@ -106,6 +108,15 @@
             this.btnUpdate.ShowImage = true;
             this.btnUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_Click);
             // 
+            // btnImportEpics
+            // 
+            this.btnImportEpics.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportEpics.Image = ((System.Drawing.Image)(resources.GetObject("btnImportEpics.Image")));
+            this.btnImportEpics.Label = "Update Epics";
+            this.btnImportEpics.Name = "btnImportEpics";
+            this.btnImportEpics.ShowImage = true;
+            this.btnImportEpics.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportEpics_Click);
+            // 
             // btnCleanup
             // 
             this.btnCleanup.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -133,14 +144,14 @@
             this.btnUpdateRoadMap.ShowImage = true;
             this.btnUpdateRoadMap.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateRoadMap_Click);
             // 
-            // btnImportEpics
+            // btnGetHistory
             // 
-            this.btnImportEpics.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImportEpics.Image = ((System.Drawing.Image)(resources.GetObject("btnImportEpics.Image")));
-            this.btnImportEpics.Label = "Update Epics";
-            this.btnImportEpics.Name = "btnImportEpics";
-            this.btnImportEpics.ShowImage = true;
-            this.btnImportEpics.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportEpics_Click);
+            this.btnGetHistory.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnGetHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnGetHistory.Image")));
+            this.btnGetHistory.Label = "Get History";
+            this.btnGetHistory.Name = "btnGetHistory";
+            this.btnGetHistory.ShowImage = true;
+            this.btnGetHistory.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnGetHistory_Click);
             // 
             // DOTTitlingRibbon
             // 
@@ -168,6 +179,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdate;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdateRoadMap;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportEpics;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetHistory;
     }
 
     partial class ThisRibbonCollection
