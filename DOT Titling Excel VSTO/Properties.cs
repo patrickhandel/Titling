@@ -7,6 +7,13 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
+    public class Developers
+    {
+        public string DevName { get; set; }
+
+        public string ReplaceWith { get; set; }
+    }
+
     public class WorksheetProperties
     {
         public string Worksheet { get; set; }
@@ -55,6 +62,13 @@ namespace DOT_Titling_Excel_VSTO
         {
             var str = ConfigurationManager.AppSettings["WorksheetProperties"];
             List<WorksheetProperties> lst = JsonConvert.DeserializeObject<List<WorksheetProperties>>(str);
+            return lst;
+        }
+
+        public static List<Developers> GetDevelopers()
+        {
+            var str = ConfigurationManager.AppSettings["Developers"];
+            List<Developers> lst = JsonConvert.DeserializeObject<List<Developers>>(str);
             return lst;
         }
 
