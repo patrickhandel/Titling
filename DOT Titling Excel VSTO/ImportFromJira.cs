@@ -156,7 +156,7 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     UpdateAllTickets(app, activeWorksheet);
                     AddNewTickets(app, activeWorksheet);
-                    string dt = DateTime.Now.ToString("mm/dd/yyyy");
+                    string dt = DateTime.Now.ToString("MM/dd/yyyy");
                     if (activeWorksheet.Name == "Tickets")
                     {
                         string val = "Tickets (Updated on " + dt + ")";

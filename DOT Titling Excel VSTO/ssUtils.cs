@@ -189,21 +189,21 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void Protect(Excel.Application app)
         {
-            Worksheet ws = app.Worksheets.OfType<Worksheet>().FirstOrDefault(w => w.Name == "DOT Releases");
-            if (ws != null)
-                app.Worksheets["DOT Releases"].Protect(Password: "dot333", 
-                        UserInterfaceOnly: false, 
-                        AllowFormattingCells: false, 
-                        AllowInsertingHyperlinks: false,
-                        AllowDeletingColumns: false, 
-                        AllowDeletingRows: false,
-                        AllowFormattingRows: true,
-                        AllowInsertingColumns: true,
-                        AllowInsertingRows: true,
-                        AllowSorting: true, 
-                        AllowFiltering: true,
-                        AllowFormattingColumns: true,
-                        AllowUsingPivotTables: true);
+            //Worksheet ws = app.Worksheets.OfType<Worksheet>().FirstOrDefault(w => w.Name == "DOT Releases");
+            //if (ws != null)
+            //    app.Worksheets["DOT Releases"].Protect(Password: "dot333", 
+            //            UserInterfaceOnly: false, 
+            //            AllowFormattingCells: false, 
+            //            AllowInsertingHyperlinks: false,
+            //            AllowDeletingColumns: false, 
+            //            AllowDeletingRows: false,
+            //            AllowFormattingRows: true,
+            //            AllowInsertingColumns: true,
+            //            AllowInsertingRows: true,
+            //            AllowSorting: true, 
+            //            AllowFiltering: true,
+            //            AllowFormattingColumns: true,
+            //            AllowUsingPivotTables: true);
         }
         private static void UnProtect(Excel.Application app)
         {

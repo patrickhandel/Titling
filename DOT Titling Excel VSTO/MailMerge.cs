@@ -61,8 +61,8 @@ namespace DOT_Titling_Excel_VSTO
                                     summary = value;
                                 if (name == "epicID")
                                     epicID = value;
-                                if (name == "description")
-                                    value = CommonMark.CommonMarkConverter.Convert(value);
+                                //if (name == "description")
+                                //    value = CommonMark.CommonMarkConverter.Convert(value);
 
                                 foreach (Word.Field field in wordDocument.Fields)
                                 {
@@ -77,7 +77,6 @@ namespace DOT_Titling_Excel_VSTO
                                         if (value == string.Empty)
                                             value = " ";
                                         wordApp.Selection.TypeText(value);
-
                                     }
                                 }
                             }
