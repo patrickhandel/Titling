@@ -177,7 +177,17 @@ namespace DOT_Titling_Excel_VSTO
                     MessageBox.Show("No change needed.");
                     return true;
                 }
+
+                // Remove all of the existing versions
+                var oldVersions = issue.AffectsVersions.ToList();
+                foreach (var oldVersion in oldVersions)
+                {
+                    issue.AffectsVersions.Remove(oldVersion);
+                }
+
+                // Add thew new version
                 issue.AffectsVersions.Add(newValue);
+
                 issue.SaveChanges();
                 MessageBox.Show("Release updated successfully updated.");
                 return true;
@@ -247,7 +257,9 @@ namespace DOT_Titling_Excel_VSTO
             int c = 0;
             foreach (var ver in issue.AffectsVersions)
             {
-                val = issue.AffectsVersions[c].Name;
+                if (c > 0)
+                    val = val + "; ";
+                val = val + issue.AffectsVersions[c].Name;
                 c++;
             }
             return val;
