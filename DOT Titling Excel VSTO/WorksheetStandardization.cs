@@ -38,8 +38,9 @@ namespace DOT_Titling_Excel_VSTO
                     Excel.Range r = ws.get_Range("A1");
                     r.EntireRow.RowHeight = 40;
                     headerRowRange.EntireRow.RowHeight = 66;
-                    headerRowRange.Offset[-1, 0].Font.Size = 10;
-                    headerRowRange.Font.Size = 10;
+                    headerRowRange.Offset[-1, 0].Font.Size = 9;
+                    headerRowRange.Font.Size = 9;
+                    headerRowRange.VerticalAlignment = Excel.XlVAlign.xlVAlignTop;
                     headerRowRange.EntireRow.Offset[-1, 0].Hidden = true;
                 }               
             }

@@ -82,7 +82,7 @@ namespace DOT_Titling_Excel_VSTO
                             }
 
                             wordApp.Visible = false;
-                            string newfile = SSUtils.GetNewFileName(summary, epicID);
+                            string newfile = FileIO.GetNewMailMergeFileName(summary, epicID);
 
                             wordDocument.TrackRevisions = true;
                             wordDocument.SaveAs2(newfile);

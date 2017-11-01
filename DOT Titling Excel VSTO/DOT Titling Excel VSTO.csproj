@@ -193,6 +193,7 @@
   -->
   <ItemGroup>
     <Compile Include="Epic.cs" />
+    <Compile Include="FileIO.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

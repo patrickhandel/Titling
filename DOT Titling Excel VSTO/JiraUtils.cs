@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -296,9 +295,9 @@ namespace DOT_Titling_Excel_VSTO
             string val = ExtractCustomValue(issue, "Sprint");
             if (val != string.Empty)
             {
-                val = string.Empty;
-                foreach (var value in issue.CustomFields["Sprint"].Values)
-                    val = value;
+                //val = string.Empty;
+                //foreach (var value in issue.CustomFields["Sprint"].Values)
+                //    val = value;
                 val = val.Replace("DOT", "");
                 val = val.Replace("Backlog", "");
                 val = val.Replace("Hufflepuff", "");

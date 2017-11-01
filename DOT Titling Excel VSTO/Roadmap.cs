@@ -57,7 +57,7 @@ namespace DOT_Titling_Excel_VSTO
                     Int32 releaseNumber = release.Number;
                     string releaseName = release.Name;
                     string midLong = release.MidLong;
-                    string releaseStatus = release.Status;                    
+                    string releaseStatus = release.Status;
                     Int32 sprintFrom = release.SprintFrom;
                     Int32 sprintTo = release.SprintTo;
                     Int32 uatSprintFrom = release.UATSprintFrom;
@@ -81,7 +81,7 @@ namespace DOT_Titling_Excel_VSTO
                         {
                             // EPIC
                             string epicName = epic.EpicName;
-                            CreateRow(wsRoadmap, "EPIC", rmRow, epicName, releaseName, epic.Status, releaseNumber,  sprintFrom, sprintTo);
+                            CreateRow(wsRoadmap, "EPIC", rmRow, epicName, releaseName, epic.Status, releaseNumber, sprintFrom, sprintTo);
                             rmRow++;
                         }
 
@@ -97,6 +97,10 @@ namespace DOT_Titling_Excel_VSTO
                     firstRelease = false;
                 }
                 FormatChart(wsRoadmap, firstRow, rmRow, lastColumn);
+
+                // Save into a PDF and Image.
+                FileIO.CreateImage(wsRoadmap, rmRow, lastColumn);
+                FileIO.CreatePDF(wsRoadmap);
             }
             catch (Exception ex)
             {

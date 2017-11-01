@@ -113,22 +113,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static string GetNewFileName(string summary, string epicID)
-        {
-            return @ThisAddIn.OutputDir + "\\" + "Epic ID " + epicID.Trim() + " " + GetValidFileName(summary.Trim() +  ".docx");
-        }
 
-        public static string GetValidFileName(string text)
-        {
-            text = text.Replace('\'', ' '); // U+2019 right single quotation mark
-            text = text.Replace('"', ' '); // U+201D right double quotation mark
-            text = text.Replace('/', ' ');  // U+2044 fraction slash
-            foreach (char c in Path.GetInvalidFileNameChars())
-            {
-                text = text.Replace(c, ' ');
-            }
-            return text;
-        }
 
         public static void SetStandardRowHeight(Worksheet ws, int headerRow, int footerRow)
         {
