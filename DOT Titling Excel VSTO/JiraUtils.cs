@@ -292,26 +292,50 @@ namespace DOT_Titling_Excel_VSTO
 
         public static string ExtractSprintNumber(Issue issue)
         {
-            string val = ExtractCustomValue(issue, "Sprint");
-            if (val != string.Empty)
+            //string val = ExtractCustomValue(issue, "Sprint");
+            string val = string.Empty;
+            int thisSprint = 0;
+            int lastSprint = 0;
+            foreach (var value in issue.CustomFields["Sprint"].Values)
             {
-                //val = string.Empty;
-                //foreach (var value in issue.CustomFields["Sprint"].Values)
-                //    val = value;
-                val = val.Replace("DOT", "");
-                val = val.Replace("Backlog", "");
-                val = val.Replace("Hufflepuff", "");
-                val = val.Replace("for", "");
-                val = val.Replace("Sprint", "");
-                val = val.Replace("Ready", "");
-                val = val.Replace("Other", "");
-                val = val.Replace("Approved", "");
-                val = val.Replace("-", "");
-                val = val.Replace(" ", "");
-                for (int rev = 1; rev <= 12; rev++)
-                    val = val.Replace("R" + rev.ToString(), "");
+                val = value;
+                //val = val.Replace("DOT", "");
+                //val = val.Replace("Backlog", "");
+                //val = val.Replace("Hufflepuff", "");
+                //val = val.Replace("for", "");
+                //val = val.Replace("Sprint", "");
+                //val = val.Replace("Ready", "");
+                //val = val.Replace("Other", "");
+                //val = val.Replace("Approved", "");
+                //val = val.Replace("-", "");
+                //val = val.Replace(" ", "");
+                //for (int rev = 1; rev <= 20; rev++)
+                //    val = val.Replace("R" + rev.ToString(), "");
+
+                if (val.Length > 2)
+                {
+                    val = val.Substring(val.Length - 3).Trim();
+                    if (val != string.Empty)
+                    {
+                        if (Int32.TryParse(val, out thisSprint))
+                        {
+                            if (thisSprint > lastSprint)
+                                lastSprint = thisSprint;
+                        }
+                    }
+                }
             }
-            return val;
+
+            string retval = string.Empty;
+            if (lastSprint == 0)
+            {
+                retval = "";
+            }
+            else
+            {
+                retval = lastSprint.ToString();
+            }
+            return retval;
         }
 
         public static string ExtractCustomValue(Issue issue, string item)
