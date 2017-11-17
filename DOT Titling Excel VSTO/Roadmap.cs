@@ -45,9 +45,9 @@ namespace DOT_Titling_Excel_VSTO
                     rToDelete.Delete();
                 }
 
-                List<Release> releases = GetListOfReleases(wsReleases);
+                List<Release> releases = Lists.GetListOfReleases(wsReleases);
                 releases = releases.FindAll(r => r.MidLong == "Mid" || r.MidLong == "Long");
-                List<Epic> epics = GetListOfEpics(wsEpics);
+                List<Epic> epics = Lists.GetListOfEpics(wsEpics);
 
                 string prevReleaseName = string.Empty;
                 Int32 prevSprintTo = 0;
@@ -62,18 +62,19 @@ namespace DOT_Titling_Excel_VSTO
                     Int32 sprintTo = release.SprintTo;
                     Int32 uatSprintFrom = release.UATSprintFrom;
                     Int32 uatSprintTo = release.UATSprintTo;
+                    Int32 vendorSprint = release.VendorSprint;
 
                     List<Epic> releaseEpics = epics.FindAll(e => e.ReleaseName == release.Name);
                     if (releaseEpics.Count > 0)
                     {
                         // REL
-                        CreateRow(wsRoadmap, "REL", rmRow, "", releaseName, releaseStatus, releaseNumber, 0, 0);
+                        CreateRow(wsRoadmap, "REL", rmRow, "", releaseName, releaseStatus, releaseNumber, 0, 0, 0);
                         rmRow++;
 
                         // BFP
                         if (!firstRelease)
                         {
-                            CreateRow(wsRoadmap, "BFP", rmRow, "", releaseName, "", releaseNumber - 1, prevSprintTo + 1, prevSprintTo + 2);
+                            CreateRow(wsRoadmap, "BFP", rmRow, "", releaseName, "", releaseNumber - 1, prevSprintTo + 1, prevSprintTo + 2, 0);
                             rmRow++;
                         }
 
@@ -81,14 +82,21 @@ namespace DOT_Titling_Excel_VSTO
                         {
                             // EPIC
                             string epicName = epic.EpicName;
-                            CreateRow(wsRoadmap, "EPIC", rmRow, epicName, releaseName, epic.Status, releaseNumber, sprintFrom, sprintTo);
+                            CreateRow(wsRoadmap, "EPIC", rmRow, epicName, releaseName, epic.Status, releaseNumber, sprintFrom, sprintTo, 0);
                             rmRow++;
                         }
 
                         // UAT
                         if (uatSprintTo != 0)
                         {
-                            CreateRow(wsRoadmap, "UAT", rmRow, "", releaseName, "", releaseNumber, uatSprintFrom, uatSprintTo);
+                            CreateRow(wsRoadmap, "UAT", rmRow, "", releaseName, "", releaseNumber, uatSprintFrom, uatSprintTo, 0);
+                            rmRow++;
+                        }
+
+                        // VENDOR
+                        if (vendorSprint != 0)
+                        {
+                            CreateRow(wsRoadmap, "VENDOR", rmRow, "", releaseName, "", releaseNumber, 0, 0, vendorSprint);
                             rmRow++;
                         }
                     }
@@ -108,7 +116,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void CreateRow(Worksheet ws, string rowType, Int32 row, string epicName, string releaseName, string status, Int32 releaseNumber, Int32 sprintFrom, Int32 sprintTo)
+        private static void CreateRow(Worksheet ws, string rowType, Int32 row, string epicName, string releaseName, string status, Int32 releaseNumber, Int32 sprintFrom, Int32 sprintTo, Int32 vendorSprint)
         {
             try
             {
@@ -127,6 +135,13 @@ namespace DOT_Titling_Excel_VSTO
                         SSUtils.SetCellValue(ws, row, 3, rowType);
                         SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString());
                         SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString());
+                        break;
+                    case "VENDOR":
+                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Vendor Release");
+                        SSUtils.SetCellValue(ws, row, 2, string.Empty);
+                        SSUtils.SetCellValue(ws, row, 3, rowType);
+                        SSUtils.SetCellValue(ws, row, 4, vendorSprint.ToString());
+                        SSUtils.SetCellValue(ws, row, 5, vendorSprint.ToString());
                         break;
                     case "REL":
                         SSUtils.SetCellValue(ws, row, 1, releaseName);
@@ -170,104 +185,6 @@ namespace DOT_Titling_Excel_VSTO
             range1.Copy(Type.Missing);
             range2.PasteSpecial(XlPasteType.xlPasteFormats, XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
             range3.Select();
-        }
-
-        private static List<Release> GetListOfReleases(Worksheet wsReleases)
-        {
-            try
-            {
-                string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsReleases.Name);
-                Range headerRowRange = wsReleases.get_Range(sHeaderRangeName, Type.Missing);
-                int headerRow = headerRowRange.Row;
-
-                string sFooterRowRange = SSUtils.GetFooterRangeName(wsReleases.Name);
-                Range footerRangeRange = wsReleases.get_Range(sFooterRowRange, Type.Missing);
-                int footerRow = footerRangeRange.Row;
-
-                int numberColumn = SSUtils.GetColumnFromHeader(wsReleases, "Release");
-                int nameColumn = SSUtils.GetColumnFromHeader(wsReleases, "Full Name");
-                int statusColumn = SSUtils.GetColumnFromHeader(wsReleases, "Status");
-                int midLongColumn = SSUtils.GetColumnFromHeader(wsReleases, "Mid/Long");
-                int sprintFromColumn = SSUtils.GetColumnFromHeader(wsReleases, "From");
-                int sprintToColumn = SSUtils.GetColumnFromHeader(wsReleases, "To");
-                int uatSprintFromColumn = SSUtils.GetColumnFromHeader(wsReleases, "UAT From");
-                int uatSprintToColumn = SSUtils.GetColumnFromHeader(wsReleases, "UAT To");
-
-                var releases = new List<Release>();
-                for (int row = headerRow + 1; row < footerRow; row++)
-                {
-                    string number = SSUtils.GetCellValue(wsReleases, row, numberColumn);
-                    string name = SSUtils.GetCellValue(wsReleases, row, nameColumn);
-                    string midLong = SSUtils.GetCellValue(wsReleases, row, midLongColumn);
-                    string sprintFrom = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, sprintFromColumn));
-                    string sprintTo = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, sprintToColumn));
-                    string uatSprintFrom = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, uatSprintFromColumn));
-                    string uatSprintTo = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, uatSprintToColumn));
-                    string status = SSUtils.GetCellValue(wsReleases, row, statusColumn);
-                    releases.Add(new Release(
-                        Convert.ToInt32(number), 
-                        name, 
-                        midLong,
-                        Convert.ToInt32(sprintFrom), 
-                        Convert.ToInt32(sprintTo), 
-                        Convert.ToInt32(uatSprintFrom), 
-                        Convert.ToInt32(uatSprintTo),
-                        status));
-                }
-                releases.Sort();
-                return releases;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return null;
-            }
-        }
-
-        private static List<Epic> GetListOfEpics(Worksheet wsEpics)
-        {
-            try
-            {
-                string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsEpics.Name);
-                Range headerRowRange = wsEpics.get_Range(sHeaderRangeName, Type.Missing);
-                int headerRow = headerRowRange.Row;
-
-                string sFooterRowRange = SSUtils.GetFooterRangeName(wsEpics.Name);
-                Range footerRangeRange = wsEpics.get_Range(sFooterRowRange, Type.Missing);
-                int footerRow = footerRangeRange.Row;
-
-                int priorityColumn = SSUtils.GetColumnFromHeader(wsEpics, "Priority");
-                int releaseNumberColumn = SSUtils.GetColumnFromHeader(wsEpics, "Release");
-                int releaseNameColumn = SSUtils.GetColumnFromHeader(wsEpics, "Release Name");
-                int epicColumn = SSUtils.GetColumnFromHeader(wsEpics, "Epic");
-                int midLongColumn = SSUtils.GetColumnFromHeader(wsEpics, "Mid/Long");
-                int statusColumn = SSUtils.GetColumnFromHeader(wsEpics, "Percent Complete");
-
-                var epics = new List<Epic>();
-                for (int row = headerRow + 1; row < footerRow; row++)
-                {
-                    string priority = SSUtils.GetCellValue(wsEpics, row, priorityColumn);
-                    string releaseNumber = ZeroIfEmpty(SSUtils.GetCellValue(wsEpics, row, releaseNumberColumn));
-                    string releaseName = SSUtils.GetCellValue(wsEpics, row, releaseNameColumn);
-                    string epicName = SSUtils.GetCellValue(wsEpics, row, epicColumn);
-                    string midLong = SSUtils.GetCellValue(wsEpics, row, midLongColumn);
-                    string status = SSUtils.GetCellValue(wsEpics, row, statusColumn);
-                    epics.Add(new Epic(
-                            epicName,
-                            releaseName,
-                            Convert.ToInt32(releaseNumber),
-                            Convert.ToInt32(priority),
-                            status
-                        ));
-                }
-                epics.Sort();
-                return epics;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return null;
-            }
         }
 
         private static string ZeroIfEmpty(string s)

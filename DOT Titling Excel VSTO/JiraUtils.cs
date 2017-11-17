@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -23,22 +24,6 @@ namespace DOT_Titling_Excel_VSTO
                 return null;
             }
         }
-
-        //public async static Task<List<IssueChangeLog>> GetChangeLog(string jiraId)
-        //{
-        //    try
-        //    {
-        //        ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = 1000;
-        //        IssueChangeLog changes = await ThisAddIn.GlobalJira.Issues.GetChangeLogsAsync(jiraId);
-        //        return changes;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Error :" + ex);
-        //        return null;
-        //    }
-        //}
-
 
         [Obsolete("GetIssueWithLinq is deprecated, please use GetIssue instead.")]
         public static List<Issue> GetIssueWithLinq(string jiraId)
@@ -106,6 +91,46 @@ namespace DOT_Titling_Excel_VSTO
                 return null;
             }
         }
+		
+		public async static Task<List<Issue>> GetAllIssues_Old()
+        {
+            try
+            {
+                ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+
+                //Create the JQL
+                var jql = new System.Text.StringBuilder();
+                jql.Append("project = DOTTITLNG");
+                jql.Append(" && ");
+                jql.Append("issuetype in (\"Software Bug\", Story)");
+                jql.Append(" && ");
+                jql.Append("summary ~ \"!DELETE\"");
+
+                var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
+                var totalIssues = issues.TotalItems;
+                var totalPages = (double)totalIssues / (double)ThisAddIn.PageSize;
+                totalPages = Math.Ceiling(totalPages);
+                var allIssues = issues.ToList();
+                for (int currentPage = 1; currentPage < totalPages; currentPage++)
+                {
+                    int startRecord = ThisAddIn.PageSize * currentPage;
+                    issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize, startRecord);
+                    allIssues.AddRange(issues.ToList());
+                    if (issues.Count() == 0)
+                    {
+                        break;
+                    }
+                }
+                var filteredIssues = allIssues.Where(i =>
+                            i.Summary != "DELETE").ToList();
+                return filteredIssues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }		
 
         [Obsolete("GetAllIssuesWithLinq is deprecated, please use GetAllIssues instead.")]
         public static List<Issue> GetAllIssuesWithLinq()
@@ -276,6 +301,19 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
+        public static string ExtractLabels(Issue issue)
+        {
+            string val = string.Empty;
+            if (issue.Labels.Count > 0)
+            {
+                foreach (var label in issue.Labels)
+                {
+                    val = val + "[" + label + "]";
+                }
+            }
+            return val;
+        }
+
         public static string ExtractDOTWebServices(Issue issue)
         {
             string val = string.Empty;
@@ -337,11 +375,54 @@ namespace DOT_Titling_Excel_VSTO
             }
             return retval;
         }
+		
+		public static string ExtractSprintNumberOld(Issue issue)
+        {
+            try
+            {
+                string val = ExtractCustomValue(issue, "Sprint");
+                if (val != string.Empty)
+                {
+                    int highValue = 0;
+                    val = string.Empty;
+                    foreach (var value in issue.CustomFields["Sprint"].Values)
+                    {
+                        val = value;
+                        val = val.Replace("DOT", "");
+                        val = val.Replace("Backlog", "");
+                        val = val.Replace("Hufflepuff", "");
+                        val = val.Replace("Sprint", "");
+                        val = val.Replace("Ready", "");
+                        val = val.Replace("Other", "");
+                        val = val.Replace("Approved", "");
+                        val = val.Replace("for", "");
+                        val = val.Replace("-", "");
+                        val = val.Replace(" ", "");
+                        for (int rev = 1; rev <= 12; rev++)
+                            val = val.Replace("R" + rev.ToString(), "");
+                        if (val != string.Empty)
+                        {
+                            if (Convert.ToInt32(val) > highValue)
+                                highValue = Convert.ToInt32(val);
+                        }
+                    }
+                    if (highValue != 0)
+                        val = highValue.ToString();
+                }
+                return val;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return "";
+            }
+        }		
 
         public static string ExtractCustomValue(Issue issue, string item)
         {
             string val = string.Empty;
             item = item.Replace(" Id ", " I'd ");
+            item = item.Trim();
             try
             {
                 val = issue[item].Value;
@@ -395,6 +476,9 @@ namespace DOT_Titling_Excel_VSTO
                     break;
                 case "DOT Web Services":
                     val = ExtractDOTWebServices(issue);
+                    break;
+                case "Labels":
+                    val = ExtractLabels(issue);
                     break;
                 default:
                     break;

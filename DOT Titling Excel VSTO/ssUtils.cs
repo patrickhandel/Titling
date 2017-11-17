@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -80,6 +79,24 @@ namespace DOT_Titling_Excel_VSTO
             return (result + " ").Trim();
         }
 
+        public static string GetCellValueFromNamedRange(string rangeName)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                var result = string.Empty;
+                Range rng = app.get_Range(rangeName);
+                if (rng != null)
+                    result = (string)rng.Text;
+                return result.Trim();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return string.Empty;
+            }
+        }
+
         public static void SetCellValue(Worksheet sheet, int row, int column, string val)
         {
             try
@@ -112,8 +129,6 @@ namespace DOT_Titling_Excel_VSTO
                     sheet.Cells[row, column].Formula = string.Format(formula, 1);
             }
         }
-
-
 
         public static void SetStandardRowHeight(Worksheet ws, int headerRow, int footerRow)
         {

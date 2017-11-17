@@ -13,7 +13,8 @@ namespace DOT_Titling_Excel_VSTO
         private Int32 _SprintTo;
         private Int32 _UATSprintFrom;
         private Int32 _UATSprintTo;
-        
+        private Int32 _VendorSprint;
+
         #endregion
 
         #region Properties
@@ -52,6 +53,11 @@ namespace DOT_Titling_Excel_VSTO
             get { return _UATSprintTo; }
             set { _UATSprintTo = value; }
         }
+        public Int32 VendorSprint
+        {
+            get { return _VendorSprint; }
+            set { _VendorSprint = value; }
+        }
 
         public string Status
         {
@@ -62,7 +68,7 @@ namespace DOT_Titling_Excel_VSTO
 
 
         #region Contructors
-        public Release(Int32 number, string name, string midLong, Int32 sprintFrom, Int32 sprintTo, Int32 uatSprintFrom, Int32 uatSprintTo, string status)
+        public Release(Int32 number, string name, string midLong, Int32 sprintFrom, Int32 sprintTo, Int32 uatSprintFrom, Int32 uatSprintTo, Int32 vendorSprint, string status)
         {
             _Number = number;
             _Name = name;
@@ -71,6 +77,7 @@ namespace DOT_Titling_Excel_VSTO
             _SprintTo = sprintTo;
             _UATSprintFrom = uatSprintFrom;
             _UATSprintTo = uatSprintTo;
+            _VendorSprint = vendorSprint;
             _Status = status;
         }
         #endregion

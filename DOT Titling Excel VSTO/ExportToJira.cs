@@ -117,7 +117,10 @@ namespace DOT_Titling_Excel_VSTO
                                 }
                                 JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
                             }
-                            MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
+                            else
+                            { 
+                                MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
+                            }
                             break;
                         case "Date Approved by DOT":
                             if (type == "Story")
@@ -135,7 +138,10 @@ namespace DOT_Titling_Excel_VSTO
                                 }
                                 JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
                             }
-                            MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
+                            else
+                            {
+                                MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
+                            }
                             break;
                         case "Story - As A":
                             if (type == "Story")

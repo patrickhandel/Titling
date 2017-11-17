@@ -209,12 +209,14 @@
     <Compile Include="History.cs" />
     <Compile Include="ImportFromJira.cs" />
     <Compile Include="JiraUtils.cs" />
+    <Compile Include="Lists.cs" />
     <Compile Include="MailMerge.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Ticket.cs" />
     <Compile Include="Release.cs" />
     <Compile Include="Roadmap.cs" />
     <Compile Include="ssUtils.cs" />

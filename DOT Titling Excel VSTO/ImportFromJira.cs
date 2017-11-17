@@ -195,7 +195,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-
         public static void ExecuteUpateTicketBeforeMailMerge(string jiraId)
         {
             try
@@ -329,6 +328,13 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void UpdateValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue, bool notFound)
         {
+            //Get the current status
+            int statusColumn = SSUtils.GetColumnFromHeader(activeWorksheet, "Jira Status");            
+            string newStatus = string.Empty;
+            string previousStatus = string.Empty;
+            if (statusColumn != 0)
+                previousStatus = SSUtils.GetCellValue(activeWorksheet, row, statusColumn);
+
             foreach (var jiraField in jiraFields)
             {
                 string columnHeader = jiraField.ColumnHeader;
@@ -336,7 +342,7 @@ namespace DOT_Titling_Excel_VSTO
                 string item = jiraField.Value;
                 string formula = jiraField.Formula;
                 int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
-                
+
                 if (notFound)
                 {
                     string valueToSave = string.Empty;
@@ -344,7 +350,8 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         valueToSave = "{DELETED}";
                         int ticketTypeCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Ticket Type");
-                        SSUtils.SetCellValue(activeWorksheet, row, ticketTypeCol, valueToSave);
+                        if (ticketTypeCol != 0)
+                            SSUtils.SetCellValue(activeWorksheet, row, ticketTypeCol, valueToSave);
                     }
                     SSUtils.SetCellValue(activeWorksheet, row, column, valueToSave);
                 }
@@ -360,6 +367,43 @@ namespace DOT_Titling_Excel_VSTO
                 if (type == "Formula")
                     SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
             }
+
+            if (statusColumn != 0)
+            {
+                newStatus = SSUtils.GetCellValue(activeWorksheet, row, statusColumn);
+                int statusLastChangedColumn = SSUtils.GetColumnFromHeader(activeWorksheet, "Jira Status (Last Changed)");
+                if (statusLastChangedColumn != 0)
+                {
+                    if (newStatus != previousStatus)
+                    { 
+                        if (newStatus == "Done" || newStatus == "To Do" || newStatus == "")
+                        {
+                            SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, string.Empty);
+                        }
+                        else
+                        {
+                            SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, DateTime.Now.ToString("MM/dd/yyyy"));
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void UpdateSprintProgress(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue, bool notFound)
+        {
+            //PWH
+            // Get the Current Date
+            string dt = DateTime.Now.ToString("MM/dd/yyyy");
+
+            // Get the Current Sprint
+            string currentSprint = SSUtils.GetCellValueFromNamedRange("CurrentSprintToUse");
+
+            //Get List of Tickets
+            List<Ticket> tickets = Lists.GetListOfTickets(activeWorksheet);
+            tickets = tickets.FindAll(r => r.Sprint == currentSprint && r.Type == "Story");
+            
+            //TO DO
+            //Add each ticket to the bottom of the Table
         }
     }
 }
