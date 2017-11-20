@@ -374,13 +374,22 @@ namespace DOT_Titling_Excel_VSTO
                 int statusLastChangedColumn = SSUtils.GetColumnFromHeader(activeWorksheet, "Jira Status (Last Changed)");
                 if (statusLastChangedColumn != 0)
                 {
-                    if (newStatus != previousStatus)
-                    { 
-                        if (newStatus == "Done" || newStatus == "To Do" || newStatus == "")
+                    string currentSprint = SSUtils.GetCellValueFromNamedRange("CurrentSprintToUse");
+                    int sprintColumn = SSUtils.GetColumnFromHeader(activeWorksheet, "DOT Sprint");
+                    string sprint = SSUtils.GetCellValue(activeWorksheet, row, sprintColumn);
+
+                    if (sprint != currentSprint)
+                    {
+                        SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, string.Empty);
+                    }
+                    else
+                    {
+                        if (newStatus == "Done" || newStatus == "")
                         {
                             SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, string.Empty);
                         }
                         else
+                        if (newStatus != previousStatus)
                         {
                             SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, DateTime.Now.ToString("MM/dd/yyyy"));
                         }
