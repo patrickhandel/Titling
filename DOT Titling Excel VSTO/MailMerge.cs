@@ -12,9 +12,9 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var app = Globals.ThisAddIn.Application;
-                var activeWorksheet = app.ActiveSheet;
-                var activeCell = app.ActiveCell;
+                Excel.Application app = Globals.ThisAddIn.Application;
+                Excel.Worksheet activeWorksheet = app.ActiveSheet;
+                Excel.Range activeCell = app.ActiveCell;
                 var selection = app.Selection;
 
                 if (activeCell != null && activeWorksheet.Name == "Tickets")

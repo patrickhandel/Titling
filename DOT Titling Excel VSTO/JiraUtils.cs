@@ -209,8 +209,8 @@ namespace DOT_Titling_Excel_VSTO
                     issue.AffectsVersions.Remove(oldVersion);
                 }
 
-                // Add thew new version
-                issue.AffectsVersions.Add(newValue);
+                if (newValue.Trim() != string.Empty)
+                    issue.AffectsVersions.Add(newValue);
 
                 issue.SaveChanges();
                 MessageBox.Show("Release updated successfully updated.");
@@ -453,6 +453,9 @@ namespace DOT_Titling_Excel_VSTO
                     break;
                 case "issue.Description":
                     val = issue.Description;
+                    break;
+                case "issue.Assignee":
+                    val = issue.Assignee;
                     break;
                 default:
                     break;

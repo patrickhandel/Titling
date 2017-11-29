@@ -384,7 +384,7 @@ namespace DOT_Titling_Excel_VSTO
                     }
                     else
                     {
-                        if (newStatus == "Done" || newStatus == "")
+                        if (newStatus == "Done" || newStatus == "Ready for Development" || newStatus == "")
                         {
                             SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, string.Empty);
                         }

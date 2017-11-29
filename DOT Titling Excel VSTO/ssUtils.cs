@@ -10,6 +10,32 @@ namespace DOT_Titling_Excel_VSTO
 {
     class SSUtils
     {
+        public static string GetSelectedTable(Worksheet sheet)
+        {
+            string t = string.Empty;
+            foreach (ListObject table in sheet.ListObjects)
+            {
+                Range tableRange = table.Range;
+                if (table.Active == true)
+                    t = table.Name;
+            }
+            return t;
+        }
+
+        public static List<string> GetListOfTables(Worksheet sheet)
+        {
+            List<string> listofTables = new List<string>();
+            foreach (ListObject table in sheet.ListObjects)
+            {
+                listofTables.Add(table.Name);
+                Range tableRange = table.Range;
+
+                if (table.Active == true)
+                    MessageBox.Show(table.Name);
+            }
+            return listofTables;
+        }
+
         public static int GetColumnFromHeader(Worksheet ws, string columnText)
         {
             try

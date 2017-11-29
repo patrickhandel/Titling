@@ -50,7 +50,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 ImportFromJira.ExecuteAddNewTickets();
-                SSUtils.EndExcelOperation(app, "Ticket Addition");
+                SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
             {
@@ -65,7 +65,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 ImportFromJira.ExecuteUpdateSelectedTickets();
-                SSUtils.EndExcelOperation(app, "Selected Update");
+                SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
             {
@@ -80,21 +80,6 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 ImportFromJira.ExecuteUpdateAllTickets();
-                SSUtils.EndExcelOperation(app, "Complete Update");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        private void btnUpdate_Click(object sender, RibbonControlEventArgs e)
-        {
-            try
-            {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                SSUtils.BeginExcelOperation(app);
-                ExportToJira.ExecuteSaveTicket();
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -146,6 +131,23 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        private void btnUpdate_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                ExportToJira.ExecuteSaveTicket();
+                SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+
+
         private void btnDeveloperFromHistory_Click(object sender, RibbonControlEventArgs e)
         {
             try
@@ -159,6 +161,13 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
             }
+        }
+
+        private void button1_Click_1(object sender, RibbonControlEventArgs e)
+        {
+            Excel.Application app = Globals.ThisAddIn.Application;
+            Excel.Worksheet activeWorksheet = app.ActiveSheet;
+            SSUtils.GetListOfTables(activeWorksheet);
         }
     }
 }

@@ -14,9 +14,11 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 Worksheet activeWorksheet = app.ActiveSheet;
                 Range activeCell = app.ActiveCell;
+                var selection = app.Selection;
+
                 if (activeCell != null && (activeWorksheet.Name == "Tickets" || activeWorksheet.Name == "DOT Releases"))
                 {
-                    SaveTicket(activeWorksheet, activeCell);
+                    SaveTicket(activeWorksheet, selection);
                 }
                 if (activeCell != null && activeWorksheet.Name == "Epics")
                 {
@@ -66,140 +68,143 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void SaveTicket(Worksheet ws, Range activeCell)
+        private static void SaveTicket(Worksheet ws, Range selection)
         {
             try
             {
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
                 Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
-                
-                int column = activeCell.Column;
-                int row = activeCell.Row;
-                string fieldToSave = SSUtils.GetCellValue(ws, headerRowRange.Row, column);
-                string newValue = SSUtils.GetCellValue(ws, row, column).Trim();
 
-                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
-                string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
-
-                int typeCol = SSUtils.GetColumnFromHeader(ws, "Ticket Type");
-                string type = SSUtils.GetCellValue(ws, row, typeCol);
-
-                int summaryCol = SSUtils.GetColumnFromHeader(ws, "Jira Summary");
-                string summary = SSUtils.GetCellValue(ws, row, summaryCol);
-
-                if (summary == "{DELETED}")
+                foreach (Range cell in selection.Cells)
                 {
-                    MessageBox.Show("Cannot update a Deleted ticket.");
-                }
-                else
-                {
-                    switch (fieldToSave)
+                    int column = cell.Column;
+                    int row = cell.Row;
+                    string fieldToSave = SSUtils.GetCellValue(ws, headerRowRange.Row, column);
+                    string newValue = SSUtils.GetCellValue(ws, row, column).Trim();
+
+                    int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
+                    string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
+
+                    int typeCol = SSUtils.GetColumnFromHeader(ws, "Ticket Type");
+                    string type = SSUtils.GetCellValue(ws, row, typeCol);
+
+                    int summaryCol = SSUtils.GetColumnFromHeader(ws, "Jira Summary");
+                    string summary = SSUtils.GetCellValue(ws, row, summaryCol);
+
+                    if (summary == "{DELETED}")
                     {
-                        case "Jira Summary":
-                            JiraUtils.SaveSummary(jiraId, newValue);
-                            break;
-                        case "Jira Status":
-                            JiraUtils.SaveStatus(jiraId, newValue);
-                            break;
-                        case "Date Submitted to DOT":
-                            if (type == "Story")
-                            {
-                                newValue = newValue.Trim();
-                                if (newValue != string.Empty)
+                        MessageBox.Show("Cannot update a Deleted ticket.");
+                    }
+                    else
+                    {
+                        switch (fieldToSave)
+                        {
+                            case "Jira Summary":
+                                JiraUtils.SaveSummary(jiraId, newValue);
+                                break;
+                            case "Jira Status":
+                                JiraUtils.SaveStatus(jiraId, newValue);
+                                break;
+                            case "Date Submitted to DOT":
+                                if (type == "Story")
                                 {
-                                    if (CheckDate(newValue) == false)
+                                    newValue = newValue.Trim();
+                                    if (newValue != string.Empty)
                                     {
-                                        MessageBox.Show(fieldToSave + " is not a valid date.");
-                                        break;
+                                        if (CheckDate(newValue) == false)
+                                        {
+                                            MessageBox.Show(fieldToSave + " is not a valid date. (" + row + ")");
+                                            break;
+                                        }
+                                        DateTime dt = DateTime.Parse(newValue);
+                                        newValue = dt.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz").Remove(26, 1);
                                     }
-                                    DateTime dt = DateTime.Parse(newValue);
-                                    newValue = dt.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz").Remove(26, 1);
+                                    JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
                                 }
-                                JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
-                            }
-                            else
-                            { 
-                                MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
-                            }
-                            break;
-                        case "Date Approved by DOT":
-                            if (type == "Story")
-                            {
-                                newValue = newValue.Trim();
-                                if (newValue != string.Empty)
+                                else
                                 {
-                                    if (CheckDate(newValue) == false)
-                                    {
-                                        MessageBox.Show(fieldToSave + " is not a valid date.");
-                                        break;
-                                    }
-                                    DateTime dt = DateTime.Parse(newValue);
-                                    newValue = dt.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz").Remove(26, 1);
+                                    MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
                                 }
-                                JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
-                            }
-                            else
-                            {
-                                MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
-                            }
-                            break;
-                        case "Story - As A":
-                            if (type == "Story")
-                            {
-                                JiraUtils.SaveCustomField(jiraId, "Story: As a(n)", newValue);
-                            }
-                            else
-                            {
-                                MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
-                            }
-                            break;
-                        case "Story - Id Like":
-                            if (type == "Story")
-                            {
-                                JiraUtils.SaveCustomField(jiraId, "Story: I'd like to be able to", newValue);
-                            }
-                            else
-                            {
-                                MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
-                            }
-                            break;
-                        case "Story - So That":
-                            if (type == "Story")
-                            {
-                                JiraUtils.SaveCustomField(jiraId, "Story: So that I can", newValue);
-                            }
-                            else
-                            {
-                                MessageBox.Show(fieldToSave + " can't be updated because it is not a story.");
-                            }
-                            break;
-                        case "Points":
-                            JiraUtils.SaveCustomField(jiraId, "Story Points", newValue);
-                            break;
-                        case "DOT Jira ID":
-                            if (type == "Software Bug")
-                            {
-                                JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
-                            }
-                            else
-                            {
-                                MessageBox.Show(fieldToSave + " can't be updated because it is not a Software Bug.");
-                            }
-                            break;
-                        case "Jira Release":
-                            JiraUtils.SaveRelease(jiraId, newValue);
-                            break;
-                        case "Jira Epic ID":
-                            JiraUtils.SaveCustomField(jiraId, "Epic Link", newValue);
-                            break;
-                        default:
-                            //DO NOT UPDATE THE FOLLOWING:
-                            //Ticket Type
-                            //Jira Fix Release
-                            //Jira Hufflepuff Sprint
-                            //Jira Epic
-                            MessageBox.Show(fieldToSave + " can't be updated.");
-                            break;
+                                break;
+                            case "Date Approved by DOT":
+                                if (type == "Story")
+                                {
+                                    newValue = newValue.Trim();
+                                    if (newValue != string.Empty)
+                                    {
+                                        if (CheckDate(newValue) == false)
+                                        {
+                                            MessageBox.Show(fieldToSave + " is not a valid date. (" + row + ")");
+                                            break;
+                                        }
+                                        DateTime dt = DateTime.Parse(newValue);
+                                        newValue = dt.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz").Remove(26, 1);
+                                    }
+                                    JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
+                                }
+                                else
+                                {
+                                    MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                }
+                                break;
+                            case "Story - As A":
+                                if (type == "Story")
+                                {
+                                    JiraUtils.SaveCustomField(jiraId, "Story: As a(n)", newValue);
+                                }
+                                else
+                                {
+                                    MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                }
+                                break;
+                            case "Story - Id Like":
+                                if (type == "Story")
+                                {
+                                    JiraUtils.SaveCustomField(jiraId, "Story: I'd like to be able to", newValue);
+                                }
+                                else
+                                {
+                                    MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                }
+                                break;
+                            case "Story - So That":
+                                if (type == "Story")
+                                {
+                                    JiraUtils.SaveCustomField(jiraId, "Story: So that I can", newValue);
+                                }
+                                else
+                                {
+                                    MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                }
+                                break;
+                            case "Points":
+                                JiraUtils.SaveCustomField(jiraId, "Story Points", newValue);
+                                break;
+                            case "DOT Jira ID":
+                                if (type == "Software Bug")
+                                {
+                                    JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
+                                }
+                                else
+                                {
+                                    MessageBox.Show(fieldToSave + " can't be updated because it is not a Software Bug. (" + row + ")");
+                                }
+                                break;
+                            case "Jira Release":
+                                JiraUtils.SaveRelease(jiraId, newValue);
+                                break;
+                            case "Jira Epic ID":
+                                JiraUtils.SaveCustomField(jiraId, "Epic Link", newValue);
+                                break;
+                            default:
+                                //DO NOT UPDATE THE FOLLOWING:
+                                //Ticket Type
+                                //Jira Fix Release
+                                //Jira Hufflepuff Sprint
+                                //Jira Epic
+                                MessageBox.Show(fieldToSave + " can't be updated. (" + row + ")");
+                                break;
+                        }
                     }
                 }
             }
