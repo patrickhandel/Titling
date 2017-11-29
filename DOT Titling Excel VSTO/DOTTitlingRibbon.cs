@@ -32,9 +32,8 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
                 SSUtils.BeginExcelOperation(app);
-                WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
+                WorksheetStandardization.ExecuteCleanupWorksheet(app);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -88,22 +87,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void button1_Click(object sender, RibbonControlEventArgs e)
-        {
-            Excel.Application app = Globals.ThisAddIn.Application;
-            //BgWorker.Form1.EnableVisualStyles();
-            //app.SetCompatibleTextRenderingDefault(false);
-            //app.Run(new BgWorker.Form1());
-            //Form2.ActiveForm;
-
-            //Form2 frm = new Form2();
-
-            //frm.Activate();
-
-            app.Run(new Form2());
-
-        }
-
         private void btnImportEpics_Click(object sender, RibbonControlEventArgs e)
         {
             try
@@ -146,8 +129,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-
-
         private void btnDeveloperFromHistory_Click(object sender, RibbonControlEventArgs e)
         {
             try
@@ -161,13 +142,6 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
             }
-        }
-
-        private void button1_Click_1(object sender, RibbonControlEventArgs e)
-        {
-            Excel.Application app = Globals.ThisAddIn.Application;
-            Excel.Worksheet activeWorksheet = app.ActiveSheet;
-            SSUtils.GetListOfTables(activeWorksheet);
         }
     }
 }

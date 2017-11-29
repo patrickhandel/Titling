@@ -10,26 +10,46 @@ namespace DOT_Titling_Excel_VSTO
 {
     class SSUtils
     {
-        public static string GetSelectedTable(Worksheet sheet)
+        public static string GetSelectedTable(Excel.Application app)
         {
             string t = string.Empty;
-            foreach (ListObject table in sheet.ListObjects)
+            Excel.Worksheet activeWorksheet = app.ActiveSheet;
+            foreach (Excel.ListObject table in activeWorksheet.ListObjects)
             {
-                Range tableRange = table.Range;
+                Excel.Range tableRange = table.Range;
                 if (table.Active == true)
                     t = table.Name;
             }
             return t;
         }
 
-        public static List<string> GetListOfTables(Worksheet sheet)
+        public static string GetSelectedTableHeader(Excel.Application app)
+        {
+            string h = string.Empty;
+            string tableName = GetSelectedTable(app);
+            if (tableName != string.Empty)
+                h = tableName + "[#Headers]";
+            return h;
+        }
+
+        public static string GetSelectedTableFooter(Excel.Application app)
+        {
+            string f = string.Empty;
+            Excel.Worksheet activeWorksheet = app.ActiveSheet;
+            string tableName = GetSelectedTable(app);
+            if (tableName != string.Empty)
+                f = tableName + "[#Headers]";
+            return f;
+        }
+
+        public static List<string> GetListOfTables(Excel.Application app)
         {
             List<string> listofTables = new List<string>();
-            foreach (ListObject table in sheet.ListObjects)
+            Worksheet activeWorksheet = app.ActiveSheet;
+            foreach (ListObject table in activeWorksheet.ListObjects)
             {
                 listofTables.Add(table.Name);
                 Range tableRange = table.Range;
-
                 if (table.Active == true)
                     MessageBox.Show(table.Name);
             }
