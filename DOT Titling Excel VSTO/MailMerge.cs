@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
+using Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class MailMerge
     {
-        public static void ExecuteMailMerge()
+        public static void ExecuteMailMerge(Excel.Application app)
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                Excel.Range activeCell = app.ActiveCell;
+                Worksheet activeWorksheet = app.ActiveSheet;
+                Range activeCell = app.ActiveCell;
                 var selection = app.Selection;
-
                 if (activeCell != null && activeWorksheet.Name == "Tickets")
                 {
                     var mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
@@ -29,7 +28,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void CreateMailMergeDocuments(Excel.Application app, Excel.Worksheet activeWorksheet, Excel.Range selection, List<MailMergeFields> mailMergeFields)
+        public static void CreateMailMergeDocuments(Excel.Application app, Worksheet ws, Range selection, List<MailMergeFields> mailMergeFields)
         {
             try
             {
@@ -40,12 +39,12 @@ namespace DOT_Titling_Excel_VSTO
 
                 for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
                 {
-                    if (activeWorksheet.Rows[row].EntireRow.Height != 0)
+                    if (ws.Rows[row].EntireRow.Height != 0)
                     {
                         wordDocument = wordApp.Documents.Add(Template: template);
 
-                        int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Ticket ID");
-                        string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
+                        int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
+                        string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
                         if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
                         {
                             ImportFromJira.ExecuteUpateTicketBeforeMailMerge(jiraId);
@@ -55,8 +54,8 @@ namespace DOT_Titling_Excel_VSTO
                             {
                                 string name = mailMergeField.Name;
                                 string text = mailMergeField.Text;
-                                int col = SSUtils.GetColumnFromHeader(activeWorksheet, mailMergeField.Text);
-                                string value = SSUtils.GetCellValue(activeWorksheet, row, col);
+                                int col = SSUtils.GetColumnFromHeader(ws, mailMergeField.Text);
+                                string value = SSUtils.GetCellValue(ws, row, col);
                                 if (name == "summary")
                                     summary = value;
                                 if (name == "epicID")

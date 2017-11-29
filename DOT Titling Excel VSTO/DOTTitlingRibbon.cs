@@ -18,7 +18,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 //SSUtils.BeginExcelOperation(app);
-                RoadMap.ExecuteUpdateRoadMap();
+                RoadMap.ExecuteUpdateRoadMap(app);
                 //SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -27,13 +27,13 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnCleanupWorksheet_Click(object sender, RibbonControlEventArgs e)
+        private void btnCleanupTable_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                WorksheetStandardization.ExecuteCleanupWorksheet(app);
+                TableStandardization.ExecuteCleanupTable(app);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                ImportFromJira.ExecuteAddNewTickets();
+                ImportFromJira.ExecuteAddNewTickets(app);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -63,7 +63,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                ImportFromJira.ExecuteUpdateSelectedTickets();
+                ImportFromJira.ExecuteUpdateSelectedTickets(app);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -78,7 +78,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                ImportFromJira.ExecuteUpdateAllTickets();
+                ImportFromJira.ExecuteUpdateAllTickets(app);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -91,7 +91,8 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                ImportFromJira.ExecuteUpdateEpics();
+                Excel.Application app = Globals.ThisAddIn.Application;
+                ImportFromJira.ExecuteUpdateEpics(app);
             }
             catch (Exception ex)
             {
@@ -105,7 +106,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                MailMerge.ExecuteMailMerge();
+                MailMerge.ExecuteMailMerge(app);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -120,7 +121,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                ExportToJira.ExecuteSaveTicket();
+                ExportToJira.ExecuteSaveTicket(app);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)

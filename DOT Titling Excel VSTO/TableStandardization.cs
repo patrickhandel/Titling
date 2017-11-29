@@ -5,9 +5,9 @@ using Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
-    class WorksheetStandardization
+    class TableStandardization
     {
-        public static void ExecuteCleanupWorksheet(Excel.Application app)
+        public static void ExecuteCleanupTable(Excel.Application app)
         {
             try
             {
@@ -43,6 +43,13 @@ namespace DOT_Titling_Excel_VSTO
                     headerRowRange.Font.Size = 9;
                     headerRowRange.VerticalAlignment = XlVAlign.xlVAlignTop;
                     headerRowRange.EntireRow.Offset[-1, 0].Hidden = true;
+
+                    // TO DO
+                    // CODE: Cleanup - Format Header Cells
+                    // CODE: Cleanup - Make Footer Cells Same Color as Header
+                    // CODE: Cleanup - Column Copy Down Formats
+                    // CODE: Cleanup - Set Justification
+                    // CODE: Cleanup - Look for Formulas Where they Shouldn't Be
                 }               
             }
             catch (Exception ex)

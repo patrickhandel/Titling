@@ -8,11 +8,10 @@ namespace DOT_Titling_Excel_VSTO
 { 
     class RoadMap
     {
-        public static void ExecuteUpdateRoadMap()
+        public static void ExecuteUpdateRoadMap(Excel.Application app)
         {
             try
             {
-                var app = Globals.ThisAddIn.Application;
                 var activeWorksheet = app.ActiveSheet;
                 if (activeWorksheet.Name == "Road Map")
                 {

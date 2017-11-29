@@ -7,11 +7,10 @@ namespace DOT_Titling_Excel_VSTO
 {
     class ExportToJira
     {
-        public static void ExecuteSaveTicket()
+        public static void ExecuteSaveTicket(Excel.Application app)
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
                 Worksheet activeWorksheet = app.ActiveSheet;
                 Range activeCell = app.ActiveCell;
                 var selection = app.Selection;

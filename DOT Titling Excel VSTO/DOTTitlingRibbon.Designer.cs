@@ -124,7 +124,7 @@
             this.btnCleanup.Label = "Cleanup Worksheet";
             this.btnCleanup.Name = "btnCleanup";
             this.btnCleanup.ShowImage = true;
-            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupWorksheet_Click);
+            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupTable_Click);
             // 
             // btnMailMerge
             // 

@@ -10,11 +10,10 @@ namespace DOT_Titling_Excel_VSTO
 {
     class ImportFromJira
     {
-        public static void ExecuteUpdateSelectedTickets()
+        public static void ExecuteUpdateSelectedTickets(Excel.Application app)
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
                 var activeWorksheet = app.ActiveSheet;
                 var activeCell = app.ActiveCell;
                 var selection = app.Selection;
@@ -22,7 +21,7 @@ namespace DOT_Titling_Excel_VSTO
                 if (activeCell != null && ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases")))
                 {
                     UpdateSelectedTickets(app, activeWorksheet, selection);
-                    WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
+                    TableStandardization.ExecuteCleanupTable(activeWorksheet);
                 }
             }
             catch (Exception ex)
@@ -31,16 +30,15 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteAddNewTickets()
+        public static void ExecuteAddNewTickets(Excel.Application app)
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
                 var activeWorksheet = app.ActiveSheet;
                 if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
                 {
                     AddNewTickets(app, activeWorksheet);
-                    WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
+                    TableStandardization.ExecuteCleanupTable(activeWorksheet);
                 }
             }
             catch (Exception ex)
@@ -146,11 +144,10 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateAllTickets()
+        public static void ExecuteUpdateAllTickets(Excel.Application app)
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
                 var activeWorksheet = app.ActiveSheet;
                 if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
                 {
@@ -167,7 +164,7 @@ namespace DOT_Titling_Excel_VSTO
                         string val = "DOT Releases (Updated on " + dt + ")";
                         SSUtils.SetCellValue(activeWorksheet, 1, 1, val);
                     }
-                    WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
+                    TableStandardization.ExecuteCleanupTable(activeWorksheet);
                 }
             }
             catch (Exception ex)
@@ -176,17 +173,16 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateEpics()
+        public static void ExecuteUpdateEpics(Excel.Application app)
         {
             try
             {
-                Excel.Application app = Globals.ThisAddIn.Application;
                 var activeWorksheet = app.ActiveSheet;
                 if ((activeWorksheet.Name == "Epics"))
                 {
                     UpdateEpics(app, activeWorksheet);
                     AddNewEpics(app, activeWorksheet);
-                    WorksheetStandardization.ExecuteCleanupWorksheet(activeWorksheet);
+                    TableStandardization.ExecuteCleanupTable(activeWorksheet);
                 }
             }
             catch (Exception ex)
@@ -202,7 +198,7 @@ namespace DOT_Titling_Excel_VSTO
                 var app = Globals.ThisAddIn.Application;
                 var ws = app.Sheets["Tickets"];
                 UpdateTicketBeforeMailMerge(app, ws, jiraId);
-                WorksheetStandardization.ExecuteCleanupWorksheet(ws);
+                TableStandardization.ExecuteCleanupTable(ws);
             }
             catch (Exception ex)
             {
