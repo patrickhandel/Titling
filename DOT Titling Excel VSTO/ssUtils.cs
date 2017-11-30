@@ -13,12 +13,16 @@ namespace DOT_Titling_Excel_VSTO
         public static string GetSelectedTable(Excel.Application app)
         {
             string t = string.Empty;
-            Excel.Worksheet activeWorksheet = app.ActiveSheet;
-            foreach (Excel.ListObject table in activeWorksheet.ListObjects)
+            Worksheet activeWorksheet = app.ActiveSheet;
+            foreach (ListObject table in activeWorksheet.ListObjects)
             {
-                Excel.Range tableRange = table.Range;
+                Range tableRange = table.Range;
                 if (table.Active == true)
+                {
                     t = table.Name;
+                    if (table.ShowTotals == false)
+                        table.ShowTotals = true;
+                }
             }
             return t;
         }
@@ -38,7 +42,7 @@ namespace DOT_Titling_Excel_VSTO
             Excel.Worksheet activeWorksheet = app.ActiveSheet;
             string tableName = GetSelectedTable(app);
             if (tableName != string.Empty)
-                f = tableName + "[#Headers]";
+                f = tableName + "[#Totals]";
             return f;
         }
 
@@ -101,15 +105,6 @@ namespace DOT_Titling_Excel_VSTO
             if (prop == null)
                 return string.Empty;
             return prop.Range + "[#Totals]";
-        }
-
-        public static int GetColumnWidth(string name)
-        {
-            List<ColumnTypes> wsColumnTypes = WorksheetPropertiesManager.GetColumnTypes();
-            var prop = wsColumnTypes.FirstOrDefault(p => p.Name == name);
-            if (prop == null)
-                return 15;
-            return prop.Width;
         }
 
         public static string GetCellValue(Worksheet sheet, int row, int column)
@@ -187,7 +182,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Excel.Range r = GetSpecifiedRange(valueToFind, ws, colRangeName);
+                Range r = GetSpecifiedRange(valueToFind, ws, colRangeName);
                 if (r != null)
                 {
                     return r.Row;

@@ -21,13 +21,6 @@ namespace DOT_Titling_Excel_VSTO
         public string Range { get; set; }
     }
 
-    public class ColumnTypes
-    {
-        public string Name { get; set; }
-
-        public int Width { get; set; }
-    }
-
     public class MailMergeFields
     {
         public string Name { get; set; }
@@ -69,13 +62,6 @@ namespace DOT_Titling_Excel_VSTO
         {
             var str = ConfigurationManager.AppSettings["Developers"];
             List<Developers> lst = JsonConvert.DeserializeObject<List<Developers>>(str);
-            return lst;
-        }
-
-        public static List<ColumnTypes> GetColumnTypes()
-        {
-            var str = ConfigurationManager.AppSettings["ColumnTypes"];
-            List<ColumnTypes> lst = JsonConvert.DeserializeObject<List<ColumnTypes>>(str);
             return lst;
         }
 

@@ -17,11 +17,12 @@ namespace DOT_Titling_Excel_VSTO
                 var activeWorksheet = app.ActiveSheet;
                 var activeCell = app.ActiveCell;
                 var selection = app.Selection;
+                string table = SSUtils.GetSelectedTable(app);
 
-                if (activeCell != null && ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases")))
+                if (activeCell != null && ((table == "TicketData") || (table == "DOTReleaseData")))
                 {
                     UpdateSelectedTickets(app, activeWorksheet, selection);
-                    TableStandardization.ExecuteCleanupTable(activeWorksheet);
+                    TableStandardization.ExecuteCleanupTable(app);
                 }
             }
             catch (Exception ex)
@@ -38,7 +39,7 @@ namespace DOT_Titling_Excel_VSTO
                 if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
                 {
                     AddNewTickets(app, activeWorksheet);
-                    TableStandardization.ExecuteCleanupTable(activeWorksheet);
+                    TableStandardization.ExecuteCleanupTable(app);
                 }
             }
             catch (Exception ex)
@@ -164,7 +165,7 @@ namespace DOT_Titling_Excel_VSTO
                         string val = "DOT Releases (Updated on " + dt + ")";
                         SSUtils.SetCellValue(activeWorksheet, 1, 1, val);
                     }
-                    TableStandardization.ExecuteCleanupTable(activeWorksheet);
+                    TableStandardization.ExecuteCleanupTable(app);
                 }
             }
             catch (Exception ex)
@@ -182,7 +183,7 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     UpdateEpics(app, activeWorksheet);
                     AddNewEpics(app, activeWorksheet);
-                    TableStandardization.ExecuteCleanupTable(activeWorksheet);
+                    TableStandardization.ExecuteCleanupTable(app);
                 }
             }
             catch (Exception ex)
@@ -198,7 +199,7 @@ namespace DOT_Titling_Excel_VSTO
                 var app = Globals.ThisAddIn.Application;
                 var ws = app.Sheets["Tickets"];
                 UpdateTicketBeforeMailMerge(app, ws, jiraId);
-                TableStandardization.ExecuteCleanupTable(ws);
+                TableStandardization.ExecuteCleanupTable(app);
             }
             catch (Exception ex)
             {
@@ -396,7 +397,6 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void UpdateSprintProgress(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue, bool notFound)
         {
-            //PWH
             // Get the Current Date
             string dt = DateTime.Now.ToString("MM/dd/yyyy");
 
