@@ -195,6 +195,9 @@ namespace DOT_Titling_Excel_VSTO
                             case "Jira Epic ID":
                                 JiraUtils.SaveCustomField(jiraId, "Epic Link", newValue);
                                 break;
+                            case "SWAG":
+                                JiraUtils.SaveCustomField(jiraId, "SWAG", newValue);
+                                break;
                             default:
                                 //DO NOT UPDATE THE FOLLOWING:
                                 //Ticket Type
