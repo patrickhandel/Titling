@@ -60,112 +60,64 @@ namespace DOT_Titling_Excel_VSTO
 
                         if (columnRange != null)
                         {
+                            cell.IndentLevel = 0;
+                            columnRange.Font.Bold = false;
+                            columnRange.Font.Italic = false;
+                            columnRange.Font.Underline = false;
+                            columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
+
                             switch (colType)
                             {
                                 case "TextLong":
                                     cell.EntireColumn.ColumnWidth = 40;
                                     cell.IndentLevel = 1;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
                                     break;
                                 case "TextMedium":
                                     cell.EntireColumn.ColumnWidth = 20;
-                                    cell.IndentLevel = 0;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
                                     break;
                                 case "TextShort":
                                     cell.EntireColumn.ColumnWidth = 15;
-                                    cell.IndentLevel = 0;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
                                     break;
                                 case "TextTiny":
                                     cell.EntireColumn.ColumnWidth = 9;
-                                    cell.IndentLevel = 0;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
                                     break;
                                 case "Number":
-                                    cell.IndentLevel = 0;
                                     cell.EntireColumn.ColumnWidth = 9;
                                     columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
                                     break;
                                 case "Percent":
-                                    cell.IndentLevel = 0;
                                     cell.EntireColumn.ColumnWidth = 9;
                                     columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
+                                    columnRange.NumberFormat = "0%";
                                     break;
                                 case "Date":
-                                    cell.IndentLevel = 0;
-                                    cell.EntireColumn.ColumnWidth = 9;
+                                    cell.EntireColumn.ColumnWidth = 10;
                                     columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
+                                    columnRange.NumberFormat = "m/d/yyyy";
                                     break;
                                 case "Error":
                                 case "YesNoGreen":
                                 case "YesNoRed":
                                 case "YesNo":
-                                    cell.EntireColumn.ColumnWidth = 9;
-                                    cell.IndentLevel = 0;
+                                    cell.EntireColumn.ColumnWidth = 7;
                                     columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
                                     columnRange.Font.Bold = true;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
-
-                                    //columnRange.FormatConditions.Delete();
-                                    //FormatCondition condition =
-                                    //       (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
-                                    //       XlFormatConditionOperator.xlEqual, "x",
-                                    //       Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                                    //condition.Interior.PatternColorIndex = Constants.xlAutomatic;
-                                    //condition.Interior.TintAndShade = 0;
-
-                                    //if (colType == "YesNoGreen")
-                                    //{
-                                    //    condition.Interior.Color = XlRgbColor.rgbLightGreen;
-                                    //    condition.Font.Color = XlRgbColor.rgbDarkGreen;
-                                    //}
-
-                                    //if (colType == "YesNo" || colType == "YesNoRed")
-                                    //{
-                                    //    condition.Interior.Color = XlRgbColor.rgbLightPink;
-                                    //    condition.Font.Color = XlRgbColor.rgbWhite;
-                                    //}
-
-                                    //condition.StopIfTrue = false;
+                                    break;
+                                case "MidLong":
+                                    cell.EntireColumn.ColumnWidth = 13;
+                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
+                                    columnRange.Font.Bold = true;
+                                    break;
+                                case "Release":
+                                    cell.EntireColumn.ColumnWidth = 7;
+                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
+                                    columnRange.Font.Bold = true;
                                     break;
                                 case "Hidden":
-                                    cell.IndentLevel = 0;
                                     cell.EntireColumn.ColumnWidth = 0;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
                                     break;
                                 default:
                                     cell.EntireColumn.ColumnWidth = 15;
-                                    cell.IndentLevel = 0;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
-                                    columnRange.Font.Bold = false;
-                                    columnRange.Font.Italic = false;
-                                    columnRange.Font.Underline = false;
                                     break;
                             }
                         }

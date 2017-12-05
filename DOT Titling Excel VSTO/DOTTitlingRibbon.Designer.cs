@@ -1,4 +1,7 @@
-﻿namespace DOT_Titling_Excel_VSTO
+﻿using System;
+using Microsoft.Office.Tools.Ribbon;
+
+namespace DOT_Titling_Excel_VSTO
 {
     partial class DOTTitlingRibbon : Microsoft.Office.Tools.Ribbon.RibbonBase
     {
@@ -46,6 +49,9 @@
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnDeveloperFromHistory = this.Factory.CreateRibbonButton();
             this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
+            this.Views = this.Factory.CreateRibbonGallery();
+            this.viewButton1 = this.Factory.CreateRibbonButton();
+            this.viewButton2 = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -69,6 +75,7 @@
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnDeveloperFromHistory);
             this.group1.Items.Add(this.btnUpdateRoadMap);
+            this.group1.Items.Add(this.Views);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
             // 
@@ -153,6 +160,37 @@
             this.btnUpdateRoadMap.ShowImage = true;
             this.btnUpdateRoadMap.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateRoadMap_Click);
             // 
+            // Views
+            // 
+            this.Views.Buttons.Add(this.viewButton1);
+            this.Views.Buttons.Add(this.viewButton2);
+            this.Views.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.Views.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
+            this.Views.Label = "Views";
+            this.Views.Name = "Views";
+            this.Views.ShowImage = true;
+            this.Views.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Views_Click);
+            // 
+            // viewButton1
+            // 
+            this.viewButton1.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.viewButton1.Description = "Release Schedule";
+            this.viewButton1.Image = ((System.Drawing.Image)(resources.GetObject("viewButton1.Image")));
+            this.viewButton1.Label = "Release Schedule";
+            this.viewButton1.Name = "viewButton1";
+            this.viewButton1.ShowImage = true;
+            this.viewButton1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.viewButton1_Click);
+            // 
+            // viewButton2
+            // 
+            this.viewButton2.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.viewButton2.Description = "Blocked Tickets";
+            this.viewButton2.Image = ((System.Drawing.Image)(resources.GetObject("viewButton2.Image")));
+            this.viewButton2.Label = "Blocked Tickets";
+            this.viewButton2.Name = "viewButton2";
+            this.viewButton2.ShowImage = true;
+            this.viewButton2.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.viewButton2_Click);
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -180,6 +218,9 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdateRoadMap;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportEpics;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnDeveloperFromHistory;
+        internal Microsoft.Office.Tools.Ribbon.RibbonGallery Views;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton viewButton1;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton viewButton2;
     }
 
     partial class ThisRibbonCollection

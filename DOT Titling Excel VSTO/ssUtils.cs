@@ -306,14 +306,30 @@ namespace DOT_Titling_Excel_VSTO
             return result;
         }
 
-        public static void SortTable(Excel.Application app, Worksheet ws, string rangeName, string column)
+
+        public static void SortTable(Worksheet ws, string rangeName, string sortColumn, XlSortOrder sortOrder)
         {
             try
             {
                 Range rng = ws.get_Range(rangeName);
                 ListObject list = ws.ListObjects.Add(XlListObjectSourceType.xlSrcRange, rng, Type.Missing, XlYesNoGuess.xlYes, Type.Missing);
-                list.Range.Sort(list.ListColumns[column].Range, XlSortOrder.xlAscending);
+                list.Range.Sort(list.ListColumns[sortColumn].Range, sortOrder);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
 
+
+        public static void SortAndFilterTable(Worksheet ws, Range rng, string sortColumn, XlSortOrder sortOrder, string filterColumn, string filterValue)
+        {
+            try
+            {
+                ListObject list = ws.ListObjects.Add(XlListObjectSourceType.xlSrcRange, rng, Type.Missing, XlYesNoGuess.xlYes, Type.Missing);
+                list.Range.Sort(list.ListColumns[sortColumn].Range, sortOrder);
+                //if (filterColumn != string.Empty)   
+                //    list.Range.AutoFilter(list.ListColumns[filterColumn], filterValue);
             }
             catch (Exception ex)
             {

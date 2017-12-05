@@ -28,6 +28,26 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
+                // Save into a PDF and Image.
+                FileIO.CreateRoadMapImage(wsRoadmap);
+                FileIO.CreateRoadMapPDF(wsRoadmap);
+
+                Worksheet wsRoadMapBlocks = app.Sheets["Road Map Blocks"];
+                FileIO.CreateRoadMapImage(wsRoadMapBlocks);
+                FileIO.CreateRoadMapPDF(wsRoadMapBlocks);
+
+                wsRoadmap.Select();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void UpdateRoadMap_Ver1(Excel.Application app, Worksheet wsRoadmap)
+        {
+            try
+            {
                 Worksheet wsEpics = app.Sheets["Epics"];
                 Worksheet wsReleases = app.Sheets["Releases"];
 
@@ -106,8 +126,91 @@ namespace DOT_Titling_Excel_VSTO
                 FormatChart(wsRoadmap, firstRow, rmRow, lastColumn);
 
                 // Save into a PDF and Image.
-                FileIO.CreateImage(wsRoadmap, rmRow, lastColumn);
-                FileIO.CreatePDF(wsRoadmap);
+                FileIO.CreateRoadMapImage(wsRoadmap);
+                FileIO.CreateRoadMapPDF(wsRoadmap);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void UpdateRoadMap_Ver2(Excel.Application app, Worksheet wsRoadmap)
+        {
+            try
+            {
+                Worksheet wsEpics = app.Sheets["Epics"];
+                Worksheet wsReleases = app.Sheets["Releases"];
+
+                Int32 firstRow = 5;
+                Int32 rmRow = firstRow;
+
+                // Delete the rows row in the Road Map
+                Int32 lastRow = SSUtils.GetLastRow(wsRoadmap);
+                Int32 lastColumn = SSUtils.GetLastColumn(wsRoadmap);
+
+                if (lastRow > rmRow + 2)
+                {
+                    Range rToDelete = wsRoadmap.get_Range(String.Format("{0}:{1}", rmRow + 2, lastRow), Type.Missing);
+                    rToDelete.Delete();
+                }
+
+                List<Release> releases = Lists.GetListOfReleases(wsReleases);
+                releases = releases.FindAll(r => r.MidLong == "Mid" || r.MidLong == "Long");
+
+                string prevReleaseName = string.Empty;
+                Int32 prevSprintTo = 0;
+                bool firstRelease = true;
+                foreach (var release in releases)
+                {
+                    Int32 releaseNumber = release.Number;
+                    string releaseName = release.Name;
+                    string midLong = release.MidLong;
+                    string releaseStatus = release.Status;
+                    Int32 sprintFrom = release.SprintFrom;
+                    Int32 sprintTo = release.SprintTo;
+                    Int32 uatSprintFrom = release.UATSprintFrom;
+                    Int32 uatSprintTo = release.UATSprintTo;
+                    Int32 vendorSprint = release.VendorSprint;
+
+                    // REL
+                    CreateRow(wsRoadmap, "REL", rmRow, "", releaseName, releaseStatus, releaseNumber, 0, 0, 0);
+                    rmRow++;
+
+                    // BFP
+                    if (!firstRelease)
+                    {
+                        CreateRow(wsRoadmap, "BFP", rmRow, "", releaseName, "", releaseNumber - 1, prevSprintTo + 1, prevSprintTo + 2, 0);
+                        rmRow++;
+                    }
+
+                    // EPIC
+                    CreateRow(wsRoadmap, "DEV", rmRow, "", releaseName, "", releaseNumber, sprintFrom, sprintTo, 0);
+                    rmRow++;
+
+                    // UAT
+                    if (uatSprintTo != 0)
+                    {
+                        CreateRow(wsRoadmap, "UAT", rmRow, "", releaseName, "", releaseNumber, uatSprintFrom, uatSprintTo, 0);
+                        rmRow++;
+                    }
+
+                    // VENDOR
+                    if (vendorSprint != 0)
+                    {
+                        CreateRow(wsRoadmap, "VENDOR", rmRow, "", releaseName, "", releaseNumber, 0, 0, vendorSprint);
+                        rmRow++;
+                    }
+
+                    prevReleaseName = releaseName;
+                    prevSprintTo = sprintTo;
+                    firstRelease = false;
+                }
+                FormatChart(wsRoadmap, firstRow, rmRow, lastColumn);
+
+                // Save into a PDF and Image.
+                FileIO.CreateRoadMapImage(wsRoadmap);
+                FileIO.CreateRoadMapPDF(wsRoadmap);
             }
             catch (Exception ex)
             {
@@ -122,7 +225,7 @@ namespace DOT_Titling_Excel_VSTO
                 switch (rowType)
                 {
                     case "BFP":
-                        SSUtils.SetCellValue(ws, row, 1, "Bug Fixing - R" + releaseNumber.ToString());
+                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Bug Fixing");
                         SSUtils.SetCellValue(ws, row, 2, string.Empty);
                         SSUtils.SetCellValue(ws, row, 3, rowType);
                         SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString());
@@ -149,6 +252,13 @@ namespace DOT_Titling_Excel_VSTO
                         SSUtils.SetCellValue(ws, row, 4, string.Empty);
                         SSUtils.SetCellValue(ws, row, 5, string.Empty);
                         break;
+                    case "DEV":
+                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Development");
+                        SSUtils.SetCellValue(ws, row, 2, status);
+                        SSUtils.SetCellValue(ws, row, 3, "Epic");
+                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString());
+                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString());
+                        break;
                     case "EPIC":
                         SSUtils.SetCellValue(ws, row, 1, epicName);
                         SSUtils.SetCellValue(ws, row, 2, status);
@@ -156,6 +266,7 @@ namespace DOT_Titling_Excel_VSTO
                         SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString());
                         SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString());
                         break;
+
                     case "FINAL ROW":
                         SSUtils.SetCellValue(ws, row, 1, "FINAL ROW");
                         SSUtils.SetCellValue(ws, row, 2, string.Empty);

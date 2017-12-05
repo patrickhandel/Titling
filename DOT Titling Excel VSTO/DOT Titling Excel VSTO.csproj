@@ -210,6 +210,7 @@
     <Compile Include="ImportFromJira.cs" />
     <Compile Include="JiraUtils.cs" />
     <Compile Include="Lists.cs" />
+    <Compile Include="TableViews.cs" />
     <Compile Include="MailMerge.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties.cs" />
