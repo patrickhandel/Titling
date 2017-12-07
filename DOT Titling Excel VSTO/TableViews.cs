@@ -36,6 +36,7 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("Days in Same Status");
                     ColumnsToShow.Add("Assignee");
                     ColumnsToShow.Add("ERR Story Not Moving or Blocked");
+                    ColumnsToShow.Add("Reason Blocked or Delayed");
 
                     HideTableColumns(headerRowRange, ColumnsToShow);
 
