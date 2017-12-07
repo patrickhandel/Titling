@@ -52,6 +52,7 @@ namespace DOT_Titling_Excel_VSTO
             this.Views = this.Factory.CreateRibbonGallery();
             this.viewButton1 = this.Factory.CreateRibbonButton();
             this.viewButton2 = this.Factory.CreateRibbonButton();
+            this.resetViewButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -164,6 +165,7 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.Views.Buttons.Add(this.viewButton1);
             this.Views.Buttons.Add(this.viewButton2);
+            this.Views.Buttons.Add(this.resetViewButton);
             this.Views.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.Views.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
             this.Views.Label = "Views";
@@ -190,6 +192,16 @@ namespace DOT_Titling_Excel_VSTO
             this.viewButton2.Name = "viewButton2";
             this.viewButton2.ShowImage = true;
             this.viewButton2.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.viewButton2_Click);
+            // 
+            // resetViewButton
+            // 
+            this.resetViewButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.resetViewButton.Description = "Reset";
+            this.resetViewButton.Image = ((System.Drawing.Image)(resources.GetObject("resetViewButton.Image")));
+            this.resetViewButton.Label = "Reset";
+            this.resetViewButton.Name = "resetViewButton";
+            this.resetViewButton.ShowImage = true;
+            this.resetViewButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.resetViewButton_Click);
             // 
             // DOTTitlingRibbon
             // 
@@ -221,6 +233,7 @@ namespace DOT_Titling_Excel_VSTO
         internal Microsoft.Office.Tools.Ribbon.RibbonGallery Views;
         private Microsoft.Office.Tools.Ribbon.RibbonButton viewButton1;
         private Microsoft.Office.Tools.Ribbon.RibbonButton viewButton2;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton resetViewButton;
     }
 
     partial class ThisRibbonCollection

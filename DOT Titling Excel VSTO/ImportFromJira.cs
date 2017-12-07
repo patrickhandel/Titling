@@ -22,7 +22,7 @@ namespace DOT_Titling_Excel_VSTO
                 if (activeCell != null && ((table == "TicketData") || (table == "DOTReleaseData")))
                 {
                     UpdateSelectedTickets(app, activeWorksheet, selection);
-                    TableStandardization.ExecuteCleanupTable(app);
+                    TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                 }
             }
             catch (Exception ex)
@@ -39,7 +39,7 @@ namespace DOT_Titling_Excel_VSTO
                 if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
                 {
                     AddNewTickets(app, activeWorksheet);
-                    TableStandardization.ExecuteCleanupTable(app);
+                    TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                 }
             }
             catch (Exception ex)
@@ -165,7 +165,7 @@ namespace DOT_Titling_Excel_VSTO
                         string val = "DOT Releases (Updated on " + dt + ")";
                         SSUtils.SetCellValue(activeWorksheet, 1, 1, val);
                     }
-                    TableStandardization.ExecuteCleanupTable(app);
+                    TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                 }
             }
             catch (Exception ex)
@@ -183,7 +183,7 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     UpdateEpics(app, activeWorksheet);
                     AddNewEpics(app, activeWorksheet);
-                    TableStandardization.ExecuteCleanupTable(app);
+                    TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                 }
             }
             catch (Exception ex)
@@ -199,7 +199,7 @@ namespace DOT_Titling_Excel_VSTO
                 var app = Globals.ThisAddIn.Application;
                 var ws = app.Sheets["Tickets"];
                 UpdateTicketBeforeMailMerge(app, ws, jiraId);
-                TableStandardization.ExecuteCleanupTable(app);
+                TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
             }
             catch (Exception ex)
             {

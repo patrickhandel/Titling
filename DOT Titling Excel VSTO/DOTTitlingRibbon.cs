@@ -33,7 +33,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                TableStandardization.ExecuteCleanupTable(app);
+                TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Thorough);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -164,6 +164,21 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 TableViews.ExecuteViewBlockedTickets(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private void resetViewButton_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
             {

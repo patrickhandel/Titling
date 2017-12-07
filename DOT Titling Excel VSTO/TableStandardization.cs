@@ -7,7 +7,13 @@ namespace DOT_Titling_Excel_VSTO
 {
     class TableStandardization
     {
-        public static void ExecuteCleanupTable(Excel.Application app)
+        public enum StandardizationType
+        {
+            Thorough = 1,
+            Light = 2
+        };
+
+        public static void ExecuteCleanupTable(Excel.Application app, StandardizationType type)
         {
             try
             {
@@ -24,24 +30,27 @@ namespace DOT_Titling_Excel_VSTO
                     headerRow = headerRowRange.Row;
 
                     // Get the footer row and format it
-                    string footerRangeName = SSUtils.GetSelectedTableFooter(app);
-                    if (footerRangeName != string.Empty)
+                    if (type == StandardizationType.Thorough)
                     {
-                        Range footerRowRange = app.get_Range(footerRangeName, Type.Missing);
-                        footerRow = footerRowRange.Row;
-                        footerRowOffset = footerRow - headerRow;
-                        headerRowRange.Copy(Type.Missing);
-                        footerRowRange.PasteSpecial(XlPasteType.xlPasteFormats, XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-                    }
-
-                    // Get the footer row and format it
-                    if (headerRow > 2)
-                    {
-                        Range offsetRowRange = headerRowRange.Offset[-1, 0];
-                        if (offsetRowRange != null)
+                        string footerRangeName = SSUtils.GetSelectedTableFooter(app);
+                        if (footerRangeName != string.Empty)
                         {
+                            Range footerRowRange = app.get_Range(footerRangeName, Type.Missing);
+                            footerRow = footerRowRange.Row;
+                            footerRowOffset = footerRow - headerRow;
                             headerRowRange.Copy(Type.Missing);
-                            offsetRowRange.PasteSpecial(XlPasteType.xlPasteFormats, XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                            footerRowRange.PasteSpecial(XlPasteType.xlPasteFormats, XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                        }
+
+                        // Get the footer row and format it
+                        if (headerRow > 2)
+                        {
+                            Range offsetRowRange = headerRowRange.Offset[-1, 0];
+                            if (offsetRowRange != null)
+                            {
+                                headerRowRange.Copy(Type.Missing);
+                                offsetRowRange.PasteSpecial(XlPasteType.xlPasteFormats, XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                            }
                         }
                     }
 
@@ -55,70 +64,116 @@ namespace DOT_Titling_Excel_VSTO
                         columnHeader = cell.Value;
                         colType = cell.Offset[-1, 0].Value;
 
-                        string columnNameRange = tableRangeName + '[' + columnHeader + ']';
-                        Range columnRange = app.get_Range(columnNameRange, Type.Missing);
-
-                        if (columnRange != null)
+                        switch (colType)
                         {
-                            cell.IndentLevel = 0;
-                            columnRange.Font.Bold = false;
-                            columnRange.Font.Italic = false;
-                            columnRange.Font.Underline = false;
-                            columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
+                            case "TextLong":
+                                cell.EntireColumn.ColumnWidth = 40;
+                                cell.IndentLevel = 1;
+                                break;
+                            case "TextMedium":
+                                cell.EntireColumn.ColumnWidth = 20;
+                                break;
+                            case "TextShort":
+                                cell.EntireColumn.ColumnWidth = 15;
+                                break;
+                            case "TextTiny":
+                                cell.EntireColumn.ColumnWidth = 9;
+                                break;
+                            case "Number":
+                                cell.EntireColumn.ColumnWidth = 9;
+                                break;
+                            case "Percent":
+                                cell.EntireColumn.ColumnWidth = 9;
+                                break;
+                            case "Date":
+                                cell.EntireColumn.ColumnWidth = 10;
+                                break;
+                            case "Error":
+                            case "YesNoGreen":
+                            case "YesNoRed":
+                            case "YesNo":
+                                cell.EntireColumn.ColumnWidth = 7;
+                                break;
+                            case "MidLong":
+                                cell.EntireColumn.ColumnWidth = 13;
+                                break;
+                            case "Release":
+                                cell.EntireColumn.ColumnWidth = 7;
+                                break;
+                            case "Hidden":
+                                cell.EntireColumn.ColumnWidth = 0;
+                                break;
+                            default:
+                                cell.EntireColumn.ColumnWidth = 15;
+                                break;
+                        }
 
-                            switch (colType)
+                        if (type == StandardizationType.Thorough)
+                        {
+                            string columnNameRange = tableRangeName + '[' + columnHeader + ']';
+                            Range columnRange = app.get_Range(columnNameRange, Type.Missing);
+                            if (columnRange != null)
                             {
-                                case "TextLong":
-                                    cell.EntireColumn.ColumnWidth = 40;
-                                    cell.IndentLevel = 1;
-                                    break;
-                                case "TextMedium":
-                                    cell.EntireColumn.ColumnWidth = 20;
-                                    break;
-                                case "TextShort":
-                                    cell.EntireColumn.ColumnWidth = 15;
-                                    break;
-                                case "TextTiny":
-                                    cell.EntireColumn.ColumnWidth = 9;
-                                    break;
-                                case "Number":
-                                    cell.EntireColumn.ColumnWidth = 9;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                                    break;
-                                case "Percent":
-                                    cell.EntireColumn.ColumnWidth = 9;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                                    columnRange.NumberFormat = "0%";
-                                    break;
-                                case "Date":
-                                    cell.EntireColumn.ColumnWidth = 10;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
-                                    columnRange.NumberFormat = "m/d/yyyy";
-                                    break;
-                                case "Error":
-                                case "YesNoGreen":
-                                case "YesNoRed":
-                                case "YesNo":
-                                    cell.EntireColumn.ColumnWidth = 7;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                                    columnRange.Font.Bold = true;
-                                    break;
-                                case "MidLong":
-                                    cell.EntireColumn.ColumnWidth = 13;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                                    columnRange.Font.Bold = true;
-                                    break;
-                                case "Release":
-                                    cell.EntireColumn.ColumnWidth = 7;
-                                    columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
-                                    columnRange.Font.Bold = true;
-                                    break;
-                                case "Hidden":
-                                    cell.EntireColumn.ColumnWidth = 0;
-                                    break;
-                                default:
-                                    cell.EntireColumn.ColumnWidth = 15;
-                                    break;
+                                cell.IndentLevel = 0;
+                                columnRange.Font.Bold = false;
+                                columnRange.Font.Italic = false;
+                                columnRange.Font.Underline = false;
+                                columnRange.HorizontalAlignment = XlHAlign.xlHAlignLeft;
+
+                                switch (colType)
+                                {
+                                    case "TextLong":
+                                        cell.EntireColumn.ColumnWidth = 40;
+                                        cell.IndentLevel = 1;
+                                        break;
+                                    case "TextMedium":
+                                        cell.EntireColumn.ColumnWidth = 20;
+                                        break;
+                                    case "TextShort":
+                                        cell.EntireColumn.ColumnWidth = 15;
+                                        break;
+                                    case "TextTiny":
+                                        cell.EntireColumn.ColumnWidth = 9;
+                                        break;
+                                    case "Number":
+                                        cell.EntireColumn.ColumnWidth = 9;
+                                        columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
+                                        break;
+                                    case "Percent":
+                                        cell.EntireColumn.ColumnWidth = 9;
+                                        columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
+                                        columnRange.NumberFormat = "0%";
+                                        break;
+                                    case "Date":
+                                        cell.EntireColumn.ColumnWidth = 10;
+                                        columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
+                                        columnRange.NumberFormat = "m/d/yyyy";
+                                        break;
+                                    case "Error":
+                                    case "YesNoGreen":
+                                    case "YesNoRed":
+                                    case "YesNo":
+                                        cell.EntireColumn.ColumnWidth = 7;
+                                        columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
+                                        columnRange.Font.Bold = true;
+                                        break;
+                                    case "MidLong":
+                                        cell.EntireColumn.ColumnWidth = 13;
+                                        columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
+                                        columnRange.Font.Bold = true;
+                                        break;
+                                    case "Release":
+                                        cell.EntireColumn.ColumnWidth = 7;
+                                        columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
+                                        columnRange.Font.Bold = true;
+                                        break;
+                                    case "Hidden":
+                                        cell.EntireColumn.ColumnWidth = 0;
+                                        break;
+                                    default:
+                                        cell.EntireColumn.ColumnWidth = 15;
+                                        break;
+                                }
                             }
                         }
                     }
