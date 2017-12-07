@@ -10,6 +10,22 @@ namespace DOT_Titling_Excel_VSTO
 {
     class SSUtils
     {
+        public static void HideTableColumns(Range headerRowRange, List<string> ColumnsToShow)
+        {
+            // Format each cell in the table header row
+            foreach (Range cell in headerRowRange.Cells)
+            {
+                int column = cell.Column;
+                string columnHeader = cell.Value;
+
+                var item = ColumnsToShow.Find(x => x == columnHeader);
+                if (item == null)
+                {
+                    cell.EntireColumn.ColumnWidth = 0;
+                }
+            }
+        }
+
         public static string GetSelectedTable(Excel.Application app)
         {
             string t = string.Empty;
@@ -34,6 +50,21 @@ namespace DOT_Titling_Excel_VSTO
             if (tableName != string.Empty)
                 h = tableName + "[#Headers]";
             return h;
+        }
+
+
+        public static ListObject GetListObjectFromTableName(Worksheet ws, string tableName)
+        {
+            ListObject lo = null;
+            foreach (ListObject table in ws.ListObjects)
+            {
+                Range tableRange = table.Range;
+                if (table.Active == true && table.Name == tableName)
+                {
+                    lo = table;
+                }
+            }
+            return lo;
         }
 
         public static string GetSelectedTableFooter(Excel.Application app)
@@ -306,14 +337,42 @@ namespace DOT_Titling_Excel_VSTO
             return result;
         }
 
-
-        public static void SortTable(Worksheet ws, string rangeName, string sortColumn, XlSortOrder sortOrder)
+        public static void FilterTable(Worksheet ws, string tableRangeName, string filterColumn, string filterValue)
         {
             try
             {
-                Range rng = ws.get_Range(rangeName);
-                ListObject list = ws.ListObjects.Add(XlListObjectSourceType.xlSrcRange, rng, Type.Missing, XlYesNoGuess.xlYes, Type.Missing);
-                list.Range.Sort(list.ListColumns[sortColumn].Range, sortOrder);
+                ListObject list = GetListObjectFromTableName(ws, tableRangeName);
+                list.AutoFilter.ShowAllData();
+                int col = GetColumnFromHeader(ws, filterColumn);
+                list.Range.AutoFilter(col, filterValue, XlAutoFilterOperator.xlFilterValues);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void SortTable(Worksheet ws, string tableRangeName, string sortColumn, XlSortOrder sortOrder)
+        {
+            try
+            {
+                ListObject list = GetListObjectFromTableName(ws, tableRangeName);
+                list.Range.Sort(
+                    list.ListColumns[sortColumn].Range,
+                    sortOrder,
+                    list.ListColumns[2].Range,
+                    Type.Missing, 
+                    XlSortOrder.xlAscending,
+                    Type.Missing, 
+                    XlSortOrder.xlAscending,
+                    XlYesNoGuess.xlYes,
+                    Type.Missing,
+                    Type.Missing,
+                    XlSortOrientation.xlSortColumns,
+                    XlSortMethod.xlPinYin,
+                    XlSortDataOption.xlSortNormal,
+                    XlSortDataOption.xlSortNormal,
+                    XlSortDataOption.xlSortNormal);
             }
             catch (Exception ex)
             {
@@ -322,19 +381,5 @@ namespace DOT_Titling_Excel_VSTO
         }
 
 
-        public static void SortAndFilterTable(Worksheet ws, Range rng, string sortColumn, XlSortOrder sortOrder, string filterColumn, string filterValue)
-        {
-            try
-            {
-                ListObject list = ws.ListObjects.Add(XlListObjectSourceType.xlSrcRange, rng, Type.Missing, XlYesNoGuess.xlYes, Type.Missing);
-                list.Range.Sort(list.ListColumns[sortColumn].Range, sortOrder);
-                //if (filterColumn != string.Empty)   
-                //    list.Range.AutoFilter(list.ListColumns[filterColumn], filterValue);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
     }
 }

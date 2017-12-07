@@ -38,11 +38,10 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("ERR Story Not Moving or Blocked");
                     ColumnsToShow.Add("Reason Blocked or Delayed");
 
-                    HideTableColumns(headerRowRange, ColumnsToShow);
+                    SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
 
-                    //Range tableRange = app.get_Range(tableRangeName, Type.Missing);
-                    //SSUtils.SortAndFilterTable(ws, tableRange, "ERR Story Not Moving or Blocked", XlSortOrder.xlDescending, "ERR Story Not Moving or Blocked", "x");
-                    //SSUtils.SortTable(ws, tableRangeName, "ERR Story Not Moving or Blocked", XlSortOrder.xlDescending);
+                    SSUtils.FilterTable(ws, tableRangeName, "ERR Need Reason for Blocker", "x");
+                    SSUtils.SortTable(ws, tableRangeName, "Assignee", XlSortOrder.xlAscending);
                 }
             }
             catch (Exception ex)
@@ -74,28 +73,12 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("UAT To (Date)");
                     ColumnsToShow.Add("Deliver to Vendors");
 
-                    HideTableColumns(headerRowRange, ColumnsToShow);
+                    SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        private static void HideTableColumns(Range headerRowRange, List<string> ColumnsToShow)
-        {
-            // Format each cell in the table header row
-            foreach (Range cell in headerRowRange.Cells)
-            {
-                int column = cell.Column;
-                string columnHeader = cell.Value;
-
-                var item = ColumnsToShow.Find(x => x == columnHeader);
-                if (item == null)
-                {
-                    cell.EntireColumn.ColumnWidth = 0;
-                }
             }
         }
     }
