@@ -53,6 +53,7 @@ namespace DOT_Titling_Excel_VSTO
             this.viewButton1 = this.Factory.CreateRibbonButton();
             this.viewButton2 = this.Factory.CreateRibbonButton();
             this.resetViewButton = this.Factory.CreateRibbonButton();
+            this.showHidePropertiesRowButton = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -166,6 +167,7 @@ namespace DOT_Titling_Excel_VSTO
             this.Views.Buttons.Add(this.viewButton1);
             this.Views.Buttons.Add(this.viewButton2);
             this.Views.Buttons.Add(this.resetViewButton);
+            this.Views.Buttons.Add(this.showHidePropertiesRowButton);
             this.Views.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.Views.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
             this.Views.Label = "Views";
@@ -203,6 +205,19 @@ namespace DOT_Titling_Excel_VSTO
             this.resetViewButton.ShowImage = true;
             this.resetViewButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.resetViewButton_Click);
             // 
+            // showHidePropertiesRowButton
+            // 
+            this.showHidePropertiesRowButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.showHidePropertiesRowButton.Description = "Toggle Properties Row";
+            this.showHidePropertiesRowButton.Image = ((System.Drawing.Image)(resources.GetObject("resetViewButton.Image")));
+            this.showHidePropertiesRowButton.Label = "Toggle Properties Row";
+            this.showHidePropertiesRowButton.Name = "showHidePropertiesRowButton";
+            this.showHidePropertiesRowButton.ShowImage = true;
+            this.showHidePropertiesRowButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowHidePropertiesRow_Click);
+
+
+
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -234,6 +249,7 @@ namespace DOT_Titling_Excel_VSTO
         private Microsoft.Office.Tools.Ribbon.RibbonButton viewButton1;
         private Microsoft.Office.Tools.Ribbon.RibbonButton viewButton2;
         private Microsoft.Office.Tools.Ribbon.RibbonButton resetViewButton;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton showHidePropertiesRowButton;
     }
 
     partial class ThisRibbonCollection

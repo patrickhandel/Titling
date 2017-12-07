@@ -45,11 +45,11 @@ namespace DOT_Titling_Excel_VSTO
                         // Get the footer row and format it
                         if (headerRow > 2)
                         {
-                            Range offsetRowRange = headerRowRange.Offset[-1, 0];
-                            if (offsetRowRange != null)
+                            Range propertiesRowRange = headerRowRange.Offset[-1, 0];
+                            if (propertiesRowRange != null)
                             {
                                 headerRowRange.Copy(Type.Missing);
-                                offsetRowRange.PasteSpecial(XlPasteType.xlPasteFormats, XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                                propertiesRowRange.PasteSpecial(XlPasteType.xlPasteFormats, XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
                             }
                         }
                     }
@@ -190,7 +190,7 @@ namespace DOT_Titling_Excel_VSTO
                     headerRowRange.Font.Size = 9;
                     headerRowRange.VerticalAlignment = XlVAlign.xlVAlignTop;
 
-                    // Format the table offset row
+                    // Format the table properties row
                     headerRowRange.Offset[-1, 0].Font.Size = 9;
                     headerRowRange.EntireRow.Offset[-1, 0].Hidden = true;
                 }
@@ -200,5 +200,35 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        public static void ExecuteShowHidePropertiesRow(Excel.Application app)
+        {
+            try
+            {
+                string tableRangeName = SSUtils.GetSelectedTable(app);
+                string headerRangeName = SSUtils.GetSelectedTableHeader(app);
+                if (headerRangeName != string.Empty)
+                {
+                    int headerRow = 0;
+                    int propertiesRow = 0;
+
+                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    headerRow = headerRowRange.Row;
+                    propertiesRow = headerRowRange.Row - 1;
+
+                    if (propertiesRow > 0)
+                    {
+                        Worksheet ws = app.ActiveSheet;
+                        bool hidden = ws.Rows[propertiesRow].EntireRow.Height == 0;
+                        headerRowRange.EntireRow.Offset[-1, 0].Hidden = !hidden;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
     }
 }

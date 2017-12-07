@@ -42,6 +42,19 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        private void btnShowHidePropertiesRow_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                TableStandardization.ExecuteShowHidePropertiesRow(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private void btnAddNewTickets_Click(object sender, RibbonControlEventArgs e)
         {
             try
