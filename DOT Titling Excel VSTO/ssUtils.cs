@@ -169,15 +169,23 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void SetCellValue(Worksheet sheet, int row, int column, string val)
+        public static void SetCellValue(Worksheet sheet, int row, int column, string val, string columnHeader)
         {
             try
             {
                 if (sheet != null)
                 {
-                    Range rng = sheet.Cells[row, column] as Range;
-                    if (rng != null)
-                        rng.Value = val;
+                    if (column != 0)
+                    {
+
+                        Range rng = sheet.Cells[row, column] as Range;
+                        if (rng != null)
+                            rng.Value = val;
+                    }
+                    else
+                    {
+                        MessageBox.Show(columnHeader + " is missing");
+                    }
                 }
             }
             catch (Exception ex)

@@ -202,6 +202,9 @@ namespace DOT_Titling_Excel_VSTO
                                 case "Reason Blocked or Delayed":
                                     JiraUtils.SaveCustomField(jiraId, "Reason Blocked or Delayed", newValue);
                                     break;
+                                //case "Backlog Area":
+                                //    JiraUtils.SaveCustomField(jiraId, "Sprint", newValue);
+                                //    break;
                                 default:
                                     //DO NOT UPDATE THE FOLLOWING:
                                     //Ticket Type

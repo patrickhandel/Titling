@@ -57,7 +57,7 @@ namespace DOT_Titling_Excel_VSTO
                                         devs = devs + " " + dev.ReplaceWith;
                                 }
                             }
-                            SSUtils.SetCellValue(activeWorksheet, row, devCol, devs.Trim());
+                            SSUtils.SetCellValue(activeWorksheet, row, devCol, devs.Trim(), "?");
                         }
                     }
                 }

@@ -267,10 +267,10 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show(field + " successfully updated.");
                 return true;
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
-                //MessageBox.Show("Error :" + ex);
-                MessageBox.Show(field + " could NOT successfully updated.");
+                MessageBox.Show("Error :" + ex);
+                //MessageBox.Show(field + " could NOT successfully updated.");
                 return false;
             }
         }
@@ -337,19 +337,6 @@ namespace DOT_Titling_Excel_VSTO
             foreach (var value in issue.CustomFields["Sprint"].Values)
             {
                 val = value;
-                //val = val.Replace("DOT", "");
-                //val = val.Replace("Backlog", "");
-                //val = val.Replace("Hufflepuff", "");
-                //val = val.Replace("for", "");
-                //val = val.Replace("Sprint", "");
-                //val = val.Replace("Ready", "");
-                //val = val.Replace("Other", "");
-                //val = val.Replace("Approved", "");
-                //val = val.Replace("-", "");
-                //val = val.Replace(" ", "");
-                //for (int rev = 1; rev <= 20; rev++)
-                //    val = val.Replace("R" + rev.ToString(), "");
-
                 if (val.Length > 2)
                 {
                     val = val.Substring(val.Length - 3).Trim();
@@ -376,48 +363,6 @@ namespace DOT_Titling_Excel_VSTO
             return retval;
         }
 		
-		public static string ExtractSprintNumberOld(Issue issue)
-        {
-            try
-            {
-                string val = ExtractCustomValue(issue, "Sprint");
-                if (val != string.Empty)
-                {
-                    int highValue = 0;
-                    val = string.Empty;
-                    foreach (var value in issue.CustomFields["Sprint"].Values)
-                    {
-                        val = value;
-                        val = val.Replace("DOT", "");
-                        val = val.Replace("Backlog", "");
-                        val = val.Replace("Hufflepuff", "");
-                        val = val.Replace("Sprint", "");
-                        val = val.Replace("Ready", "");
-                        val = val.Replace("Other", "");
-                        val = val.Replace("Approved", "");
-                        val = val.Replace("for", "");
-                        val = val.Replace("-", "");
-                        val = val.Replace(" ", "");
-                        for (int rev = 1; rev <= 12; rev++)
-                            val = val.Replace("R" + rev.ToString(), "");
-                        if (val != string.Empty)
-                        {
-                            if (Convert.ToInt32(val) > highValue)
-                                highValue = Convert.ToInt32(val);
-                        }
-                    }
-                    if (highValue != 0)
-                        val = highValue.ToString();
-                }
-                return val;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return "";
-            }
-        }		
-
         public static string ExtractCustomValue(Issue issue, string item)
         {
             string val = string.Empty;

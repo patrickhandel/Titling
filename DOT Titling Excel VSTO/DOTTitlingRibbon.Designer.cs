@@ -46,14 +46,15 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdate = this.Factory.CreateRibbonButton();
             this.btnImportEpics = this.Factory.CreateRibbonButton();
             this.btnCleanup = this.Factory.CreateRibbonButton();
+            this.btnResetView = this.Factory.CreateRibbonButton();
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnDeveloperFromHistory = this.Factory.CreateRibbonButton();
             this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
             this.Views = this.Factory.CreateRibbonGallery();
-            this.viewButton1 = this.Factory.CreateRibbonButton();
-            this.viewButton2 = this.Factory.CreateRibbonButton();
-            this.resetViewButton = this.Factory.CreateRibbonButton();
-            this.showHidePropertiesRowButton = this.Factory.CreateRibbonButton();
+            this.btnViewReleasePlan = this.Factory.CreateRibbonButton();
+            this.btnViewRequirementsStatus = this.Factory.CreateRibbonButton();
+            this.btnViewBlockedTickets = this.Factory.CreateRibbonButton();
+            this.btnShowHidePropertiesRow = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -73,10 +74,11 @@ namespace DOT_Titling_Excel_VSTO
             this.group1.Items.Add(this.btnAddNewTickets);
             this.group1.Items.Add(this.btnUpdate);
             this.group1.Items.Add(this.btnImportEpics);
-            this.group1.Items.Add(this.btnCleanup);
+            this.group1.Items.Add(this.btnUpdateRoadMap);
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnDeveloperFromHistory);
-            this.group1.Items.Add(this.btnUpdateRoadMap);
+            this.group1.Items.Add(this.btnCleanup);
+            this.group1.Items.Add(this.btnResetView);
             this.group1.Items.Add(this.Views);
             this.group1.Label = "DOT Titling";
             this.group1.Name = "group1";
@@ -164,10 +166,10 @@ namespace DOT_Titling_Excel_VSTO
             // 
             // Views
             // 
-            this.Views.Buttons.Add(this.viewButton1);
-            this.Views.Buttons.Add(this.viewButton2);
-            this.Views.Buttons.Add(this.resetViewButton);
-            this.Views.Buttons.Add(this.showHidePropertiesRowButton);
+            this.Views.Buttons.Add(this.btnViewReleasePlan);
+            this.Views.Buttons.Add(this.btnViewRequirementsStatus);
+            this.Views.Buttons.Add(this.btnViewBlockedTickets);
+            this.Views.Buttons.Add(this.btnShowHidePropertiesRow);
             this.Views.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.Views.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
             this.Views.Label = "Views";
@@ -175,48 +177,50 @@ namespace DOT_Titling_Excel_VSTO
             this.Views.ShowImage = true;
             this.Views.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Views_Click);
             // 
-            // viewButton1
+            // btnViewReleasePlan
             // 
-            this.viewButton1.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.viewButton1.Description = "Release Schedule";
-            this.viewButton1.Image = ((System.Drawing.Image)(resources.GetObject("viewButton1.Image")));
-            this.viewButton1.Label = "Release Schedule";
-            this.viewButton1.Name = "viewButton1";
-            this.viewButton1.ShowImage = true;
-            this.viewButton1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.viewButton1_Click);
+            this.btnViewReleasePlan.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewReleasePlan.Description = "Release Schedule";
+            this.btnViewReleasePlan.Label = "Release Schedule";
+            this.btnViewReleasePlan.Name = "btnViewReleasePlan";
+            this.btnViewReleasePlan.ShowImage = true;
+            this.btnViewReleasePlan.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_Click);
             // 
-            // viewButton2
+            // btnViewRequirementsStatus
             // 
-            this.viewButton2.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.viewButton2.Description = "Blocked Tickets";
-            this.viewButton2.Image = ((System.Drawing.Image)(resources.GetObject("viewButton2.Image")));
-            this.viewButton2.Label = "Blocked Tickets";
-            this.viewButton2.Name = "viewButton2";
-            this.viewButton2.ShowImage = true;
-            this.viewButton2.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.viewButton2_Click);
+            this.btnViewRequirementsStatus.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewRequirementsStatus.Description = "Requirements Status";
+            this.btnViewRequirementsStatus.Label = "Requirements Status";
+            this.btnViewRequirementsStatus.Name = "btnViewRequirementsStatus";
+            this.btnViewRequirementsStatus.ShowImage = true;
+            this.btnViewRequirementsStatus.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewRequirementsStatus_Click);
             // 
-            // resetViewButton
+            // btnViewBlockedTickets
             // 
-            this.resetViewButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.resetViewButton.Description = "Reset";
-            this.resetViewButton.Image = ((System.Drawing.Image)(resources.GetObject("resetViewButton.Image")));
-            this.resetViewButton.Label = "Reset";
-            this.resetViewButton.Name = "resetViewButton";
-            this.resetViewButton.ShowImage = true;
-            this.resetViewButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.resetViewButton_Click);
+            this.btnViewBlockedTickets.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewBlockedTickets.Description = "Blocked Tickets";
+            this.btnViewBlockedTickets.Label = "Blocked Tickets";
+            this.btnViewBlockedTickets.Name = "btnViewBlockedTickets";
+            this.btnViewBlockedTickets.ShowImage = true;
+            this.btnViewBlockedTickets.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewBlockedTickets_Click);
             // 
-            // showHidePropertiesRowButton
+            // btnShowHidePropertiesRow
             // 
-            this.showHidePropertiesRowButton.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.showHidePropertiesRowButton.Description = "Toggle Properties Row";
-            this.showHidePropertiesRowButton.Image = ((System.Drawing.Image)(resources.GetObject("resetViewButton.Image")));
-            this.showHidePropertiesRowButton.Label = "Toggle Properties Row";
-            this.showHidePropertiesRowButton.Name = "showHidePropertiesRowButton";
-            this.showHidePropertiesRowButton.ShowImage = true;
-            this.showHidePropertiesRowButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowHidePropertiesRow_Click);
-
-
-
+            this.btnShowHidePropertiesRow.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnShowHidePropertiesRow.Description = "Toggle Properties Row";
+            this.btnShowHidePropertiesRow.Label = "Toggle Properties Row";
+            this.btnShowHidePropertiesRow.Name = "btnShowHidePropertiesRow";
+            this.btnShowHidePropertiesRow.ShowImage = true;
+            this.btnShowHidePropertiesRow.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowHidePropertiesRow_Click);
+            // 
+            // btnResetView
+            // 
+            this.btnResetView.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnResetView.Image = ((System.Drawing.Image)(resources.GetObject("btnResetView.Image")));
+            this.btnResetView.Label = "Reset View";
+            this.btnResetView.Name = "btnResetView";
+            this.btnResetView.ShowImage = true;
+            this.btnResetView.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnResetView_Click);
             // 
             // DOTTitlingRibbon
             // 
@@ -246,10 +250,11 @@ namespace DOT_Titling_Excel_VSTO
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportEpics;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnDeveloperFromHistory;
         internal Microsoft.Office.Tools.Ribbon.RibbonGallery Views;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton viewButton1;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton viewButton2;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton resetViewButton;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton showHidePropertiesRowButton;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewReleasePlan;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsStatus;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewBlockedTickets;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton btnShowHidePropertiesRow;
+        internal RibbonButton btnResetView;
     }
 
     partial class ThisRibbonCollection

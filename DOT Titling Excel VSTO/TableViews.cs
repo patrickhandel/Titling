@@ -81,5 +81,46 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        public static void ExecuteViewRequirementsStatus(Excel.Application app)
+        {
+            try
+            {
+                Worksheet ws = app.Worksheets["Tickets"];
+                ws.Activate();
+
+                string tableRangeName = SSUtils.GetSelectedTable(app);
+                string headerRangeName = SSUtils.GetSelectedTableHeader(app);
+                if (headerRangeName != string.Empty)
+                {
+                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    int headerRow = headerRowRange.Row;
+
+                    List<string> ColumnsToShow = new List<string>();
+                    ColumnsToShow.Add("Ticket Type");
+                    ColumnsToShow.Add("Ticket ID");
+                    ColumnsToShow.Add("Link");
+                    ColumnsToShow.Add("Epic");
+                    ColumnsToShow.Add("Points");
+                    ColumnsToShow.Add("WIN Release");
+                    ColumnsToShow.Add("Hufflepuff Sprint");
+                    ColumnsToShow.Add("Jira Summary");
+                    ColumnsToShow.Add("Backlog Area");
+                    ColumnsToShow.Add("ID");
+                    ColumnsToShow.Add("Jira Hufflepuff Sprint");
+                    ColumnsToShow.Add("Date Submitted to DOT");
+                    ColumnsToShow.Add("Date Approved by DOT");
+                    ColumnsToShow.Add("Bypass Approval");
+                    ColumnsToShow.Add("Requirements Gathering Notes");
+
+
+                    SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
     }
 }

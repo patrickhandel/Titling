@@ -12,6 +12,11 @@ namespace DOT_Titling_Excel_VSTO
             
         }
 
+        private void Views_Click(object sender, RibbonControlEventArgs e)
+        {
+
+        }
+
         private void btnUpdateRoadMap_Click(object sender, RibbonControlEventArgs e)
         {
             try
@@ -158,7 +163,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void viewButton1_Click(object sender, RibbonControlEventArgs e)
+        private void btnViewReleasePlan_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -171,7 +176,21 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void viewButton2_Click(object sender, RibbonControlEventArgs e)
+        private void btnViewRequirementsStatus_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                TableViews.ExecuteViewRequirementsStatus(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+
+        private void btnViewBlockedTickets_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -184,7 +203,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void resetViewButton_Click(object sender, RibbonControlEventArgs e)
+        private void btnResetView_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -197,13 +216,6 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
             }
-        }
-
-
-
-        private void Views_Click(object sender, RibbonControlEventArgs e)
-        {
-
         }
     }
 }

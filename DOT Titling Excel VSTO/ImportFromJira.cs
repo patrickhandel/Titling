@@ -22,7 +22,7 @@ namespace DOT_Titling_Excel_VSTO
                 if (activeCell != null && ((table == "TicketData") || (table == "DOTReleaseData")))
                 {
                     UpdateSelectedTickets(app, activeWorksheet, selection);
-                    TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                 }
             }
             catch (Exception ex)
@@ -39,7 +39,7 @@ namespace DOT_Titling_Excel_VSTO
                 if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
                 {
                     AddNewTickets(app, activeWorksheet);
-                    TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                 }
             }
             catch (Exception ex)
@@ -76,8 +76,8 @@ namespace DOT_Titling_Excel_VSTO
                     Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                     rToInsert.Insert();
                     UpdateValues(ws, jiraFields, footerRow, issue, false);
-                    SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value);
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary);
+                    SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Summary");
                     SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                 }
                 MessageBox.Show(issues.Count() + " Tickets Added.");
@@ -118,23 +118,23 @@ namespace DOT_Titling_Excel_VSTO
                     UpdateValues(ws, jiraFields, footerRow, issue, false);
 
                     //Ticket ID (2)
-                    SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value);
+                    SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "Ticket ID");
 
                     //Summary (5)
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary);
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary, "Summary");
 
                     //TO DO FIX
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")));
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")), "Release");
 
                     //Epic
                     app.Calculation = XlCalculation.xlCalculationAutomatic;
                     int jiraEpicColumn = SSUtils.GetColumnFromHeader(ws, "Jira Epic");
                     string newEpic = SSUtils.GetCellValue(ws, footerRow, jiraEpicColumn);
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), newEpic);
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), newEpic, "Epic");
                     app.Calculation = XlCalculation.xlCalculationManual;
 
                     //Hufflepuff Sprint
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")));
+                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")), "Hufflepuff Sprint");
                     SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                 }
                 MessageBox.Show(issues.Count() + " Tickets Added.");
@@ -158,12 +158,12 @@ namespace DOT_Titling_Excel_VSTO
                     if (activeWorksheet.Name == "Tickets")
                     {
                         string val = "Tickets (Updated on " + dt + ")";
-                        SSUtils.SetCellValue(activeWorksheet, 1, 1, val);
+                        SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "Ticket Updated On");
                     }
                     if (activeWorksheet.Name == "DOT Releases")
                     {
                         string val = "DOT Releases (Updated on " + dt + ")";
-                        SSUtils.SetCellValue(activeWorksheet, 1, 1, val);
+                        SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "DOT Releases Updated On");
                     }
                     TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                 }
@@ -199,7 +199,7 @@ namespace DOT_Titling_Excel_VSTO
                 var app = Globals.ThisAddIn.Application;
                 var ws = app.Sheets["Tickets"];
                 UpdateTicketBeforeMailMerge(app, ws, jiraId);
-                TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
             }
             catch (Exception ex)
             {
@@ -348,18 +348,18 @@ namespace DOT_Titling_Excel_VSTO
                         valueToSave = "{DELETED}";
                         int ticketTypeCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Ticket Type");
                         if (ticketTypeCol != 0)
-                            SSUtils.SetCellValue(activeWorksheet, row, ticketTypeCol, valueToSave);
+                            SSUtils.SetCellValue(activeWorksheet, row, ticketTypeCol, valueToSave, columnHeader);
                     }
-                    SSUtils.SetCellValue(activeWorksheet, row, column, valueToSave);
+                    SSUtils.SetCellValue(activeWorksheet, row, column, valueToSave, columnHeader);
                 }
                 else
                 {
                     if (type == "Standard")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractStandardValue(issue, item));
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractStandardValue(issue, item), columnHeader);
                     if (type == "Custom")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractCustomValue(issue, item));
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractCustomValue(issue, item), columnHeader);
                     if (type == "Function")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractValueBasedOnFunction(issue, item));
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractValueBasedOnFunction(issue, item), columnHeader);
                 }
                 if (type == "Formula")
                     SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
@@ -377,18 +377,18 @@ namespace DOT_Titling_Excel_VSTO
 
                     if (sprint != currentSprint)
                     {
-                        SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, string.Empty);
+                        SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, string.Empty, "Jira Status (Last Changed)");
                     }
                     else
                     {
                         if (newStatus == "Done" || newStatus == "Ready for Development" || newStatus == "")
                         {
-                            SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, string.Empty);
+                            SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, string.Empty, "Jira Status (Last Changed)");
                         }
                         else
                         if (newStatus != previousStatus)
                         {
-                            SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, DateTime.Now.ToString("MM/dd/yyyy"));
+                            SSUtils.SetCellValue(activeWorksheet, row, statusLastChangedColumn, DateTime.Now.ToString("MM/dd/yyyy"), "Jira Status (Last Changed)");
                         }
                     }
                 }
