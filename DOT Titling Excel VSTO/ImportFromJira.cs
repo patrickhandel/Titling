@@ -10,6 +10,43 @@ namespace DOT_Titling_Excel_VSTO
 {
     class ImportFromJira
     {
+        public static void ExecuteUpdateAllTickets(Excel.Application app)
+        {
+            try
+            {
+                var activeWorksheet = app.ActiveSheet;
+                if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
+                {
+                    string missingColumns = MissingColumns(activeWorksheet);
+                    if (missingColumns == string.Empty)
+                    {
+                        UpdateAllTickets(app, activeWorksheet);
+                        AddNewTickets(app, activeWorksheet);
+                        string dt = DateTime.Now.ToString("MM/dd/yyyy");
+                        if (activeWorksheet.Name == "Tickets")
+                        {
+                            string val = "Tickets (Updated on " + dt + ")";
+                            SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "Ticket Updated On");
+                        }
+                        if (activeWorksheet.Name == "DOT Releases")
+                        {
+                            string val = "DOT Releases (Updated on " + dt + ")";
+                            SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "DOT Releases Updated On");
+                        }
+                        TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         public static void ExecuteUpdateSelectedTickets(Excel.Application app)
         {
             try
@@ -18,11 +55,18 @@ namespace DOT_Titling_Excel_VSTO
                 var activeCell = app.ActiveCell;
                 var selection = app.Selection;
                 string table = SSUtils.GetSelectedTable(app);
-
                 if (activeCell != null && ((table == "TicketData") || (table == "DOTReleaseData")))
                 {
-                    UpdateSelectedTickets(app, activeWorksheet, selection);
-                    //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    string missingColumns = MissingColumns(activeWorksheet);
+                    if (missingColumns == string.Empty)
+                    {
+                        UpdateSelectedTickets(app, activeWorksheet, selection);
+                        //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
                 }
             }
             catch (Exception ex)
@@ -38,8 +82,16 @@ namespace DOT_Titling_Excel_VSTO
                 var activeWorksheet = app.ActiveSheet;
                 if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
                 {
-                    AddNewTickets(app, activeWorksheet);
-                    //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    string missingColumns = MissingColumns(activeWorksheet);
+                    if (missingColumns == string.Empty)
+                    {
+                        AddNewTickets(app, activeWorksheet);
+                        //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
                 }
             }
             catch (Exception ex)
@@ -48,39 +100,22 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewEpics(Excel.Application app, Worksheet ws)
+        public static void ExecuteUpateTicketBeforeMailMerge(string jiraId)
         {
             try
             {
-                var issues = JiraUtils.GetAllIssues("Epics").Result;
-                string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-                int column = SSUtils.GetColumnFromHeader(ws, "Epic ID");
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-
-                List<string> listOfTicketIDs = new List<string>();
-                Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Epic ID]", Type.Missing);
-                foreach (Range cell in ticketIDColumnRange.Cells)
+                var app = Globals.ThisAddIn.Application;
+                var ws = app.Sheets["Tickets"];
+                string missingColumns = MissingColumns(ws);
+                if (missingColumns == string.Empty)
                 {
-                    listOfTicketIDs.Add(cell.Value);
+                    UpdateTicketBeforeMailMerge(app, ws, jiraId);
+                    //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                 }
-                foreach (var ticketID in listOfTicketIDs)
+                else
                 {
-                    issues.Remove(issues.FirstOrDefault(x => x.Key.Value == ticketID.ToString()));
+                    MessageBox.Show("Missing Columns: " + missingColumns);
                 }
-
-                string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                foreach (var issue in issues)
-                {
-                    Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
-                    int footerRow = footerRangeRange.Row;
-                    Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
-                    rToInsert.Insert();
-                    UpdateValues(ws, jiraFields, footerRow, issue, false);
-                    SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Summary");
-                    SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
-                }
-                MessageBox.Show(issues.Count() + " Tickets Added.");
             }
             catch (Exception ex)
             {
@@ -92,80 +127,60 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var issues = JiraUtils.GetAllIssues().Result;
-                string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-                int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
-                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-
-                List<string> listOfTicketIDs = new List<string>();
-                Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Ticket ID]", Type.Missing);
-                foreach (Range cell in ticketIDColumnRange.Cells)
+                string missingColumns = MissingColumns(ws);
+                if (missingColumns == string.Empty)
                 {
-                    listOfTicketIDs.Add(cell.Value);
-                }
-                foreach (var ticketID in listOfTicketIDs)
-                {
-                    issues.Remove(issues.FirstOrDefault(x => x.Key.Value == ticketID.ToString()));
-                }
+                    var issues = JiraIssue.GetAllIssues().Result;
+                    string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                    int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
+                    var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
-                string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                foreach (var issue in issues)
-                {
-                    Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
-                    int footerRow = footerRangeRange.Row;
-                    Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
-                    rToInsert.Insert();
-                    UpdateValues(ws, jiraFields, footerRow, issue, false);
-
-                    //Ticket ID (2)
-                    SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "Ticket ID");
-
-                    //Summary (5)
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary, "Summary");
-
-                    //TO DO FIX
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")), "Release");
-
-                    //Epic
-                    app.Calculation = XlCalculation.xlCalculationAutomatic;
-                    int jiraEpicColumn = SSUtils.GetColumnFromHeader(ws, "Jira Epic");
-                    string newEpic = SSUtils.GetCellValue(ws, footerRow, jiraEpicColumn);
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), newEpic, "Epic");
-                    app.Calculation = XlCalculation.xlCalculationManual;
-
-                    //Hufflepuff Sprint
-                    SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")), "Hufflepuff Sprint");
-                    SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
-                }
-                MessageBox.Show(issues.Count() + " Tickets Added.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        public static void ExecuteUpdateAllTickets(Excel.Application app)
-        {
-            try
-            {
-                var activeWorksheet = app.ActiveSheet;
-                if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
-                {
-                    UpdateAllTickets(app, activeWorksheet);
-                    AddNewTickets(app, activeWorksheet);
-                    string dt = DateTime.Now.ToString("MM/dd/yyyy");
-                    if (activeWorksheet.Name == "Tickets")
+                    List<string> listOfTicketIDs = new List<string>();
+                    Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Ticket ID]", Type.Missing);
+                    foreach (Range cell in ticketIDColumnRange.Cells)
                     {
-                        string val = "Tickets (Updated on " + dt + ")";
-                        SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "Ticket Updated On");
+                        listOfTicketIDs.Add(cell.Value);
                     }
-                    if (activeWorksheet.Name == "DOT Releases")
+                    foreach (var ticketID in listOfTicketIDs)
                     {
-                        string val = "DOT Releases (Updated on " + dt + ")";
-                        SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "DOT Releases Updated On");
+                        issues.Remove(issues.FirstOrDefault(x => x.Key.Value == ticketID.ToString()));
                     }
-                    TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+
+                    string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                    foreach (var issue in issues)
+                    {
+                        Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                        int footerRow = footerRangeRange.Row;
+                        Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                        rToInsert.Insert();
+                        UpdateValues(ws, jiraFields, footerRow, issue, false);
+
+                        //Ticket ID (2)
+                        SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "Ticket ID");
+
+                        //Summary (5)
+                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary, "Summary");
+
+                        //TO DO FIX
+                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")), "Release");
+
+                        //Epic
+                        app.Calculation = XlCalculation.xlCalculationAutomatic;
+                        int jiraEpicColumn = SSUtils.GetColumnFromHeader(ws, "Jira Epic");
+                        string newEpic = SSUtils.GetCellValue(ws, footerRow, jiraEpicColumn);
+                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), newEpic, "Epic");
+                        app.Calculation = XlCalculation.xlCalculationManual;
+
+                        //Hufflepuff Sprint
+                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")), "Hufflepuff Sprint");
+                        SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
+                    }
+                    MessageBox.Show(issues.Count() + " Tickets Added.");
+
+                }
+                else
+                {
+                    MessageBox.Show("Missing Columns: " + missingColumns);
                 }
             }
             catch (Exception ex)
@@ -181,9 +196,17 @@ namespace DOT_Titling_Excel_VSTO
                 var activeWorksheet = app.ActiveSheet;
                 if ((activeWorksheet.Name == "Epics"))
                 {
-                    UpdateEpics(app, activeWorksheet);
-                    AddNewEpics(app, activeWorksheet);
-                    TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    string missingColumns = MissingColumns(activeWorksheet);
+                    if (missingColumns == string.Empty)
+                    {
+                        UpdateEpics(app, activeWorksheet);
+                        AddNewEpics(app, activeWorksheet);
+                        TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
                 }
             }
             catch (Exception ex)
@@ -192,14 +215,48 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpateTicketBeforeMailMerge(string jiraId)
+        private static void AddNewEpics(Excel.Application app, Worksheet ws)
         {
             try
             {
-                var app = Globals.ThisAddIn.Application;
-                var ws = app.Sheets["Tickets"];
-                UpdateTicketBeforeMailMerge(app, ws, jiraId);
-                //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                string missingColumns = MissingColumns(ws);
+                if (missingColumns == string.Empty)
+                {
+                    var issues = JiraIssue.GetAllIssues("Epics").Result;
+                    string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                    int column = SSUtils.GetColumnFromHeader(ws, "Epic ID");
+                    var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+
+                    List<string> listOfTicketIDs = new List<string>();
+                    Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Epic ID]", Type.Missing);
+                    foreach (Range cell in ticketIDColumnRange.Cells)
+                    {
+                        listOfTicketIDs.Add(cell.Value);
+                    }
+                    foreach (var ticketID in listOfTicketIDs)
+                    {
+                        issues.Remove(issues.FirstOrDefault(x => x.Key.Value == ticketID.ToString()));
+                    }
+
+                    string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                    foreach (var issue in issues)
+                    {
+                        Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                        int footerRow = footerRangeRange.Row;
+                        Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                        rToInsert.Insert();
+                        UpdateValues(ws, jiraFields, footerRow, issue, false);
+                        SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
+                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Summary");
+                        SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
+                    }
+                    MessageBox.Show(issues.Count() + " Epics Added.");
+
+                }
+                else
+                {
+                    MessageBox.Show("Missing Columns: " + missingColumns);
+                }
             }
             catch (Exception ex)
             {
@@ -213,7 +270,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 string rangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-                var issue  = JiraUtils.GetIssue(jiraId).Result;
+                var issue  = JiraIssue.GetIssue(jiraId).Result;
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                 int row = SSUtils.FindTextInColumn(ws, rangeName + "[Ticket ID]", jiraId);
                 bool notFound = issue == null;
@@ -230,7 +287,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var epics = JiraUtils.GetAllIssues("Epics").Result;
+                var epics = JiraIssue.GetAllIssues("Epics").Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 int cnt = epics.Count();
@@ -264,8 +321,12 @@ namespace DOT_Titling_Excel_VSTO
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
             try
             {
-                var issues = JiraUtils.GetAllIssues().Result;
+                var issues = JiraIssue.GetAllIssues().Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+
+
+
+
 
                 int cnt = issues.Count();
 
@@ -297,7 +358,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
-            var issues = JiraUtils.GetAllIssues().Result;
+            var issues = JiraIssue.GetAllIssues().Result;
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
@@ -355,11 +416,11 @@ namespace DOT_Titling_Excel_VSTO
                 else
                 {
                     if (type == "Standard")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractStandardValue(issue, item), columnHeader);
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraIssue.ExtractStandardValue(issue, item), columnHeader);
                     if (type == "Custom")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractCustomValue(issue, item), columnHeader);
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraIssue.ExtractCustomValue(issue, item), columnHeader);
                     if (type == "Function")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraUtils.ExtractValueBasedOnFunction(issue, item), columnHeader);
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraIssue.ExtractValueBasedOnFunction(issue, item), columnHeader);
                 }
                 if (type == "Formula")
                     SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
@@ -393,6 +454,19 @@ namespace DOT_Titling_Excel_VSTO
                     }
                 }
             }
+        }
+
+        public static string MissingColumns(Worksheet ws)
+        {
+            string missingFields = string.Empty;
+            var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+            foreach (var jiraField in jiraFields)
+            {
+                string columnHeader = jiraField.ColumnHeader;
+                if (SSUtils.GetColumnFromHeader(ws, columnHeader) == 0)
+                    missingFields = missingFields + ' ' + columnHeader;
+            }
+            return missingFields.Trim();
         }
 
         private static void UpdateSprintProgress(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue, bool notFound)

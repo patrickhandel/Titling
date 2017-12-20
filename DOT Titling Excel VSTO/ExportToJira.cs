@@ -48,13 +48,13 @@ namespace DOT_Titling_Excel_VSTO
                 switch (fieldToSave)
                 {
                     case "Jira Epic Summary":
-                        JiraUtils.SaveSummary(jiraId, newValue);
+                        JiraIssue.SaveSummary(jiraId, newValue);
                         break;
                     case "Jira Status":
-                        JiraUtils.SaveStatus(jiraId, newValue);
+                        JiraIssue.SaveStatus(jiraId, newValue);
                         break;
                     case "Jira Epic Points":
-                        JiraUtils.SaveCustomField(jiraId, "Story Points", newValue);
+                        JiraIssue.SaveCustomField(jiraId, "Story Points", newValue);
                         break;
                     default:
                         MessageBox.Show(fieldToSave + " can't be updated.");
@@ -100,10 +100,10 @@ namespace DOT_Titling_Excel_VSTO
                             switch (fieldToSave)
                             {
                                 case "Jira Summary":
-                                    JiraUtils.SaveSummary(jiraId, newValue);
+                                    JiraIssue.SaveSummary(jiraId, newValue);
                                     break;
                                 case "Jira Status":
-                                    JiraUtils.SaveStatus(jiraId, newValue);
+                                    JiraIssue.SaveStatus(jiraId, newValue);
                                     break;
                                 case "Date Submitted to DOT":
                                     if (type == "Story")
@@ -119,7 +119,7 @@ namespace DOT_Titling_Excel_VSTO
                                             DateTime dt = DateTime.Parse(newValue);
                                             newValue = dt.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz").Remove(26, 1);
                                         }
-                                        JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
+                                        JiraIssue.SaveCustomField(jiraId, fieldToSave, newValue);
                                     }
                                     else
                                     {
@@ -140,7 +140,7 @@ namespace DOT_Titling_Excel_VSTO
                                             DateTime dt = DateTime.Parse(newValue);
                                             newValue = dt.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz").Remove(26, 1);
                                         }
-                                        JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
+                                        JiraIssue.SaveCustomField(jiraId, fieldToSave, newValue);
                                     }
                                     else
                                     {
@@ -150,7 +150,7 @@ namespace DOT_Titling_Excel_VSTO
                                 case "Story - As A":
                                     if (type == "Story")
                                     {
-                                        JiraUtils.SaveCustomField(jiraId, "Story: As a(n)", newValue);
+                                        JiraIssue.SaveCustomField(jiraId, "Story: As a(n)", newValue);
                                     }
                                     else
                                     {
@@ -160,7 +160,7 @@ namespace DOT_Titling_Excel_VSTO
                                 case "Story - Id Like":
                                     if (type == "Story")
                                     {
-                                        JiraUtils.SaveCustomField(jiraId, "Story: I'd like to be able to", newValue);
+                                        JiraIssue.SaveCustomField(jiraId, "Story: I'd like to be able to", newValue);
                                     }
                                     else
                                     {
@@ -170,7 +170,7 @@ namespace DOT_Titling_Excel_VSTO
                                 case "Story - So That":
                                     if (type == "Story")
                                     {
-                                        JiraUtils.SaveCustomField(jiraId, "Story: So that I can", newValue);
+                                        JiraIssue.SaveCustomField(jiraId, "Story: So that I can", newValue);
                                     }
                                     else
                                     {
@@ -178,12 +178,12 @@ namespace DOT_Titling_Excel_VSTO
                                     }
                                     break;
                                 case "Points":
-                                    JiraUtils.SaveCustomField(jiraId, "Story Points", newValue);
+                                    JiraIssue.SaveCustomField(jiraId, "Story Points", newValue);
                                     break;
                                 case "DOT Jira ID":
                                     if (type == "Software Bug")
                                     {
-                                        JiraUtils.SaveCustomField(jiraId, fieldToSave, newValue);
+                                        JiraIssue.SaveCustomField(jiraId, fieldToSave, newValue);
                                     }
                                     else
                                     {
@@ -191,16 +191,16 @@ namespace DOT_Titling_Excel_VSTO
                                     }
                                     break;
                                 case "Jira Release":
-                                    JiraUtils.SaveRelease(jiraId, newValue);
+                                    JiraIssue.SaveRelease(jiraId, newValue);
                                     break;
                                 case "Jira Epic ID":
-                                    JiraUtils.SaveCustomField(jiraId, "Epic Link", newValue);
+                                    JiraIssue.SaveCustomField(jiraId, "Epic Link", newValue);
                                     break;
                                 case "SWAG":
-                                    JiraUtils.SaveCustomField(jiraId, "SWAG", newValue);
+                                    JiraIssue.SaveCustomField(jiraId, "SWAG", newValue);
                                     break;
                                 case "Reason Blocked or Delayed":
-                                    JiraUtils.SaveCustomField(jiraId, "Reason Blocked or Delayed", newValue);
+                                    JiraIssue.SaveCustomField(jiraId, "Reason Blocked or Delayed", newValue);
                                     break;
                                 //case "Backlog Area":
                                 //    JiraUtils.SaveCustomField(jiraId, "Sprint", newValue);

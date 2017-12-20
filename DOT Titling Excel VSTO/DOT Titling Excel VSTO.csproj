@@ -208,7 +208,8 @@
     </Compile>
     <Compile Include="History.cs" />
     <Compile Include="ImportFromJira.cs" />
-    <Compile Include="JiraUtils.cs" />
+    <Compile Include="JiraProject.cs" />
+    <Compile Include="JIraIssue.cs" />
     <Compile Include="Lists.cs" />
     <Compile Include="TableViews.cs" />
     <Compile Include="MailMerge.cs" />
