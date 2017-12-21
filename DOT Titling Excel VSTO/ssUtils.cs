@@ -10,6 +10,27 @@ namespace DOT_Titling_Excel_VSTO
 {
     class SSUtils
     {
+        public static string GetColumnName(int columnNumber)
+        {
+            const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string columnName = "";
+
+            while (columnNumber > 0)
+            {
+                columnName = letters[(columnNumber - 1) % 26] + columnName;
+                columnNumber = (columnNumber - 1) / 26;
+            }
+            return columnName;
+        }
+
+        public static string GetColumnLetter(Excel.Application app, string tableRangeName, string columnHeader)
+        {
+            Range colRange = app.get_Range(tableRangeName + "[" + columnHeader + "]", Type.Missing);
+            if (colRange != null)
+                return GetColumnName(colRange.Column);
+            return string.Empty;
+        }
+
         public static void HideTableColumns(Range headerRowRange, List<string> ColumnsToShow)
         {
             // Format each cell in the table header row
