@@ -12,17 +12,23 @@ namespace DOT_Titling_Excel_VSTO
         public static Color colorDullGreen = Color.FromArgb(169, 208, 142);
         public static Color colorDullBlue = Color.FromArgb(143, 172, 227);
         public static Color colorPinkAlt = Color.FromArgb(234, 174, 193);
+        public static Color colorLightPink = Color.FromArgb(236, 204, 199);
         public static Color colorDarkBrown = Color.FromArgb(44, 36, 22);
         public static Color colorLightGreen = Color.FromArgb(198, 224, 180);
-        
+        public static Color colorLightDullGreen = Color.FromArgb(192, 207, 178);
+        public static Color colorLightDullYellow = Color.FromArgb(255, 249, 186);
+        public static Color colorLightDullBlue = Color.FromArgb(203, 233, 230);
+        public static Color colorDarkGrey = Color.FromArgb(51, 51, 51);
+
         // Standard Colors
         public static XlRgbColor colorWhite = XlRgbColor.rgbGhostWhite;
         public static XlRgbColor colorBlack = XlRgbColor.rgbBlack;
-        public static XlRgbColor colorDarkGrey = XlRgbColor.rgbDarkSlateGray; 
 
         //Row Colors
-        public static XlRgbColor colorBugRow = XlRgbColor.rgbPaleGoldenrod;
-        public static XlRgbColor colorDeletedRow = XlRgbColor.rgbPink;
+        public static Color colorBugRow = colorLightDullYellow;
+        public static Color colorDeletedRow = colorLightPink;
+        public static Color colorReleaseRow = colorLightDullBlue;
+        public static Color colorSprintRow = colorLightDullGreen;
 
         //Check Boxes (YesNo)
         // RED
@@ -36,16 +42,16 @@ namespace DOT_Titling_Excel_VSTO
         public static XlRgbColor colorYesNoGoldFont = XlRgbColor.rgbBrown;
 
         //Categories
-        public static Color colorCat1 = colorDullGreen;
-        public static XlRgbColor colorCat1Font = XlRgbColor.rgbDarkGreen;
+        public static XlRgbColor colorCat1 = XlRgbColor.rgbDarkOliveGreen;
+        public static XlRgbColor colorCat1Font = colorWhite;
 
-        public static Color colorCat2 = colorDullBlue;
-        public static XlRgbColor colorCat2Font = XlRgbColor.rgbDarkSlateBlue;
+        public static XlRgbColor colorCat2 = XlRgbColor.rgbForestGreen;
+        public static XlRgbColor colorCat2Font = colorWhite;
 
         //Error Cells
         public static Color colorErrorCell = colorYesNoRed;
         public static XlRgbColor colorErrorCellFont = colorYesNoRedFont;
-
+        public static XlRgbColor colorErrorCellBorder = XlRgbColor.rgbDimGrey; 
 
         public enum StandardizationType
         {
@@ -178,6 +184,7 @@ namespace DOT_Titling_Excel_VSTO
                 int column;
                 string columnHeader;
                 string colType;
+                int firstDataRow = headerRowRange.Row + 1;
                 foreach (Range cell in headerRowRange.Cells)
                 {
                     column = cell.Column;
@@ -228,148 +235,173 @@ namespace DOT_Titling_Excel_VSTO
                         }
                     }
                 }
-                FormatErrorColumns(app, tableRange, tableRangeName);
-                FormatRowsConditionally(tableRange, tableRangeName);
+                FormatErrorColumns(app, tableRange, tableRangeName, firstDataRow);
+                FormatRowsConditionally(app, tableRange, tableRangeName, firstDataRow);
             }            
         }
 
-
-        private static void FormatErrorColumns(Excel.Application app, Range tableRange, string tableRangeName)
+        private static void FormatErrorColumns(Excel.Application app, Range tableRange, string tableRangeName, int firstDataRow)
         {
             if (tableRangeName == "TicketData")
             {
-                FormatErrorColumn(app, tableRangeName, "ERR Summaries Dont Match", "Summary", "Jira Summary");
-                FormatErrorColumn(app, tableRangeName, "ERR Epics Dont Match", "Epic", "Jira Epic");
-                FormatErrorColumn(app, tableRangeName, "ERR Releases Dont Match", "Release", "Jira Release");
-                FormatErrorColumn(app, tableRangeName, "ERR No Backlog Area", "Backlog Area", string.Empty);
-                FormatErrorColumn(app, tableRangeName, "ERR Sprints Dont Match", "Hufflepuff Sprint","Jira Hufflepuff Sprint");
-                FormatErrorColumn(app, tableRangeName, "ERR Dupe", "Ticket ID", string.Empty);
-                FormatErrorColumn(app, tableRangeName, "ERR No Epic", "Jira Epic ID", "Epic");
-                FormatErrorColumn(app, tableRangeName, "ERR Points but To Do", "Jira Status", string.Empty);
-                FormatErrorColumn(app, tableRangeName, "ERR Current Sprint But No Points", "Points", string.Empty);
-                FormatErrorColumn(app, tableRangeName, "ERR Done No Sprint", "Jira Hufflepuff Sprint", string.Empty);
-                FormatErrorColumn(app, tableRangeName, "ERR Bug Not Categorized", "DOT Jira ID", string.Empty);
-                FormatErrorColumn(app, tableRangeName, "ERR Can be Deleted", "Ticket Type", string.Empty);
-                FormatErrorColumn(app, tableRangeName, "ERR Story Not Moving or Blocked", "Days in Same Status", "Jira Status");
-                FormatErrorColumn(app, tableRangeName, "ERR Need Reason for Blocker", "Reason Blocked or Delayed", string.Empty);
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary", "Jira Summary" });
+
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic", "Jira Epic" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Releases Dont Match", new string[] { "Release", "Jira Release" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Backlog Area", new string[] { "Backlog Area" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Sprints Dont Match", new string[] { "Hufflepuff Sprint", "Jira Hufflepuff Sprint" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Ticket ID" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Jira Epic ID", "Epic" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Jira Status" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Current Sprint But No Points", new string[] { "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Jira Hufflepuff Sprint" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Ticket Type" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story Not Moving or Blocked", new string[] { "Days in Same Status", "Jira Status", "Jira Status (Last Changed)" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Need Reason for Blocker", new string[] { "Reason Blocked or Delayed"});
+            }
+
+            if (tableRangeName == "DOTReleaseData")
+            {
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary", "Jira Summary" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic", "Jira Epic" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Ticket ID" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Jira Epic ID", "Epic" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Jira Status" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Jira Hufflepuff Sprint" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Ticket Type" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Multiple Releases", new string[] { "Jira Release" });
             }
 
             if (tableRangeName == "EpicData")
             {
-                FormatErrorColumn(app, tableRangeName, "ERR Summaries Dont Match", "Jira Epic Summary", "Epic");
-                FormatErrorColumn(app, tableRangeName, "ERR Points Dont Match", "Jira Epic Points", "Estimate 2");
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Jira Epic Summary", "Epic" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Jira Epic Points", "Estimate 2" });
             }
         }
 
-
-        private static void FormatErrorColumn(Excel.Application app, string tableRangeName, string errField, string value1, string value2)
+        private static void FormatErrorColumn(Excel.Application app, string tableRangeName, int firstDataRow, string errField, string[] columns)
         {
-            Range value1ColRange = app.get_Range(tableRangeName + "[" + value1 + "]", Type.Missing);
-            Range errorFieldRange = app.get_Range(tableRangeName + "[" + errField + "]", Type.Missing);
-            string col1 = SSUtils.GetColumnName(value1ColRange.Column);
-            string errorCol = SSUtils.GetColumnName(errorFieldRange.Column);
-
-            if (col1 != string.Empty)
+            try
             {
-                string cond1 = "=$" + errorCol + "4=" + @"""x""";
-                FormatCondition fc1 = (FormatCondition)value1ColRange.FormatConditions.Add
-                    (XlFormatConditionType.xlExpression, Type.Missing, cond1, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                fc1.Interior.Color = colorErrorCell;
-                fc1.Font.Color = colorErrorCellFont;
-                fc1.Borders.Color = colorErrorCellFont;
-                fc1.Borders.LineStyle = XlLineStyle.xlDash;
-
-                //fc1.Font.Bold = true;
-            }
-
-            if (value2 != string.Empty)
-            {
-                Range value2ColRange = app.get_Range(tableRangeName + "[" + value2 + "]", Type.Missing);
-                string col2 = SSUtils.GetColumnName(value2ColRange.Column);
-                if (col2 != string.Empty)
+                foreach (string column in columns)
                 {
-                    string cond2 = "=$" + errorCol + "4=" + @"""x""";
-                    FormatCondition fc2 = (FormatCondition)value2ColRange.FormatConditions.Add
-                        (XlFormatConditionType.xlExpression, Type.Missing, cond2, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    fc2.Interior.Color = colorErrorCell;
-                    fc2.Font.Color = colorErrorCellFont;
-                    fc2.Borders.Color = colorErrorCellFont;
-                    fc2.Borders.LineStyle = XlLineStyle.xlDash;
+                    Range columnRange = app.get_Range(tableRangeName + "[" + column + "]", Type.Missing);
+                    if (columnRange != null)
+                    {
+                        Range errorRange = app.get_Range(tableRangeName + "[" + errField + "]", Type.Missing);
+                        if (errorRange != null)
+                        {
+                            string col = SSUtils.GetColumnName(columnRange.Column);
+                            string errorCol = SSUtils.GetColumnName(errorRange.Column);
+                            if (col != string.Empty)
+                            {
+                                string cond = "=$" + errorCol + firstDataRow + "=" + @"""x""";
+                                FormatCondition fc = (FormatCondition)columnRange.FormatConditions.Add
+                                    (XlFormatConditionType.xlExpression, Type.Missing, cond, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                                fc.Interior.Color = colorErrorCell;
+                                fc.Font.Color = colorErrorCellFont;
+                                fc.Font.Bold = true;
+                            }
+                        }
+                    }
                 }
             }
+            catch
+            {
+                //MessageBox.Show("Error :" + ex);
+                //return string.Empty;
+            }
         }
 
-        private static void FormatRowsConditionally(Range tableRange, string tableRangeName)
+        private static void FormatRowsConditionally(Excel.Application app, Range tableRange, string tableRangeName, int firstDataRow)
         {
-            //Bug Row
-            string condBug = "=$A4=" + @"""Software Bug""";
-            FormatCondition fcBug = (FormatCondition)tableRange.FormatConditions.Add
-                (XlFormatConditionType.xlExpression, Type.Missing, condBug, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            fcBug.Interior.Color = colorBugRow;
-
-            //Deleted Ticket Row
-            string conDeleted = "=$A4=" + @"""{DELETED}""";
-            FormatCondition fcDeleted = (FormatCondition)tableRange.FormatConditions.Add
-                (XlFormatConditionType.xlExpression, Type.Missing, conDeleted, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-            fcDeleted.Interior.Color = colorDeletedRow;
-
-            //Current Sprint Row
-            if (tableRangeName == "SprintData")
+            if (tableRangeName == "TicketData" || tableRangeName == "DOTReleaseData")
             {
-                string conSelected = "=$A5=CurrentSprint";
-                FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
-                    (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                fcSelected.Interior.Color = colorDullGreen;
+                //Ticket Type Column
+                Range ticketTypeColumnRange = app.get_Range(tableRangeName + "[Ticket Type]", Type.Missing);
+                string ticketTypeColumn = SSUtils.GetColumnName(ticketTypeColumnRange.Column);
 
-                string conSelected1 = "=AND($L5=CurrentRelease,$A5<>CurrentSprint)";
-                FormatCondition fcSelected1 = (FormatCondition)tableRange.FormatConditions.Add
-                    (XlFormatConditionType.xlExpression, Type.Missing, conSelected1, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                fcSelected1.Interior.Color = colorDullBlue;
+                //Bug Row
+                string condBug = "=$" + ticketTypeColumn + firstDataRow + "=" + @"""Software Bug""";
+                FormatCondition fcBug = (FormatCondition)tableRange.FormatConditions.Add
+                    (XlFormatConditionType.xlExpression, Type.Missing, condBug, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                fcBug.Interior.Color = colorBugRow;
+
+                //Deleted Ticket Row
+                string conDeleted = "=$" + ticketTypeColumn + firstDataRow + "=" + @"""{DELETED}""";
+                FormatCondition fcDeleted = (FormatCondition)tableRange.FormatConditions.Add
+                    (XlFormatConditionType.xlExpression, Type.Missing, conDeleted, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                fcDeleted.Interior.Color = colorDeletedRow;
             }
-
-            //Current Release Row
-            if (tableRangeName == "ReleaseData")
+            else
             {
-                string conSelected = "=$B5=CurrentRelease";
-                FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
-                    (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                fcSelected.Interior.Color = colorDullBlue;
-            }
+                //Release Column
+                Range releaseColumnRange = app.get_Range(tableRangeName + "[R]", Type.Missing);
+                string releaseColumn = SSUtils.GetColumnName(releaseColumnRange.Column);
 
-            //Current Release Row
-            if (tableRangeName == "EpicData")
-            {
-                string conSelected = "=$F4=CurrentRelease";
-                FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
-                    (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                fcSelected.Interior.Color = colorDullBlue;
+                //Current Sprint Row
+                if (tableRangeName == "SprintData")
+                {
+                    //Sprint Column
+                    Range sprintColumnRange = app.get_Range(tableRangeName + "[Sprint]", Type.Missing);
+                    string sprintColumn = SSUtils.GetColumnName(sprintColumnRange.Column);
+
+                    string conSelected = "=$" + sprintColumn + firstDataRow + "=CurrentSprint";
+                    FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
+                        (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    fcSelected.Interior.Color = colorSprintRow;
+
+                    string conSelected1 = "=AND($" + releaseColumn + firstDataRow + "=CurrentRelease,$" + sprintColumn + firstDataRow + "<>CurrentSprint)";
+                    FormatCondition fcSelected1 = (FormatCondition)tableRange.FormatConditions.Add
+                        (XlFormatConditionType.xlExpression, Type.Missing, conSelected1, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    fcSelected1.Interior.Color = colorReleaseRow;
+                }
+
+                //Current Release Row
+                if (tableRangeName == "ReleaseData")
+                {
+                    string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
+                    FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
+                        (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    fcSelected.Interior.Color = colorReleaseRow;
+                }
+
+                //Current Release Row
+                if (tableRangeName == "EpicData")
+                {
+                    string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
+                    FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
+                        (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    fcSelected.Interior.Color = colorReleaseRow;
+                }
             }
         }
 
         private static void FormatTicketType(Range columnRange)
         {
-            Color dullGreen = Color.FromArgb(169, 208, 142);
-
             // Ticket
             FormatCondition cStory = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
                    XlFormatConditionOperator.xlEqual, "Story", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             ColorConverter cc = new ColorConverter();
-            cStory.Interior.Color = dullGreen;
+            cStory.Interior.Color = colorLightDullGreen;
             cStory.Font.Color = XlRgbColor.rgbDarkGreen;
+            cStory.Font.Color = colorBlack;
 
             // Software Bug
             FormatCondition cBug = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
                    XlFormatConditionOperator.xlEqual, "Software Bug", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             cBug.Interior.Color = colorBugRow;
-            cBug.Font.Color = colorDarkBrown;
+            //cBug.Font.Color = colorDarkBrown;
+            cBug.Font.Color = colorBlack;
 
             // {DELETED}
             FormatCondition cDeleted = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
                    XlFormatConditionOperator.xlEqual, "{DELETED}", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             cDeleted.Interior.Color = colorDeletedRow;
-            cDeleted.Font.Color = XlRgbColor.rgbDarkRed;
-
-            columnRange.Font.Bold = true;
+            //cDeleted.Font.Color = XlRgbColor.rgbDarkRed;
+            cDeleted.Font.Color = colorBlack;
         }
 
         private static void FormatMidLong(Range columnRange)
@@ -443,21 +475,24 @@ namespace DOT_Titling_Excel_VSTO
         private static void FormatRelease(Range columnRange)
         {
             // From http://colorbrewer2.org
-            Color c1 = Color.FromArgb(158, 1, 66);
-            Color c2 = Color.FromArgb(213, 62, 79);
-            Color c3 = Color.FromArgb(244, 109, 67);
-            Color c4 = Color.FromArgb(253, 174, 97);
-            Color c5 = Color.FromArgb(254, 224, 139);
-            Color c6 = Color.FromArgb(255, 255, 191);
-            Color c7 = Color.FromArgb(230, 245, 152);
-            Color c8 = Color.FromArgb(171, 221, 164);
-            Color c9 = Color.FromArgb(102, 194, 165);
-            Color c10 = Color.FromArgb(50, 136, 189);
-            Color c11 = Color.FromArgb(94, 79, 162);
-            Color c12 = Color.FromArgb(146, 197, 222);
-            Color c13 = Color.FromArgb(67, 147, 195);
-            Color c14 = Color.FromArgb(33, 102, 172);
-            Color c15 = Color.FromArgb(5, 48, 97);
+            // Convert Hex to RGB: http://www.javascripter.net/faq/hextorgb.htm
+            // https://blog.graphiq.com/finding-the-right-color-palettes-for-data-visualizations-fcd4e707a283
+
+            Color c1 = Color.FromArgb(45, 15, 65);
+            Color c2 = Color.FromArgb(61, 20, 89);
+            Color c3 = Color.FromArgb(77, 26, 112);
+            Color c4 = Color.FromArgb(94, 31, 136);
+            Color c5 = Color.FromArgb(116, 39, 150);
+            Color c6 = Color.FromArgb(151, 52, 144);
+            Color c7 = Color.FromArgb(184, 66, 140);
+            Color c8 = Color.FromArgb(219, 80, 135);
+            Color c9 = Color.FromArgb(233, 106, 141);
+            Color c10 = Color.FromArgb(238, 139, 151);
+            Color c11 = Color.FromArgb(243, 172, 162);
+            Color c12 = Color.FromArgb(249, 205, 172);
+            Color c13 = Color.FromArgb(67, 147, 195); // TO DO
+            Color c14 = Color.FromArgb(33, 102, 172); // TO DO
+            Color c15 = Color.FromArgb(5, 48, 97);    // TO DO
 
             // R1
             FormatCondition conditionR1 = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
@@ -488,25 +523,25 @@ namespace DOT_Titling_Excel_VSTO
             FormatCondition conditionR5 = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
                    XlFormatConditionOperator.xlEqual, "R5", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             conditionR5.Interior.Color = c5;
-            conditionR5.Font.Color = colorBlack;
+            conditionR5.Font.Color = colorWhite;
 
             // R6
             FormatCondition conditionR6 = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
                    XlFormatConditionOperator.xlEqual, "R6", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             conditionR6.Interior.Color = c6;
-            conditionR6.Font.Color = colorBlack;
+            conditionR6.Font.Color = colorWhite;
 
             // R7
             FormatCondition conditionR7 = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
                    XlFormatConditionOperator.xlEqual, "R7", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             conditionR7.Interior.Color = c7;
-            conditionR7.Font.Color = colorBlack;
+            conditionR7.Font.Color = colorWhite;
 
             // R8
             FormatCondition conditionR8 = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
                    XlFormatConditionOperator.xlEqual, "R8", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             conditionR8.Interior.Color = c8;
-            conditionR8.Font.Color = colorBlack;
+            conditionR8.Font.Color = colorWhite;
 
             // R9
             FormatCondition conditionR9 = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
