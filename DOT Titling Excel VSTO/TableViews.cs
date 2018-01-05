@@ -8,6 +8,54 @@ namespace DOT_Titling_Excel_VSTO
 {
     class TableViews
     {
+        public static void ExecuteViewRequirementsErrors(Excel.Application app)
+        {
+            try
+            {
+                Worksheet ws = app.Worksheets["Tickets"];
+                ws.Activate();
+
+                string tableRangeName = SSUtils.GetSelectedTable(app);
+                string headerRangeName = SSUtils.GetSelectedTableHeader(app);
+                if (headerRangeName != string.Empty)
+                {
+                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    int headerRow = headerRowRange.Row;
+
+                    List<string> ColumnsToShow = new List<string>();
+
+                    ColumnsToShow.Add("Ticket Type");
+                    ColumnsToShow.Add("Ticket ID");
+                    ColumnsToShow.Add("Link");
+                    ColumnsToShow.Add("Summary");
+                    ColumnsToShow.Add("Epic");
+                    ColumnsToShow.Add("Agreed Upon Release");
+                    ColumnsToShow.Add("Epic Release");
+                    ColumnsToShow.Add("WIN Release");
+                    ColumnsToShow.Add("Points");
+                    ColumnsToShow.Add("Bypass Approval");
+                    ColumnsToShow.Add("Backlog Area");
+                    ColumnsToShow.Add("Date Submitted to DOT");
+                    ColumnsToShow.Add("Date Approved by DOT");
+                    ColumnsToShow.Add("Days Waiting for Approval");
+                    ColumnsToShow.Add("ERR Workflow DOT Created");
+                    ColumnsToShow.Add("ERR Workflow DOT Written");
+                    ColumnsToShow.Add("ERR Workflow DOT Groomed");
+                    ColumnsToShow.Add("ERR Workflow DOT Submitted");
+                    ColumnsToShow.Add("ERR Workflow DOT Approved");
+                    ColumnsToShow.Add("ERR Has Workflow Issue");
+
+                    SSUtils.FilterTable(ws, tableRangeName, "ERR Has Workflow Issue", "x");
+                    SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
+                    SSUtils.SortTable(ws, tableRangeName, "Backlog Area", XlSortOrder.xlAscending);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         public static void ExecuteViewBlockedTickets(Excel.Application app)
         {
             try

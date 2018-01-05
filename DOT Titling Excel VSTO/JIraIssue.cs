@@ -88,7 +88,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveSummary(string jiraId, string newValue)
+        public static bool SaveSummary(string jiraId, string newValue, bool multiple)
         {
             try
             {
@@ -100,7 +100,8 @@ namespace DOT_Titling_Excel_VSTO
                 }
                 issue.Summary = newValue;
                 issue.SaveChanges();
-                MessageBox.Show("Summary updated successfully updated.");
+                if (!multiple)
+                    MessageBox.Show("Summary updated successfully updated.");
                 return true;
             }
             catch
@@ -110,15 +111,15 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveRelease(string jiraId, string newValue)
+        public static bool SaveRelease(string jiraId, string newValue, bool multiple)
         {
             try
             {
                 var issue = GetIssue(jiraId).Result;
                 string curRelease = ExtractRelease(issue);
                 if (curRelease == newValue)
-                {
-                    MessageBox.Show("No change needed.");
+                {   if (!multiple)
+                     MessageBox.Show("No change needed.");
                     return true;
                 }
 
@@ -133,7 +134,8 @@ namespace DOT_Titling_Excel_VSTO
                     issue.AffectsVersions.Add(newValue);
 
                 issue.SaveChanges();
-                MessageBox.Show("Release updated successfully updated.");
+                if (!multiple)
+                    MessageBox.Show("Release updated successfully updated.");
                 return true;
             }
             catch
@@ -143,18 +145,83 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveStatus(string jiraId, string newValue)
+        //PWH
+        public static bool SaveLabels(string jiraId, string newValue, bool multiple)
+        {
+            try
+            {
+                var issue = GetIssue(jiraId).Result;
+                List<string> listofJiraLabels = ExtractListOfLabels(issue);
+                List<string> listofExcelLabels = CreateListOfLabels(newValue);
+                List<string> addLabels = listofExcelLabels.Except(listofJiraLabels).ToList();
+                List<string> removeLabels = listofJiraLabels.Except(listofExcelLabels).ToList();
+
+                if (addLabels.Count > 0)
+                { 
+                    foreach (string label in addLabels)
+                    {
+                        issue.Labels.Add(label);
+                    }
+                    issue.SaveChanges();
+                }
+
+                if (removeLabels.Count > 0)
+                {
+                    foreach (string label in removeLabels)
+                    {
+                        issue.Labels.Remove(label);
+                    }
+                    issue.SaveChanges();
+                }
+
+
+                return true;
+                //string curRelease = ExtractRelease(issue);
+                //if (curRelease == newValue)
+                //{
+                //    if (!multiple)
+                //        MessageBox.Show("No change needed.");
+                //    return true;
+                //}
+
+                //// Remove all of the existing versions
+                //var oldVersions = issue.AffectsVersions.ToList();
+                //foreach (var oldVersion in oldVersions)
+                //{
+                //    issue.AffectsVersions.Remove(oldVersion);
+                //}
+
+                //if (newValue.Trim() != string.Empty)
+                //    issue.AffectsVersions.Add(newValue);
+
+                //issue.SaveChanges();
+                //if (!multiple)
+                //    MessageBox.Show("Release updated successfully updated.");
+
+            }
+            catch
+            {
+                MessageBox.Show("Release could NOT successfully updated.");
+                return false;
+            }
+        }
+
+
+
+        public static bool SaveStatus(string jiraId, string newValue, bool multiple)
         {
             try
             {
                 var issue = GetIssue(jiraId).Result;
                 if (issue.Status.Name == newValue)
                 {
-                    MessageBox.Show("No change needed.");
+                    if (!multiple)
+                        MessageBox.Show("No change needed.");
                     return true;
                 }
                 issue.WorkflowTransitionAsync(newValue);
-                MessageBox.Show("Status transitioned successfully.");
+                if (!multiple)
+                    MessageBox.Show("Status transitioned successfully.");
                 return true;
             }
             catch
@@ -164,7 +231,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveCustomField(string jiraId, string field, string newValue)
+        public static bool SaveCustomField(string jiraId, string field, string newValue, bool multiple)
         {
             try
             {
@@ -172,7 +239,8 @@ namespace DOT_Titling_Excel_VSTO
                 var issue = GetIssue(jiraId).Result;
                 if (issue[field] == newValue)
                 {
-                    MessageBox.Show("No change needed.");
+                    if (!multiple)
+                        MessageBox.Show("No change needed.");
                     return true;
                 }
                 if (newValue == string.Empty)
@@ -183,8 +251,8 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     issue[field] = newValue;
                 }
-                issue.SaveChanges();
-                MessageBox.Show(field + " successfully updated.");
+                issue.SaveChanges(); if (!multiple)
+                    MessageBox.Show(field + " successfully updated.");
                 return true;
             }
             catch (Exception ex)
@@ -232,6 +300,26 @@ namespace DOT_Titling_Excel_VSTO
                 }
             }
             return val;
+        }
+
+
+        public static List<string> CreateListOfLabels(string labels)
+        {
+            labels = labels.Replace(", ", ",");
+            return labels.Split(',').ToList();
+        }
+
+        public static List<string> ExtractListOfLabels(Issue issue)
+        {
+            List<string> listofLabels = new List<string>();
+            if (issue.Labels.Count > 0)
+            {
+                foreach (var label in issue.Labels)
+                {
+                    listofLabels.Add(label);
+                }
+            }
+            return listofLabels;
         }
 
         public static string ExtractDOTWebServices(Issue issue)
@@ -346,7 +434,13 @@ namespace DOT_Titling_Excel_VSTO
                     val = ExtractDOTWebServices(issue);
                     break;
                 case "Labels":
-                    val = ExtractLabels(issue);
+                    List<string> listofLabels = ExtractListOfLabels(issue);
+                    foreach (string label in listofLabels)
+                    {
+                        val = val + label + ", ";
+                    }
+                    if (val != string.Empty && val.Right(2) == ", ")
+                        val = val.Left(val.Length - 2);                        
                     break;
                 default:
                     break;

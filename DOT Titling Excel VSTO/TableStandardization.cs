@@ -67,7 +67,7 @@ namespace DOT_Titling_Excel_VSTO
             TextTiny = 9,
             Number = 9,
             Percent = 9,
-            Date = 10,
+            Date = 12,
             Error = 7,
             YesNoGreen = 7,
             YesNoGold = 7,
@@ -204,7 +204,6 @@ namespace DOT_Titling_Excel_VSTO
                                 columnRange.NumberFormat = "0%";
                                 break;
                             case "Date":
-                                cell.EntireColumn.ColumnWidth = 10;
                                 columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
                                 columnRange.NumberFormat = "m/d/yyyy";
                                 break;
@@ -259,6 +258,12 @@ namespace DOT_Titling_Excel_VSTO
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Ticket Type" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story Not Moving or Blocked", new string[] { "Days in Same Status", "Jira Status", "Jira Status (Last Changed)" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Need Reason for Blocker", new string[] { "Reason Blocked or Delayed"});
+
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Created", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Written", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Submitted", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Approved", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
             }
 
             if (tableRangeName == "DOTReleaseData")

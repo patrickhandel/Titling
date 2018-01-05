@@ -139,8 +139,13 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                ExportToJira.ExecuteSaveTicket(app);
-                SSUtils.EndExcelOperation(app, string.Empty);
+                bool multiple = ExportToJira.ExecuteSaveSelectedTicketValues(app);
+                string msg = string.Empty;
+                if (multiple == true)
+                {
+                    msg = "Selected Items Saved.";
+                }
+                SSUtils.EndExcelOperation(app, msg);
             }
             catch (Exception ex)
             {
@@ -189,7 +194,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-
         private void btnViewBlockedTickets_Click(object sender, RibbonControlEventArgs e)
         {
             try
@@ -202,6 +206,20 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        private void btnViewRequirementsErrors_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                TableViews.ExecuteViewRequirementsErrors(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
 
         private void btnResetView_Click(object sender, RibbonControlEventArgs e)
         {

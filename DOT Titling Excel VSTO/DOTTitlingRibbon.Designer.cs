@@ -52,6 +52,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
             this.Views = this.Factory.CreateRibbonGallery();
             this.btnViewReleasePlan = this.Factory.CreateRibbonButton();
+            this.btnViewRequirementsErrors = this.Factory.CreateRibbonButton();
             this.btnViewRequirementsStatus = this.Factory.CreateRibbonButton();
             this.btnViewBlockedTickets = this.Factory.CreateRibbonButton();
             this.btnShowHidePropertiesRow = this.Factory.CreateRibbonButton();
@@ -167,6 +168,7 @@ namespace DOT_Titling_Excel_VSTO
             // Views
             // 
             this.Views.Buttons.Add(this.btnViewReleasePlan);
+            this.Views.Buttons.Add(this.btnViewRequirementsErrors);
             this.Views.Buttons.Add(this.btnViewRequirementsStatus);
             this.Views.Buttons.Add(this.btnViewBlockedTickets);
             this.Views.Buttons.Add(this.btnShowHidePropertiesRow);
@@ -185,6 +187,19 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewReleasePlan.Name = "btnViewReleasePlan";
             this.btnViewReleasePlan.ShowImage = true;
             this.btnViewReleasePlan.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_Click);
+
+            // 
+            // btnViewRequirementsErrors
+            // 
+            this.btnViewRequirementsErrors.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewRequirementsErrors.Description = "Requirements Errors";
+            this.btnViewRequirementsErrors.Label = "Requirements Errors";
+            this.btnViewRequirementsErrors.Name = "btnViewRequirementsErrors";
+            this.btnViewRequirementsErrors.ShowImage = true;
+            this.btnViewRequirementsErrors.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewRequirementsErrors_Click);
+
+
+
             // 
             // btnViewRequirementsStatus
             // 
@@ -251,6 +266,7 @@ namespace DOT_Titling_Excel_VSTO
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnDeveloperFromHistory;
         internal Microsoft.Office.Tools.Ribbon.RibbonGallery Views;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewReleasePlan;
+        private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsErrors;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsStatus;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewBlockedTickets;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnShowHidePropertiesRow;
