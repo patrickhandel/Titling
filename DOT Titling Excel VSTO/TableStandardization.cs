@@ -66,6 +66,8 @@ namespace DOT_Titling_Excel_VSTO
             TextShort = 15,
             TextTiny = 9,
             Number = 9,
+            Dollar = 9,
+            Decimal = 9,
             Percent = 9,
             Date = 12,
             Error = 7,
@@ -82,11 +84,18 @@ namespace DOT_Titling_Excel_VSTO
 
         public static int GetColumnWidth(string ct)
         {
-            //ColumnWidth cw = (ColumnWidth)Enum.Parse(typeof(ColumnWidth), colour, true); 
-            if (ct == string.Empty || ct == null)
+            try
+            {
+                if (ct == string.Empty || ct == null)
                 ct = "Default";
-            int cw = (int)((ColumnWidth)Enum.Parse(typeof(ColumnWidth), ct, true));
-            return cw;
+                int cw = (int)((ColumnWidth)Enum.Parse(typeof(ColumnWidth), ct, true));
+                return cw;
+            }
+            catch
+            {
+                MessageBox.Show("Not a recognized column type :" + ct);
+                return (int)((ColumnWidth)Enum.Parse(typeof(ColumnWidth), "Default", true));
+            }
         }
 
         public static void ExecuteCleanupTable(Excel.Application app, StandardizationType sType)
@@ -196,6 +205,11 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         switch (colType)
                         {
+                            case "Decimal":
+                            case "Dollar":
+                                columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
+                                columnRange.NumberFormat = "#,##0.00";
+                                break;
                             case "Number":
                                 columnRange.HorizontalAlignment = XlHAlign.xlHAlignRight;
                                 break;
@@ -342,44 +356,47 @@ namespace DOT_Titling_Excel_VSTO
             }
             else
             {
-                //Release Column
-                Range releaseColumnRange = app.get_Range(tableRangeName + "[R]", Type.Missing);
-                string releaseColumn = SSUtils.GetColumnName(releaseColumnRange.Column);
-
-                //Current Sprint Row
-                if (tableRangeName == "SprintData")
+                if (tableRangeName == "SprintData" || tableRangeName == "ReleaseData" || tableRangeName == "EpicData")
                 {
-                    //Sprint Column
-                    Range sprintColumnRange = app.get_Range(tableRangeName + "[Sprint]", Type.Missing);
-                    string sprintColumn = SSUtils.GetColumnName(sprintColumnRange.Column);
+                    //Release Column
+                    Range releaseColumnRange = app.get_Range(tableRangeName + "[R]", Type.Missing);
+                    string releaseColumn = SSUtils.GetColumnName(releaseColumnRange.Column);
 
-                    string conSelected = "=$" + sprintColumn + firstDataRow + "=CurrentSprint";
-                    FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
-                        (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    fcSelected.Interior.Color = colorSprintRow;
+                    //Current Sprint Row
+                    if (tableRangeName == "SprintData")
+                    {
+                        //Sprint Column
+                        Range sprintColumnRange = app.get_Range(tableRangeName + "[Sprint]", Type.Missing);
+                        string sprintColumn = SSUtils.GetColumnName(sprintColumnRange.Column);
 
-                    string conSelected1 = "=AND($" + releaseColumn + firstDataRow + "=CurrentRelease,$" + sprintColumn + firstDataRow + "<>CurrentSprint)";
-                    FormatCondition fcSelected1 = (FormatCondition)tableRange.FormatConditions.Add
-                        (XlFormatConditionType.xlExpression, Type.Missing, conSelected1, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    fcSelected1.Interior.Color = colorReleaseRow;
-                }
+                        string conSelected = "=$" + sprintColumn + firstDataRow + "=CurrentSprint";
+                        FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
+                            (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                        fcSelected.Interior.Color = colorSprintRow;
 
-                //Current Release Row
-                if (tableRangeName == "ReleaseData")
-                {
-                    string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
-                    FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
-                        (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    fcSelected.Interior.Color = colorReleaseRow;
-                }
+                        string conSelected1 = "=AND($" + releaseColumn + firstDataRow + "=CurrentRelease,$" + sprintColumn + firstDataRow + "<>CurrentSprint)";
+                        FormatCondition fcSelected1 = (FormatCondition)tableRange.FormatConditions.Add
+                            (XlFormatConditionType.xlExpression, Type.Missing, conSelected1, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                        fcSelected1.Interior.Color = colorReleaseRow;
+                    }
 
-                //Current Release Row
-                if (tableRangeName == "EpicData")
-                {
-                    string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
-                    FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
-                        (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                    fcSelected.Interior.Color = colorReleaseRow;
+                    //Current Release Row
+                    if (tableRangeName == "ReleaseData")
+                    {
+                        string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
+                        FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
+                            (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                        fcSelected.Interior.Color = colorReleaseRow;
+                    }
+
+                    //Current Release Row
+                    if (tableRangeName == "EpicData")
+                    {
+                        string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
+                        FormatCondition fcSelected = (FormatCondition)tableRange.FormatConditions.Add
+                            (XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                        fcSelected.Interior.Color = colorReleaseRow;
+                    }
                 }
             }
         }
