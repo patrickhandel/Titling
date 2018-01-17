@@ -33,18 +33,24 @@ namespace DOT_Titling_Excel_VSTO
                 //Create the JQL
                 var jql = new System.Text.StringBuilder();
                 jql.Append("project = DOTTITLNG");
-                jql.Append(" && ");
+                jql.Append(" AND ");
 
                 if (type == "Epics")
                 {
                     jql.Append("issuetype in (\"Epic\")");
+                }
+                if (type == "Tasks")
+                {
+                    jql.Append("issuetype in (\"Task\")");
+                    jql.Append(" AND ");
+                    jql.Append("\"Epic Link\" = DOTTITLNG-945");
                 }
                 if (type == "Tickets")
                 {
                     jql.Append("issuetype in (\"Software Bug\", Story)");
                 }
 
-                jql.Append(" && ");
+                jql.Append(" AND ");
                 jql.Append("summary ~ \"!DELETE\"");
 
                 var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);

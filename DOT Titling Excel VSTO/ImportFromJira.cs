@@ -264,6 +264,81 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        public static void ExecuteUpdateChecklistTasks(Excel.Application app)
+        {
+            try
+            {
+                var activeWorksheet = app.ActiveSheet;
+                if ((activeWorksheet.Name == "Project Checklist"))
+                {
+                    string missingColumns = MissingColumns(activeWorksheet);
+                    if (missingColumns == string.Empty)
+                    {
+                        UpdateChecklistTasks(app, activeWorksheet);
+                        AddNewChecklistTasks(app, activeWorksheet);
+                        TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void AddNewChecklistTasks(Excel.Application app, Worksheet ws)
+        {
+            try
+            {
+                string missingColumns = MissingColumns(ws);
+                if (missingColumns == string.Empty)
+                {
+                    var issues = JiraIssue.GetAllIssues("Tasks").Result;
+                    string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                    int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
+                    var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+
+                    List<string> listOfTicketIDs = new List<string>();
+                    Range ticketIDColumnRange = ws.get_Range(wsRangeName + "[Ticket ID]", Type.Missing);
+                    foreach (Range cell in ticketIDColumnRange.Cells)
+                    {
+                        listOfTicketIDs.Add(cell.Value);
+                    }
+                    foreach (var ticketID in listOfTicketIDs)
+                    {
+                        issues.Remove(issues.FirstOrDefault(x => x.Key.Value == ticketID.ToString()));
+                    }
+
+                    string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                    foreach (var issue in issues)
+                    {
+                        Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                        int footerRow = footerRangeRange.Row;
+                        Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                        rToInsert.Insert();
+                        UpdateValues(ws, jiraFields, footerRow, issue, false);
+                        SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
+                        //SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Summary");
+                        SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
+                    }
+                    MessageBox.Show(issues.Count() + " Tasks Added.");
+
+                }
+                else
+                {
+                    MessageBox.Show("Missing Columns: " + missingColumns);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private static void UpdateTicketBeforeMailMerge(Excel.Application app, Worksheet ws, string jiraId)
         {
             try
@@ -305,6 +380,39 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     string jiraID = SSUtils.GetCellValue(ws, currentRow, jiraIDCol);
                     var issue = epics.FirstOrDefault(i => i.Key == jiraID);
+                    bool notFound = issue == null;
+                    UpdateValues(ws, jiraFields, currentRow, issue, notFound);
+                }
+                SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void UpdateChecklistTasks(Excel.Application app, Worksheet ws)
+        {
+            try
+            {
+                var tasks = JiraIssue.GetAllIssues("Tasks").Result;
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+
+                int cnt = tasks.Count();
+
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
+                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                int headerRow = headerRowRange.Row;
+
+                string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                int footerRow = footerRangeRange.Row;
+
+                int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
+                for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
+                {
+                    string jiraID = SSUtils.GetCellValue(ws, currentRow, jiraIDCol);
+                    var issue = tasks.FirstOrDefault(i => i.Key == jiraID);
                     bool notFound = issue == null;
                     UpdateValues(ws, jiraFields, currentRow, issue, notFound);
                 }

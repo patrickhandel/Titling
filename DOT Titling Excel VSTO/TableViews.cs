@@ -43,6 +43,7 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("ERR Workflow DOT Groomed");
                     ColumnsToShow.Add("ERR Workflow DOT Submitted");
                     ColumnsToShow.Add("ERR Workflow DOT Approved");
+                    ColumnsToShow.Add("ERR Workflow Bug Bucket");
                     ColumnsToShow.Add("ERR Has Workflow Issue");
 
                     SSUtils.FilterTable(ws, tableRangeName, "ERR Has Workflow Issue", "x");

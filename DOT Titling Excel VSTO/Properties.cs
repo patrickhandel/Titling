@@ -47,7 +47,16 @@ namespace DOT_Titling_Excel_VSTO
         {
             var str = ConfigurationManager.AppSettings["JiraFields"];
             List<JiraFields> lst = JsonConvert.DeserializeObject<List<JiraFields>>(str);
-            string range = (ws.Name == "Epics") ? "EpicData" : "TicketData";
+            //string range = (ws.Name == "Epics") ? "EpicData" : "TicketData";
+            string range = string.Empty;
+            if (ws.Name == "Epics")
+                range = "EpicData";
+            if (ws.Name == "Project Checklist")
+                range = "ProjectChecklistData";
+            if (ws.Name == "Release Topics")
+                range = "DOTReleaseData";
+            if (ws.Name == "Tickets")
+                range = "TicketData";
             return lst.FindAll(y => y.Range == range);
         }
 

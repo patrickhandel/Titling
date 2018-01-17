@@ -45,17 +45,18 @@ namespace DOT_Titling_Excel_VSTO
             this.btnAddNewTickets = this.Factory.CreateRibbonButton();
             this.btnUpdate = this.Factory.CreateRibbonButton();
             this.btnImportEpics = this.Factory.CreateRibbonButton();
-            this.btnCleanup = this.Factory.CreateRibbonButton();
-            this.btnResetView = this.Factory.CreateRibbonButton();
+            this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnDeveloperFromHistory = this.Factory.CreateRibbonButton();
-            this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
+            this.btnCleanup = this.Factory.CreateRibbonButton();
+            this.btnResetView = this.Factory.CreateRibbonButton();
             this.Views = this.Factory.CreateRibbonGallery();
             this.btnViewReleasePlan = this.Factory.CreateRibbonButton();
             this.btnViewRequirementsErrors = this.Factory.CreateRibbonButton();
             this.btnViewRequirementsStatus = this.Factory.CreateRibbonButton();
             this.btnViewBlockedTickets = this.Factory.CreateRibbonButton();
             this.btnShowHidePropertiesRow = this.Factory.CreateRibbonButton();
+            this.btnImportChecklist = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -75,6 +76,7 @@ namespace DOT_Titling_Excel_VSTO
             this.group1.Items.Add(this.btnAddNewTickets);
             this.group1.Items.Add(this.btnUpdate);
             this.group1.Items.Add(this.btnImportEpics);
+            this.group1.Items.Add(this.btnImportChecklist);
             this.group1.Items.Add(this.btnUpdateRoadMap);
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnDeveloperFromHistory);
@@ -129,14 +131,14 @@ namespace DOT_Titling_Excel_VSTO
             this.btnImportEpics.ShowImage = true;
             this.btnImportEpics.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportEpics_Click);
             // 
-            // btnCleanup
+            // btnUpdateRoadMap
             // 
-            this.btnCleanup.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnCleanup.Image = ((System.Drawing.Image)(resources.GetObject("btnCleanup.Image")));
-            this.btnCleanup.Label = "Cleanup Worksheet";
-            this.btnCleanup.Name = "btnCleanup";
-            this.btnCleanup.ShowImage = true;
-            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupTable_Click);
+            this.btnUpdateRoadMap.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdateRoadMap.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateRoadMap.Image")));
+            this.btnUpdateRoadMap.Label = "Update Roadmap";
+            this.btnUpdateRoadMap.Name = "btnUpdateRoadMap";
+            this.btnUpdateRoadMap.ShowImage = true;
+            this.btnUpdateRoadMap.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateRoadMap_Click);
             // 
             // btnMailMerge
             // 
@@ -156,14 +158,23 @@ namespace DOT_Titling_Excel_VSTO
             this.btnDeveloperFromHistory.ShowImage = true;
             this.btnDeveloperFromHistory.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnDeveloperFromHistory_Click);
             // 
-            // btnUpdateRoadMap
+            // btnCleanup
             // 
-            this.btnUpdateRoadMap.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnUpdateRoadMap.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateRoadMap.Image")));
-            this.btnUpdateRoadMap.Label = "Update Roadmap";
-            this.btnUpdateRoadMap.Name = "btnUpdateRoadMap";
-            this.btnUpdateRoadMap.ShowImage = true;
-            this.btnUpdateRoadMap.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateRoadMap_Click);
+            this.btnCleanup.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnCleanup.Image = ((System.Drawing.Image)(resources.GetObject("btnCleanup.Image")));
+            this.btnCleanup.Label = "Cleanup Worksheet";
+            this.btnCleanup.Name = "btnCleanup";
+            this.btnCleanup.ShowImage = true;
+            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupTable_Click);
+            // 
+            // btnResetView
+            // 
+            this.btnResetView.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnResetView.Image = ((System.Drawing.Image)(resources.GetObject("btnResetView.Image")));
+            this.btnResetView.Label = "Reset View";
+            this.btnResetView.Name = "btnResetView";
+            this.btnResetView.ShowImage = true;
+            this.btnResetView.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnResetView_Click);
             // 
             // Views
             // 
@@ -187,7 +198,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewReleasePlan.Name = "btnViewReleasePlan";
             this.btnViewReleasePlan.ShowImage = true;
             this.btnViewReleasePlan.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_Click);
-
             // 
             // btnViewRequirementsErrors
             // 
@@ -197,9 +207,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewRequirementsErrors.Name = "btnViewRequirementsErrors";
             this.btnViewRequirementsErrors.ShowImage = true;
             this.btnViewRequirementsErrors.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewRequirementsErrors_Click);
-
-
-
             // 
             // btnViewRequirementsStatus
             // 
@@ -228,14 +235,14 @@ namespace DOT_Titling_Excel_VSTO
             this.btnShowHidePropertiesRow.ShowImage = true;
             this.btnShowHidePropertiesRow.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowHidePropertiesRow_Click);
             // 
-            // btnResetView
+            // btnImportChecklist
             // 
-            this.btnResetView.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnResetView.Image = ((System.Drawing.Image)(resources.GetObject("btnResetView.Image")));
-            this.btnResetView.Label = "Reset View";
-            this.btnResetView.Name = "btnResetView";
-            this.btnResetView.ShowImage = true;
-            this.btnResetView.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnResetView_Click);
+            this.btnImportChecklist.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportChecklist.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.To_Do_List_512;
+            this.btnImportChecklist.Label = "Update Checklist";
+            this.btnImportChecklist.Name = "btnImportChecklist";
+            this.btnImportChecklist.ShowImage = true;
+            this.btnImportChecklist.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportChecklist_Click);
             // 
             // DOTTitlingRibbon
             // 
@@ -271,6 +278,7 @@ namespace DOT_Titling_Excel_VSTO
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewBlockedTickets;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnShowHidePropertiesRow;
         internal RibbonButton btnResetView;
+        internal RibbonButton btnImportChecklist;
     }
 
     partial class ThisRibbonCollection
