@@ -100,6 +100,31 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+
+        public static void ExecuteAddNewProjects(Excel.Application app)
+        {
+            try
+            {
+                var activeWorksheet = app.ActiveSheet;
+                if (activeWorksheet.Name == "Projects")
+                {
+                    string missingColumns = MissingColumns(activeWorksheet);
+                    if (missingColumns == string.Empty)
+                    {
+                        AddNewProjects(app, activeWorksheet);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         public static void ExecuteUpateTicketBeforeMailMerge(string jiraId)
         {
             try
@@ -153,7 +178,7 @@ namespace DOT_Titling_Excel_VSTO
                         int footerRow = footerRangeRange.Row;
                         Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                         rToInsert.Insert();
-                        UpdateValues(ws, jiraFields, footerRow, issue, false);
+                        UpdateIssueValues(ws, jiraFields, footerRow, issue, false);
 
                         //Ticket ID (2)
                         SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "Ticket ID");
@@ -245,7 +270,7 @@ namespace DOT_Titling_Excel_VSTO
                         int footerRow = footerRangeRange.Row;
                         Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                         rToInsert.Insert();
-                        UpdateValues(ws, jiraFields, footerRow, issue, false);
+                        UpdateIssueValues(ws, jiraFields, footerRow, issue, false);
                         SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
                         SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Summary");
                         SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
@@ -290,6 +315,32 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        public static void ExecuteUpdateProjects(Excel.Application app)
+        {
+            try
+            {
+                var activeWorksheet = app.ActiveSheet;
+                if ((activeWorksheet.Name == "Projects"))
+                {
+                    string missingColumns = MissingColumns(activeWorksheet);
+                    if (missingColumns == string.Empty)
+                    {
+                        UpdateProjects(app, activeWorksheet);
+                        AddNewProjects(app, activeWorksheet);
+                        TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private static void AddNewChecklistTasks(Excel.Application app, Worksheet ws)
         {
             try
@@ -320,12 +371,61 @@ namespace DOT_Titling_Excel_VSTO
                         int footerRow = footerRangeRange.Row;
                         Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                         rToInsert.Insert();
-                        UpdateValues(ws, jiraFields, footerRow, issue, false);
+                        UpdateIssueValues(ws, jiraFields, footerRow, issue, false);
                         SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
                         //SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Summary");
                         SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                     }
                     MessageBox.Show(issues.Count() + " Tasks Added.");
+
+                }
+                else
+                {
+                    MessageBox.Show("Missing Columns: " + missingColumns);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void AddNewProjects(Excel.Application app, Worksheet ws)
+        {
+            try
+            {
+                string missingColumns = MissingColumns(ws);
+                if (missingColumns == string.Empty)
+                {
+                    var projects = JiraProject.GetAllProjects().Result;
+                    string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                    int column = SSUtils.GetColumnFromHeader(ws, "Key");
+                    var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+
+                    List<string> listOfProjectKeys = new List<string>();
+                    Range keyColumnRange = ws.get_Range(wsRangeName + "[Key]", Type.Missing);
+                    foreach (Range cell in keyColumnRange.Cells)
+                    {
+                        listOfProjectKeys.Add(cell.Value);
+                    }
+                    foreach (var key in listOfProjectKeys)
+                    {
+                        projects.Remove(projects.FirstOrDefault(x => x.Key == key.ToString()));
+                    }
+
+                    string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                    foreach (var project in projects)
+                    {
+                        Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                        int footerRow = footerRangeRange.Row;
+                        Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                        rToInsert.Insert();
+                        UpdateProjectValues(ws, jiraFields, footerRow, project, false);
+                        //SSUtils.SetCellValue(ws, footerRow, column, project.Key, "project.Key");
+                        //SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Summary");
+                        //SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
+                    }
+                    MessageBox.Show(projects.Count() + " Projects Added.");
 
                 }
                 else
@@ -349,7 +449,7 @@ namespace DOT_Titling_Excel_VSTO
                 int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                 int row = SSUtils.FindTextInColumn(ws, rangeName + "[Ticket ID]", jiraId);
                 bool notFound = issue == null;
-                UpdateValues(ws, jiraFields, row, issue, notFound);
+                UpdateIssueValues(ws, jiraFields, row, issue, notFound);
                 SSUtils.SetStandardRowHeight(ws, row, row);
             }
             catch (Exception ex)
@@ -381,7 +481,7 @@ namespace DOT_Titling_Excel_VSTO
                     string jiraID = SSUtils.GetCellValue(ws, currentRow, jiraIDCol);
                     var issue = epics.FirstOrDefault(i => i.Key == jiraID);
                     bool notFound = issue == null;
-                    UpdateValues(ws, jiraFields, currentRow, issue, notFound);
+                    UpdateIssueValues(ws, jiraFields, currentRow, issue, notFound);
                 }
                 SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
             }
@@ -414,7 +514,40 @@ namespace DOT_Titling_Excel_VSTO
                     string jiraID = SSUtils.GetCellValue(ws, currentRow, jiraIDCol);
                     var issue = tasks.FirstOrDefault(i => i.Key == jiraID);
                     bool notFound = issue == null;
-                    UpdateValues(ws, jiraFields, currentRow, issue, notFound);
+                    UpdateIssueValues(ws, jiraFields, currentRow, issue, notFound);
+                }
+                SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void UpdateProjects(Excel.Application app, Worksheet ws)
+        {
+            try
+            {
+                var projects = JiraProject.GetAllProjects().Result;
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+
+                int cnt = projects.Count();
+
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
+                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                int headerRow = headerRowRange.Row;
+
+                string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                int footerRow = footerRangeRange.Row;
+
+                int keyCol = SSUtils.GetColumnFromHeader(ws, "Key");
+                for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
+                {
+                    string key = SSUtils.GetCellValue(ws, currentRow, keyCol);
+                    var project = projects.FirstOrDefault(i => i.Key == key);
+                    bool notFound = projects == null;
+                    UpdateProjectValues(ws, jiraFields, currentRow, project, notFound);
                 }
                 SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
             }
@@ -452,7 +585,7 @@ namespace DOT_Titling_Excel_VSTO
                     string jiraID = SSUtils.GetCellValue(ws, currentRow, jiraIDCol);
                     var issue = issues.FirstOrDefault(i => i.Key == jiraID);
                     bool notFound = issue == null;
-                    UpdateValues(ws, jiraFields, currentRow, issue, notFound);
+                    UpdateIssueValues(ws, jiraFields, currentRow, issue, notFound);
                 }
                 SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
             }
@@ -485,14 +618,14 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         var issue = issues.FirstOrDefault(p => p.Key.Value == jiraId);
                         bool notFound = issue == null;
-                        UpdateValues(ws, jiraFields, row, issue, notFound);
+                        UpdateIssueValues(ws, jiraFields, row, issue, notFound);
                         SSUtils.SetStandardRowHeight(ws, row, row);
                     }
                 }
             }
         }
 
-        private static void UpdateValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue, bool notFound)
+        private static void UpdateIssueValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Issue issue, bool notFound)
         {
             //Get the current status
             int statusColumn = SSUtils.GetColumnFromHeader(activeWorksheet, "Jira Status");            
@@ -561,6 +694,20 @@ namespace DOT_Titling_Excel_VSTO
                         }
                     }
                 }
+            }
+        }
+
+        private static void UpdateProjectValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Project project, bool notFound)
+        {
+            foreach (var jiraField in jiraFields)
+            {
+                string columnHeader = jiraField.ColumnHeader;
+                string type = jiraField.Type;
+                string item = jiraField.Value;
+                string formula = jiraField.Formula;
+                int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
+                    if (type == "Standard")
+                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraProject.ExtractStandardValue(project, item), columnHeader);
             }
         }
 

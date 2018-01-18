@@ -151,7 +151,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        //PWH
         public static bool SaveLabels(string jiraId, string newValue, bool multiple)
         {
             try
@@ -211,8 +210,6 @@ namespace DOT_Titling_Excel_VSTO
                 return false;
             }
         }
-
-
 
         public static bool SaveStatus(string jiraId, string newValue, bool multiple)
         {
@@ -307,7 +304,6 @@ namespace DOT_Titling_Excel_VSTO
             }
             return val;
         }
-
 
         public static List<string> CreateListOfLabels(string labels)
         {

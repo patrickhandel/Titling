@@ -132,6 +132,22 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        private void btnImportProjects_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                //ImportFromJira.ExecuteAddNewProjects(app);
+                ImportFromJira.ExecuteUpdateProjects(app);
+                SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private void btnMailMerge_Click(object sender, RibbonControlEventArgs e)
         {
             try

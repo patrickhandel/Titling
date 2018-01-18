@@ -45,6 +45,8 @@ namespace DOT_Titling_Excel_VSTO
             this.btnAddNewTickets = this.Factory.CreateRibbonButton();
             this.btnUpdate = this.Factory.CreateRibbonButton();
             this.btnImportEpics = this.Factory.CreateRibbonButton();
+            this.btnImportProjects = this.Factory.CreateRibbonButton();
+            this.btnImportChecklist = this.Factory.CreateRibbonButton();
             this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnDeveloperFromHistory = this.Factory.CreateRibbonButton();
@@ -56,7 +58,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewRequirementsStatus = this.Factory.CreateRibbonButton();
             this.btnViewBlockedTickets = this.Factory.CreateRibbonButton();
             this.btnShowHidePropertiesRow = this.Factory.CreateRibbonButton();
-            this.btnImportChecklist = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -76,6 +77,7 @@ namespace DOT_Titling_Excel_VSTO
             this.group1.Items.Add(this.btnAddNewTickets);
             this.group1.Items.Add(this.btnUpdate);
             this.group1.Items.Add(this.btnImportEpics);
+            this.group1.Items.Add(this.btnImportProjects);
             this.group1.Items.Add(this.btnImportChecklist);
             this.group1.Items.Add(this.btnUpdateRoadMap);
             this.group1.Items.Add(this.btnMailMerge);
@@ -130,6 +132,24 @@ namespace DOT_Titling_Excel_VSTO
             this.btnImportEpics.Name = "btnImportEpics";
             this.btnImportEpics.ShowImage = true;
             this.btnImportEpics.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportEpics_Click);
+            // 
+            // btnImportProjects
+            // 
+            this.btnImportProjects.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportProjects.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.project;
+            this.btnImportProjects.Label = "Update Projects";
+            this.btnImportProjects.Name = "btnImportProjects";
+            this.btnImportProjects.ShowImage = true;
+            this.btnImportProjects.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportProjects_Click);
+            // 
+            // btnImportChecklist
+            // 
+            this.btnImportChecklist.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportChecklist.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.To_Do_List_512;
+            this.btnImportChecklist.Label = "Update Checklist";
+            this.btnImportChecklist.Name = "btnImportChecklist";
+            this.btnImportChecklist.ShowImage = true;
+            this.btnImportChecklist.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportChecklist_Click);
             // 
             // btnUpdateRoadMap
             // 
@@ -235,15 +255,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnShowHidePropertiesRow.ShowImage = true;
             this.btnShowHidePropertiesRow.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowHidePropertiesRow_Click);
             // 
-            // btnImportChecklist
-            // 
-            this.btnImportChecklist.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImportChecklist.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.To_Do_List_512;
-            this.btnImportChecklist.Label = "Update Checklist";
-            this.btnImportChecklist.Name = "btnImportChecklist";
-            this.btnImportChecklist.ShowImage = true;
-            this.btnImportChecklist.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportChecklist_Click);
-            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -267,18 +278,21 @@ namespace DOT_Titling_Excel_VSTO
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewTickets;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportAll;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportSelected;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnResetView;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportChecklist;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportProjects;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdate;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdateRoadMap;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportEpics;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnDeveloperFromHistory;
         internal Microsoft.Office.Tools.Ribbon.RibbonGallery Views;
+        //
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewReleasePlan;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsErrors;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsStatus;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewBlockedTickets;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnShowHidePropertiesRow;
-        internal RibbonButton btnResetView;
-        internal RibbonButton btnImportChecklist;
+
     }
 
     partial class ThisRibbonCollection
