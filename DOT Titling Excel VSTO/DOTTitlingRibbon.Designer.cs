@@ -292,7 +292,6 @@ namespace DOT_Titling_Excel_VSTO
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsStatus;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewBlockedTickets;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnShowHidePropertiesRow;
-
     }
 
     partial class ThisRibbonCollection

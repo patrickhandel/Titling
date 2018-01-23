@@ -272,12 +272,13 @@ namespace DOT_Titling_Excel_VSTO
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Ticket Type" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story Not Moving or Blocked", new string[] { "Days in Same Status", "Jira Status", "Jira Status (Last Changed)" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Need Reason for Blocker", new string[] { "Reason Blocked or Delayed"});
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Should be Assigned to Dev", new string[] { "Jira Status", "Role", "DOT Sprint" });
 
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Created", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Written", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Submitted", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Approved", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Ready for Development", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
             }
 
             if (tableRangeName == "DOTReleaseData")

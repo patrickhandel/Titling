@@ -60,8 +60,6 @@ namespace DOT_Titling_Excel_VSTO
                                     summary = value;
                                 if (name == "epicID")
                                     epicID = value;
-                                //if (name == "description")
-                                //    value = CommonMark.CommonMarkConverter.Convert(value);
 
                                 foreach (Word.Field field in wordDocument.Fields)
                                 {
@@ -69,7 +67,6 @@ namespace DOT_Titling_Excel_VSTO
                                     fieldText = fieldText.Replace("MERGEFIELD", String.Empty);
                                     fieldText = fieldText.Replace("\\* MERGEFORMAT", String.Empty);
                                     fieldText = fieldText.Replace(" ", String.Empty);
-
                                     if (fieldText == mailMergeField.Name)
                                     {
                                         field.Select();
@@ -77,6 +74,19 @@ namespace DOT_Titling_Excel_VSTO
                                             value = " ";
                                         wordApp.Selection.TypeText(value);
                                     }
+                                }
+                            }
+
+                            foreach (Word.Field field in wordDocument.Fields)
+                            {
+                                string fieldText = field.Code.Text;
+                                fieldText = fieldText.Replace("MERGEFIELD", String.Empty);
+                                fieldText = fieldText.Replace("\\* MERGEFORMAT", String.Empty);
+                                fieldText = fieldText.Replace(" ", String.Empty);
+                                if (fieldText == "dateDocumentCreated")
+                                {
+                                    field.Select();
+                                    wordApp.Selection.TypeText(DateTime.Now.ToString("M/d/yyyy"));
                                 }
                             }
 

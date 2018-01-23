@@ -162,7 +162,6 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("Bypass Approval");
                     ColumnsToShow.Add("Requirements Gathering Notes");
 
-
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
                 }
             }
