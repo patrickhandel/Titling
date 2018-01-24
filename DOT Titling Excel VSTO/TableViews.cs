@@ -38,11 +38,11 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("Date Submitted to DOT");
                     ColumnsToShow.Add("Date Approved by DOT");
                     ColumnsToShow.Add("Days Waiting for Approval");
-                    ColumnsToShow.Add("ERR Workflow DOT Created");
-                    ColumnsToShow.Add("ERR Workflow DOT Written");
-                    ColumnsToShow.Add("ERR Workflow DOT Groomed");
-                    ColumnsToShow.Add("ERR Workflow DOT Submitted");
-                    ColumnsToShow.Add("ERR Workflow DOT Approved");
+                    ColumnsToShow.Add("ERR Workflow Created");
+                    ColumnsToShow.Add("ERR Workflow Written");
+                    ColumnsToShow.Add("ERR Workflow Groomed");
+                    ColumnsToShow.Add("ERR Workflow Submitted");
+                    ColumnsToShow.Add("ERR Workflow Approved");
                     ColumnsToShow.Add("ERR Workflow Bug Bucket");
                     ColumnsToShow.Add("ERR Has Workflow Issue");
 

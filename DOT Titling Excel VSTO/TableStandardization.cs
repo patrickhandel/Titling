@@ -274,11 +274,11 @@ namespace DOT_Titling_Excel_VSTO
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Need Reason for Blocker", new string[] { "Reason Blocked or Delayed"});
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Should be Assigned to Dev", new string[] { "Jira Status", "Role", "DOT Sprint" });
 
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Created", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Written", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow DOT Submitted", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Ready for Development", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Created", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Written", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Submitted", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Ready", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
             }
 
             if (tableRangeName == "DOTReleaseData")
