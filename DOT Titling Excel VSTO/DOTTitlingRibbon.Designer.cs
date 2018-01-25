@@ -3,7 +3,7 @@ using Microsoft.Office.Tools.Ribbon;
 
 namespace DOT_Titling_Excel_VSTO
 {
-    partial class DOTTitlingRibbon : Microsoft.Office.Tools.Ribbon.RibbonBase
+    partial class DOTTitlingRibbon : RibbonBase
     {
         /// <summary>
         /// Required designer variable.
@@ -38,8 +38,8 @@ namespace DOT_Titling_Excel_VSTO
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DOTTitlingRibbon));
-            this.tab1 = this.Factory.CreateRibbonTab();
-            this.group1 = this.Factory.CreateRibbonGroup();
+            this.tabHome = this.Factory.CreateRibbonTab();
+            this.grpJira = this.Factory.CreateRibbonGroup();
             this.btnImportAll = this.Factory.CreateRibbonButton();
             this.btnImportSelected = this.Factory.CreateRibbonButton();
             this.btnAddNewTickets = this.Factory.CreateRibbonButton();
@@ -59,36 +59,37 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewRequirementsStatus = this.Factory.CreateRibbonButton();
             this.btnViewBlockedTickets = this.Factory.CreateRibbonButton();
             this.btnShowHidePropertiesRow = this.Factory.CreateRibbonButton();
-            this.tab1.SuspendLayout();
-            this.group1.SuspendLayout();
+            this.tabJira = this.Factory.CreateRibbonTab();
+            this.tabHome.SuspendLayout();
+            this.grpJira.SuspendLayout();
+            this.tabJira.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tab1
+            // tabHome
             // 
-            this.tab1.ControlId.ControlIdType = Microsoft.Office.Tools.Ribbon.RibbonControlIdType.Office;
-            this.tab1.ControlId.OfficeId = "TabHome";
-            this.tab1.Groups.Add(this.group1);
-            this.tab1.Label = "TabHome";
-            this.tab1.Name = "tab1";
+            this.tabHome.ControlId.ControlIdType = Microsoft.Office.Tools.Ribbon.RibbonControlIdType.Office;
+            this.tabHome.ControlId.OfficeId = "TabHome";
+            this.tabHome.Label = "TabHome";
+            this.tabHome.Name = "tabHome";
             // 
-            // group1
+            // grpJira
             // 
-            this.group1.Items.Add(this.btnImportAll);
-            this.group1.Items.Add(this.btnImportSelected);
-            this.group1.Items.Add(this.btnAddNewTickets);
-            this.group1.Items.Add(this.btnUpdate);
-            this.group1.Items.Add(this.btnImportEpics);
-            this.group1.Items.Add(this.btnImportProjects);
-            this.group1.Items.Add(this.btnImportChecklist);
-            this.group1.Items.Add(this.btnUpdateRoadMap);
-            this.group1.Items.Add(this.btnMailMerge);
-            this.group1.Items.Add(this.btnDeveloperFromHistory);
-            this.group1.Items.Add(this.btnCleanup);
-            this.group1.Items.Add(this.btnEmail);
-            this.group1.Items.Add(this.btnResetView);
-            this.group1.Items.Add(this.Views);
-            this.group1.Label = "DOT Titling";
-            this.group1.Name = "group1";
+            this.grpJira.Items.Add(this.btnImportAll);
+            this.grpJira.Items.Add(this.btnImportSelected);
+            this.grpJira.Items.Add(this.btnAddNewTickets);
+            this.grpJira.Items.Add(this.btnUpdate);
+            this.grpJira.Items.Add(this.btnImportEpics);
+            this.grpJira.Items.Add(this.btnImportProjects);
+            this.grpJira.Items.Add(this.btnImportChecklist);
+            this.grpJira.Items.Add(this.btnUpdateRoadMap);
+            this.grpJira.Items.Add(this.btnMailMerge);
+            this.grpJira.Items.Add(this.btnDeveloperFromHistory);
+            this.grpJira.Items.Add(this.btnCleanup);
+            this.grpJira.Items.Add(this.btnEmail);
+            this.grpJira.Items.Add(this.btnResetView);
+            this.grpJira.Items.Add(this.Views);
+            this.grpJira.Label = "DOT Titling";
+            this.grpJira.Name = "grpJira";
             // 
             // btnImportAll
             // 
@@ -266,44 +267,53 @@ namespace DOT_Titling_Excel_VSTO
             this.btnShowHidePropertiesRow.ShowImage = true;
             this.btnShowHidePropertiesRow.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowHidePropertiesRow_Click);
             // 
+            // tabJira
+            // 
+            this.tabJira.Groups.Add(this.grpJira);
+            this.tabJira.Label = "TabJira";
+            this.tabJira.Name = "tabJira";
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
             this.RibbonType = "Microsoft.Excel.Workbook";
-            this.Tabs.Add(this.tab1);
+            this.Tabs.Add(this.tabHome);
+            this.Tabs.Add(this.tabJira);
             this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.DOTTitlingRibbon_Load);
-            this.tab1.ResumeLayout(false);
-            this.tab1.PerformLayout();
-            this.group1.ResumeLayout(false);
-            this.group1.PerformLayout();
+            this.tabHome.ResumeLayout(false);
+            this.tabHome.PerformLayout();
+            this.grpJira.ResumeLayout(false);
+            this.grpJira.PerformLayout();
+            this.tabJira.ResumeLayout(false);
+            this.tabJira.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
-        internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnMailMerge;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCleanup;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAddNewTickets;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportAll;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportSelected;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnResetView;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportChecklist;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportProjects;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdate;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnUpdateRoadMap;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportEpics;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnDeveloperFromHistory;
-        internal Microsoft.Office.Tools.Ribbon.RibbonGallery Views;
-        //
-        private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewReleasePlan;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsErrors;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsStatus;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewBlockedTickets;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton btnShowHidePropertiesRow;
+        internal RibbonTab tabHome;
+        internal RibbonGroup grpJira;
+        internal RibbonButton btnMailMerge;
+        internal RibbonButton btnCleanup;
+        internal RibbonButton btnAddNewTickets;
+        internal RibbonButton btnImportAll;
+        internal RibbonButton btnImportSelected;
+        internal RibbonButton btnResetView;
+        internal RibbonButton btnImportChecklist;
+        internal RibbonButton btnImportProjects;
+        internal RibbonButton btnUpdate;
+        internal RibbonButton btnUpdateRoadMap;
+        internal RibbonButton btnImportEpics;
+        internal RibbonButton btnDeveloperFromHistory;
+        internal RibbonGallery Views;
+        private RibbonButton btnViewReleasePlan;
+        private RibbonButton btnViewRequirementsErrors;
+        private RibbonButton btnViewRequirementsStatus;
+        private RibbonButton btnViewBlockedTickets;
+        private RibbonButton btnShowHidePropertiesRow;
         internal RibbonButton btnEmail;
+        internal RibbonTab tabJira;
     }
 
     partial class ThisRibbonCollection
