@@ -1,0 +1,135 @@
+﻿using System;
+using System.Windows.Forms;
+using Outlook = Microsoft.Office.Interop.Outlook;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.Drawing;
+using Microsoft.Office.Interop.Word;
+using System.Drawing.Imaging;
+using System.Net.Mail;
+using System.Net.Mime;
+using Microsoft.Office.Interop.Outlook;
+
+namespace DOT_Titling_Excel_VSTO
+{
+    class Email
+    {
+        private static void SendEmail(Excel.Application app)
+        {
+            Outlook.Application outlook = new Outlook.Application();
+            Outlook.MailItem email = (Outlook.MailItem)outlook.CreateItem(Outlook.OlItemType.olMailItem);
+
+            email.Subject = "DOT Titling Status: " + DateTime.Now.ToString("M/d/yyyy");
+            email.BodyFormat = Outlook.OlBodyFormat.olFormatHTML;
+            Outlook.Recipients recipients = email.Recipients;
+            Outlook.Recipient recip1 = recipients.Add("huma.siddiqui@egov.com");
+            Outlook.Recipient recip2 = recipients.Add("marylou.sharpe@egov.com");
+            recip1.Resolve();
+            recip2.Resolve();
+            email.Display();
+
+            string file1 = @ThisAddIn.OutputDir + "\\" + "file1.PNG";
+            string file2 = @ThisAddIn.OutputDir + "\\" + "file2.PNG";
+            string file3 = @ThisAddIn.OutputDir + "\\" + "file3.PNG";
+            string file4 = @ThisAddIn.OutputDir + "\\" + "file4.PNG";
+            string file5 = @ThisAddIn.OutputDir + "\\" + "file5.PNG";
+
+            var attachment1 = email.Attachments.Add(@file1, OlAttachmentType.olEmbeddeditem, null, "file1");
+            var attachment2 = email.Attachments.Add(@file2, OlAttachmentType.olEmbeddeditem, null, "file2");
+            var attachment3 = email.Attachments.Add(@file3, OlAttachmentType.olEmbeddeditem, null, "file3");
+            var attachment4 = email.Attachments.Add(@file4, OlAttachmentType.olEmbeddeditem, null, "file4");
+            var attachment5 = email.Attachments.Add(@file5, OlAttachmentType.olEmbeddeditem, null, "file5");
+
+            string imageCid1 = "file1.png@123";
+            string imageCid2 = "file2.png@123";
+            string imageCid3 = "file3.png@123";
+            string imageCid4 = "file4.png@123";
+            string imageCid5 = "file5.png@123";
+
+            attachment1.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001E", imageCid1);
+            attachment2.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001E", imageCid2);
+            attachment3.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001E", imageCid3);
+            attachment4.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001E", imageCid4);
+            attachment5.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001E", imageCid5);
+
+            email.HTMLBody = String.Format("<TABLE cellpadding=5><TR><TD><img src=\"cid:{0}\"></TD></TR><TR><TD><img src=\"cid:{1}\"></TD></TR><TR><TD><img src=\"cid:{2}\"></TD></TR><TR><TD><img src=\"cid:{3}\"></TD></TR><TR><TR><TD><img src=\"cid:{4}\"></TD></TR><TR></TABLE>", imageCid1, imageCid2, imageCid3, imageCid4, imageCid5);
+
+            //mailItem.Send();
+            recip1 = null;
+            recip2 = null;
+            recipients = null;
+            email = null;
+            outlook = null;
+        }
+
+        private static void CreateImages(Excel.Application app)
+        {
+            try
+            {
+                string file1 = @ThisAddIn.OutputDir + "\\" + "file1.PNG";
+                string file2 = @ThisAddIn.OutputDir + "\\" + "file2.PNG";
+                string file3 = @ThisAddIn.OutputDir + "\\" + "file3.PNG";
+                string file4 = @ThisAddIn.OutputDir + "\\" + "file4.PNG";
+                string file5 = @ThisAddIn.OutputDir + "\\" + "file5.PNG";
+
+                Excel.Range rng;
+
+                rng = app.get_Range("StatusDevelopmentCurrentSprint", Type.Missing);
+                rng.Select();
+                rng.Copy();
+                if (Clipboard.ContainsImage())
+                {
+                    Clipboard.GetImage().Save(file1, ImageFormat.Png);
+                }
+
+                rng = app.get_Range("StatusDevelopmentCurrentRelease", Type.Missing);
+                rng.Select();
+                rng.Copy();
+                if (Clipboard.ContainsImage())
+                {
+                    Clipboard.GetImage().Save(file2, ImageFormat.Png);
+                }
+
+                rng = app.get_Range("StatusRequirements1", Type.Missing);
+                rng.Select();
+                rng.Copy();
+                if (Clipboard.ContainsImage())
+                {
+                    Clipboard.GetImage().Save(file3, ImageFormat.Png);
+                }
+
+                rng = app.get_Range("StatusRequirements2", Type.Missing);
+                rng.Select();
+                rng.Copy();
+                if (Clipboard.ContainsImage())
+                {
+                    Clipboard.GetImage().Save(file4, ImageFormat.Png);
+                }
+
+                rng = app.get_Range("StatusRequirements3", Type.Missing);
+                rng.Select();
+                rng.Copy();
+                if (Clipboard.ContainsImage())
+                {
+                    Clipboard.GetImage().Save(file5, ImageFormat.Png);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void SendStatus(Excel.Application app)
+        {
+            try
+            {
+                CreateImages(app);
+                SendEmail(app);
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+    }
+}

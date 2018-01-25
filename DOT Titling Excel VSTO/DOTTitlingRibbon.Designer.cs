@@ -51,6 +51,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnMailMerge = this.Factory.CreateRibbonButton();
             this.btnDeveloperFromHistory = this.Factory.CreateRibbonButton();
             this.btnCleanup = this.Factory.CreateRibbonButton();
+            this.btnEmail = this.Factory.CreateRibbonButton();
             this.btnResetView = this.Factory.CreateRibbonButton();
             this.Views = this.Factory.CreateRibbonGallery();
             this.btnViewReleasePlan = this.Factory.CreateRibbonButton();
@@ -83,6 +84,7 @@ namespace DOT_Titling_Excel_VSTO
             this.group1.Items.Add(this.btnMailMerge);
             this.group1.Items.Add(this.btnDeveloperFromHistory);
             this.group1.Items.Add(this.btnCleanup);
+            this.group1.Items.Add(this.btnEmail);
             this.group1.Items.Add(this.btnResetView);
             this.group1.Items.Add(this.Views);
             this.group1.Label = "DOT Titling";
@@ -186,6 +188,15 @@ namespace DOT_Titling_Excel_VSTO
             this.btnCleanup.Name = "btnCleanup";
             this.btnCleanup.ShowImage = true;
             this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupTable_Click);
+            // 
+            // btnEmail
+            // 
+            this.btnEmail.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnEmail.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.email_2_icon;
+            this.btnEmail.Label = "Email Status";
+            this.btnEmail.Name = "btnEmail";
+            this.btnEmail.ShowImage = true;
+            this.btnEmail.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnEmail_Click);
             // 
             // btnResetView
             // 
@@ -292,6 +303,7 @@ namespace DOT_Titling_Excel_VSTO
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewRequirementsStatus;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnViewBlockedTickets;
         private Microsoft.Office.Tools.Ribbon.RibbonButton btnShowHidePropertiesRow;
+        internal RibbonButton btnEmail;
     }
 
     partial class ThisRibbonCollection

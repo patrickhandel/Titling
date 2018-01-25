@@ -265,5 +265,18 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        private void btnEmail_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                Email.SendStatus(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
     }
 }

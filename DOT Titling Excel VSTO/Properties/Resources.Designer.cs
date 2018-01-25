@@ -63,6 +63,16 @@ namespace DOT_Titling_Excel_VSTO.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap email_2_icon {
+            get {
+                object obj = ResourceManager.GetObject("email-2-icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap project {
             get {
                 object obj = ResourceManager.GetObject("project", resourceCulture);
