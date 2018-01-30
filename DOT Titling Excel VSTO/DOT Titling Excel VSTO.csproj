@@ -198,7 +198,7 @@
     can be found.
   -->
   <ItemGroup>
-    <Compile Include="Epic.cs" />
+    <Compile Include="Objects\Epic.cs" />
     <Compile Include="FileIO.cs" />
     <Compile Include="History.cs" />
     <Compile Include="ImportFromJira.cs" />
@@ -213,8 +213,8 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Ticket.cs" />
-    <Compile Include="Release.cs" />
+    <Compile Include="Objects\Ticket.cs" />
+    <Compile Include="Objects\Release.cs" />
     <Compile Include="Roadmap.cs" />
     <Compile Include="ssUtils.cs" />
     <Compile Include="ExportToJira.cs" />
