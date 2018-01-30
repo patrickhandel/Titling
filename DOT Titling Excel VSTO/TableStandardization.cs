@@ -8,6 +8,32 @@ namespace DOT_Titling_Excel_VSTO
 {
     class TableStandardization
     {
+        public enum ColumnWidth
+        {
+            TextLong = 40,
+            TextMedium = 20,
+            TextShort = 15,
+            TextTiny = 9,
+            Priority = 20,
+            Number = 9,
+            Dollar = 9,
+            Decimal = 9,
+            Percent = 9,
+            Date = 12,
+            Error = 7,
+            YesNoGreen = 7,
+            YesNoGold = 7,
+            YesNoRed = 7,
+            YesNo = 7,
+            MidLong = 13,
+            Release = 7,
+            TicketType = 15,
+            ProjectKey = 15,
+            Hidden = 0,
+            Default = 15
+        };
+
+
         //Other Colors
         public static Color colorDullGreen = Color.FromArgb(169, 208, 142);
         public static Color colorDullBlue = Color.FromArgb(143, 172, 227);
@@ -59,30 +85,6 @@ namespace DOT_Titling_Excel_VSTO
             Light = 2
         };
 
-        public enum ColumnWidth
-        {
-            TextLong = 40,
-            TextMedium = 20,
-            TextShort = 15,
-            TextTiny = 9,
-            Priority = 20,
-            Number = 9,
-            Dollar = 9,
-            Decimal = 9,
-            Percent = 9,
-            Date = 12,
-            Error = 7,
-            YesNoGreen = 7,
-            YesNoGold = 7,
-            YesNoRed = 7,
-            YesNo = 7,
-            MidLong = 13,
-            Release = 7,
-            TicketType = 15,
-            Hidden = 0,
-            Default = 15
-        };
-
         public static int GetColumnWidth(string ct)
         {
             try
@@ -99,7 +101,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteCleanupTable(Excel.Application app, StandardizationType sType)
+        public static void Execute(Excel.Application app, StandardizationType sType)
         {
             try
             {
@@ -646,7 +648,7 @@ namespace DOT_Titling_Excel_VSTO
             columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
         }
 
-        public static void ExecuteShowHidePropertiesRow(Excel.Application app)
+        public static void ExecuteTogglePropertiesRow(Excel.Application app)
         {
             try
             {

@@ -264,13 +264,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\To-Do_List-512.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\project.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\email-2-icon.png" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

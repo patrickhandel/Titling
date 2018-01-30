@@ -10,7 +10,7 @@ namespace DOT_Titling_Excel_VSTO
 {
     class ImportFromJira
     {
-        public static void ExecuteUpdateAllTickets(Excel.Application app)
+        public static void ExecuteImportTickets(Excel.Application app, bool forProgram)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace DOT_Titling_Excel_VSTO
                     if (missingColumns == string.Empty)
                     {
                         UpdateAllTickets(app, activeWorksheet);
-                        AddNewTickets(app, activeWorksheet);
+                        AddNewTickets(app, activeWorksheet, forProgram);
                         string dt = DateTime.Now.ToString("MM/dd/yyyy");
                         if (activeWorksheet.Name == "Tickets")
                         {
@@ -33,7 +33,7 @@ namespace DOT_Titling_Excel_VSTO
                             string val = "DOT Releases (Updated on " + dt + ")";
                             SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "DOT Releases Updated On");
                         }
-                        TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                        TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
                     }
                     else
                     {
@@ -75,7 +75,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteAddNewTickets(Excel.Application app)
+        public static void ExecuteAddTickets(Excel.Application app, bool forProgram)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
                     {
-                        AddNewTickets(app, activeWorksheet);
+                        AddNewTickets(app, activeWorksheet, forProgram);
                         //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                     }
                     else
@@ -148,7 +148,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewTickets(Excel.Application app, Worksheet ws)
+        private static void AddNewTickets(Excel.Application app, Worksheet ws, bool forProgram)
         {
             try
             {
@@ -226,7 +226,7 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         UpdateEpics(app, activeWorksheet);
                         AddNewEpics(app, activeWorksheet);
-                        TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                        TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
                     }
                     else
                     {
@@ -301,7 +301,7 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         UpdateChecklistTasks(app, activeWorksheet);
                         AddNewChecklistTasks(app, activeWorksheet);
-                        TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                        TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
                     }
                     else
                     {
@@ -327,7 +327,7 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         UpdateProjects(app, activeWorksheet);
                         AddNewProjects(app, activeWorksheet);
-                        TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                        TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
                     }
                     else
                     {

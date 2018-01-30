@@ -7,17 +7,98 @@ namespace DOT_Titling_Excel_VSTO
 {
     public partial class DOTTitlingRibbon
     {
+        private void btnUpdate_DOT_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                bool forProgram = false;
+                ImportFromJira.ExecuteImportTickets(app, forProgram);
+                SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private void btnUpdate_Program_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                bool forProgram = true;
+                ImportFromJira.ExecuteImportTickets(app, forProgram);
+                SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private void btnAddTickets_DOT_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                bool forProgram = false;
+                ImportFromJira.ExecuteAddTickets(app, forProgram);
+                SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private void btnAddTickets_Progam_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                bool forProgram = true;
+                ImportFromJira.ExecuteAddTickets(app, forProgram);
+                SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private void btnAdd_Program_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                SSUtils.BeginExcelOperation(app);
+                ImportFromJira.ExecuteAddTickets(app, false);
+                SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+
+
         private void DOTTitlingRibbon_Load(object sender, RibbonUIEventArgs e)
         {
             
         }
 
-        private void Views_Click(object sender, RibbonControlEventArgs e)
+        private void Views_DOT_Click(object sender, RibbonControlEventArgs e)
         {
 
         }
 
-        private void btnUpdateRoadMap_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateRoadMap_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -32,13 +113,13 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnCleanupTable_Click(object sender, RibbonControlEventArgs e)
+        private void btnStandardizeTable_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Thorough);
+                TableStandardization.Execute(app, TableStandardization.StandardizationType.Thorough);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -47,12 +128,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnShowHidePropertiesRow_Click(object sender, RibbonControlEventArgs e)
+        private void btnToggleProperties_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                TableStandardization.ExecuteShowHidePropertiesRow(app);
+                TableStandardization.ExecuteTogglePropertiesRow(app);
             }
             catch (Exception ex)
             {
@@ -60,22 +141,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnAddNewTickets_Click(object sender, RibbonControlEventArgs e)
-        {
-            try
-            {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                SSUtils.BeginExcelOperation(app);
-                ImportFromJira.ExecuteAddNewTickets(app);
-                SSUtils.EndExcelOperation(app, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        private void btnImportSelectedTickets_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateSelected_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -90,22 +156,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnImportAllTickets_Click(object sender, RibbonControlEventArgs e)
-        {
-            try
-            {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                SSUtils.BeginExcelOperation(app);
-                ImportFromJira.ExecuteUpdateAllTickets(app);
-                SSUtils.EndExcelOperation(app, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        private void btnImportEpics_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateEpics_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -118,8 +169,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-
-        private void btnImportChecklist_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateChecklist_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -132,7 +182,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnImportProjects_Click(object sender, RibbonControlEventArgs e)
+        private void bntUpdateProjects_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -148,7 +198,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnMailMerge_Click(object sender, RibbonControlEventArgs e)
+        private void btnMailMerge_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -163,7 +213,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdate_Click(object sender, RibbonControlEventArgs e)
+        private void btnSaveSelected_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -183,7 +233,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnDeveloperFromHistory_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateTicketDeveloper_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -198,7 +248,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnViewReleasePlan_Click(object sender, RibbonControlEventArgs e)
+        private void btnViewReleasePlan_DOT_DOT(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -211,7 +261,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnViewRequirementsStatus_Click(object sender, RibbonControlEventArgs e)
+        private void btnViewRequirementsStatus_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -224,7 +274,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnViewBlockedTickets_Click(object sender, RibbonControlEventArgs e)
+        private void btnViewBlockedTickets_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -237,7 +287,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnViewRequirementsErrors_Click(object sender, RibbonControlEventArgs e)
+        private void btnViewRequirementsErrors_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -250,14 +300,13 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-
         private void btnResetView_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -266,7 +315,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnEmail_Click(object sender, RibbonControlEventArgs e)
+        private void btnEmailStatus_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -278,5 +327,7 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+
     }
 }

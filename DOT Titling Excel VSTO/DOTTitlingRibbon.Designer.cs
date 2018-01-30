@@ -38,31 +38,52 @@ namespace DOT_Titling_Excel_VSTO
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DOTTitlingRibbon));
+            
+            //TABS
             this.tabHome = this.Factory.CreateRibbonTab();
-            this.grpJira = this.Factory.CreateRibbonGroup();
-            this.btnImportAll = this.Factory.CreateRibbonButton();
-            this.btnImportSelected = this.Factory.CreateRibbonButton();
-            this.btnAddNewTickets = this.Factory.CreateRibbonButton();
-            this.btnUpdate = this.Factory.CreateRibbonButton();
-            this.btnImportEpics = this.Factory.CreateRibbonButton();
-            this.btnImportProjects = this.Factory.CreateRibbonButton();
-            this.btnImportChecklist = this.Factory.CreateRibbonButton();
-            this.btnUpdateRoadMap = this.Factory.CreateRibbonButton();
-            this.btnMailMerge = this.Factory.CreateRibbonButton();
-            this.btnDeveloperFromHistory = this.Factory.CreateRibbonButton();
-            this.btnCleanup = this.Factory.CreateRibbonButton();
-            this.btnEmail = this.Factory.CreateRibbonButton();
+            this.tabDOT = this.Factory.CreateRibbonTab();
+            this.tabPM = this.Factory.CreateRibbonTab();
+
+            //GROUPS
+            this.grpDOT = this.Factory.CreateRibbonGroup();
+            this.grpPM = this.Factory.CreateRibbonGroup();
+
+            //BUTTONS
+            this.btnUpdate_DOT = this.Factory.CreateRibbonButton();
+            this.btnUpdate_Program = this.Factory.CreateRibbonButton();
+
+            this.btnUpdateSelected_DOT = this.Factory.CreateRibbonButton();
+            this.btnUpdateSelected_Program = this.Factory.CreateRibbonButton();
+
+            this.btnAdd_DOT = this.Factory.CreateRibbonButton();
+            this.btnAdd_Program = this.Factory.CreateRibbonButton();
+
+            this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
+            this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
+
+            this.btnSaveSelected_DOT = this.Factory.CreateRibbonButton();
+            this.btnUpdateEpics_DOT = this.Factory.CreateRibbonButton();
+            this.bntUpdateProjects = this.Factory.CreateRibbonButton();
+            this.btnUpdateChecklist = this.Factory.CreateRibbonButton();
+            this.btnUpdateRoadMap_DOT = this.Factory.CreateRibbonButton();
+            this.btnMailMerge_DOT = this.Factory.CreateRibbonButton();
+            this.btnUpdateTicketDeveloper_DOT = this.Factory.CreateRibbonButton();
+
+            this.btnEmailStatus_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView = this.Factory.CreateRibbonButton();
-            this.Views = this.Factory.CreateRibbonGallery();
-            this.btnViewReleasePlan = this.Factory.CreateRibbonButton();
-            this.btnViewRequirementsErrors = this.Factory.CreateRibbonButton();
-            this.btnViewRequirementsStatus = this.Factory.CreateRibbonButton();
-            this.btnViewBlockedTickets = this.Factory.CreateRibbonButton();
-            this.btnShowHidePropertiesRow = this.Factory.CreateRibbonButton();
-            this.tabJira = this.Factory.CreateRibbonTab();
+
+            this.Views_DOT = this.Factory.CreateRibbonGallery();
+            this.btnViewReleasePlan_DOT = this.Factory.CreateRibbonButton();
+            this.btnViewRequirementsErrors_DOT = this.Factory.CreateRibbonButton();
+            this.btnViewRequirementsStatus_DOT = this.Factory.CreateRibbonButton();
+            this.btnViewBlockedTickets_DOT = this.Factory.CreateRibbonButton();
+            this.btnToggleProperties = this.Factory.CreateRibbonButton();
+
+            // SUSPEND LAYOUTS
             this.tabHome.SuspendLayout();
-            this.grpJira.SuspendLayout();
-            this.tabJira.SuspendLayout();
+            this.grpDOT.SuspendLayout();
+            this.tabDOT.SuspendLayout();
+            this.tabPM.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabHome
@@ -72,248 +93,318 @@ namespace DOT_Titling_Excel_VSTO
             this.tabHome.Label = "TabHome";
             this.tabHome.Name = "tabHome";
             // 
-            // grpJira
+            // grpDOT
             // 
-            this.grpJira.Items.Add(this.btnImportAll);
-            this.grpJira.Items.Add(this.btnImportSelected);
-            this.grpJira.Items.Add(this.btnAddNewTickets);
-            this.grpJira.Items.Add(this.btnUpdate);
-            this.grpJira.Items.Add(this.btnImportEpics);
-            this.grpJira.Items.Add(this.btnImportProjects);
-            this.grpJira.Items.Add(this.btnImportChecklist);
-            this.grpJira.Items.Add(this.btnUpdateRoadMap);
-            this.grpJira.Items.Add(this.btnMailMerge);
-            this.grpJira.Items.Add(this.btnDeveloperFromHistory);
-            this.grpJira.Items.Add(this.btnCleanup);
-            this.grpJira.Items.Add(this.btnEmail);
-            this.grpJira.Items.Add(this.btnResetView);
-            this.grpJira.Items.Add(this.Views);
-            this.grpJira.Label = "DOT Titling";
-            this.grpJira.Name = "grpJira";
+            this.grpDOT.Items.Add(this.btnUpdate_DOT);
+            this.grpDOT.Items.Add(this.btnUpdateSelected_DOT);
+            this.grpDOT.Items.Add(this.btnAdd_DOT);
+            this.grpDOT.Items.Add(this.btnSaveSelected_DOT);
+            this.grpDOT.Items.Add(this.btnUpdateEpics_DOT);
+            this.grpDOT.Items.Add(this.bntUpdateProjects);
+            this.grpDOT.Items.Add(this.btnUpdateChecklist);
+            this.grpDOT.Items.Add(this.btnUpdateRoadMap_DOT);
+            this.grpDOT.Items.Add(this.btnMailMerge_DOT);
+            this.grpDOT.Items.Add(this.btnUpdateTicketDeveloper_DOT);
+            this.grpDOT.Items.Add(this.btnStandardizeTable_DOT);
+            this.grpDOT.Items.Add(this.btnEmailStatus_DOT);
+            this.grpDOT.Items.Add(this.btnResetView);
+            this.grpDOT.Items.Add(this.Views_DOT);
+            this.grpDOT.Label = "DOT Titling";
+            this.grpDOT.Name = "grpDOT";
             // 
-            // btnImportAll
+            // grpPM
             // 
-            this.btnImportAll.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImportAll.Image = ((System.Drawing.Image)(resources.GetObject("btnImportAll.Image")));
-            this.btnImportAll.Label = "Update All Tickets";
-            this.btnImportAll.Name = "btnImportAll";
-            this.btnImportAll.ShowImage = true;
-            this.btnImportAll.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportAllTickets_Click);
+            this.grpPM.Name = "grpPM";
+            this.grpPM.Items.Add(this.btnUpdate_Program);
+            this.grpPM.Items.Add(this.btnUpdateSelected_Program);
+            this.grpPM.Items.Add(this.btnAdd_Program);
+            this.grpPM.Items.Add(this.btnStandardizeTable_PM);
             // 
-            // btnImportSelected
+            // tabDOT
             // 
-            this.btnImportSelected.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImportSelected.Image = ((System.Drawing.Image)(resources.GetObject("btnImportSelected.Image")));
-            this.btnImportSelected.Label = "Update Selected Tickets";
-            this.btnImportSelected.Name = "btnImportSelected";
-            this.btnImportSelected.ShowImage = true;
-            this.btnImportSelected.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportSelectedTickets_Click);
+            this.tabDOT.Groups.Add(this.grpDOT);
+            this.tabDOT.Label = "DOT";
+            this.tabDOT.Name = "tabDOT";
             // 
-            // btnAddNewTickets
+            // tabPM
             // 
-            this.btnAddNewTickets.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnAddNewTickets.Image = ((System.Drawing.Image)(resources.GetObject("btnAddNewTickets.Image")));
-            this.btnAddNewTickets.Label = "Add New Tickets";
-            this.btnAddNewTickets.Name = "btnAddNewTickets";
-            this.btnAddNewTickets.ShowImage = true;
-            this.btnAddNewTickets.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddNewTickets_Click);
+            this.tabPM.Groups.Add(this.grpPM);
+            this.tabPM.Label = "WIN PM";
+            this.tabPM.Name = "tabPM";
             // 
-            // btnUpdate
+            // btnUpdate_DOT
             // 
-            this.btnUpdate.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnUpdate.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdate.Image")));
-            this.btnUpdate.Label = "Save Selected";
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.ShowImage = true;
-            this.btnUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_Click);
+            this.btnUpdate_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdate_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Update.Image")));
+            this.btnUpdate_DOT.Label = "Update All Tickets";
+            this.btnUpdate_DOT.Name = "btnUpdate_DOT";
+            this.btnUpdate_DOT.ShowImage = true;
+            this.btnUpdate_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_DOT_Click);
             // 
-            // btnImportEpics
+            // btnUpdate_Program
             // 
-            this.btnImportEpics.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImportEpics.Image = ((System.Drawing.Image)(resources.GetObject("btnImportEpics.Image")));
-            this.btnImportEpics.Label = "Update Epics";
-            this.btnImportEpics.Name = "btnImportEpics";
-            this.btnImportEpics.ShowImage = true;
-            this.btnImportEpics.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportEpics_Click);
+            this.btnUpdate_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdate_Program.Image = ((System.Drawing.Image)(resources.GetObject("Update.Image")));
+            this.btnUpdate_Program.Label = "Update All Tickets";
+            this.btnUpdate_Program.Name = "btnUpdate_Program";
+            this.btnUpdate_Program.ShowImage = true;
+            this.btnUpdate_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_Program_Click);
             // 
-            // btnImportProjects
+            // btnUpdateSelected_DOT
             // 
-            this.btnImportProjects.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImportProjects.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.project;
-            this.btnImportProjects.Label = "Update Projects";
-            this.btnImportProjects.Name = "btnImportProjects";
-            this.btnImportProjects.ShowImage = true;
-            this.btnImportProjects.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportProjects_Click);
+            this.btnUpdateSelected_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdateSelected_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Update.Image")));
+            this.btnUpdateSelected_DOT.Label = "Update Selected Tickets";
+            this.btnUpdateSelected_DOT.Name = "btnUpdateSelected_DOT";
+            this.btnUpdateSelected_DOT.ShowImage = true;
+            this.btnUpdateSelected_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateSelected_DOT_Click);
             // 
-            // btnImportChecklist
+            // btnUpdateSelected_Program
             // 
-            this.btnImportChecklist.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImportChecklist.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.To_Do_List_512;
-            this.btnImportChecklist.Label = "Update Checklist";
-            this.btnImportChecklist.Name = "btnImportChecklist";
-            this.btnImportChecklist.ShowImage = true;
-            this.btnImportChecklist.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportChecklist_Click);
+            this.btnUpdateSelected_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdateSelected_Program.Image = ((System.Drawing.Image)(resources.GetObject("Update.Image")));
+            this.btnUpdateSelected_Program.Label = "Update Selected Tickets";
+            this.btnUpdateSelected_Program.Name = "btnUpdateSelected_Program";
+            this.btnUpdateSelected_Program.ShowImage = true;
+            this.btnUpdateSelected_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateSelected_DOT_Click);
             // 
-            // btnUpdateRoadMap
+            // btnAdd_DOT
             // 
-            this.btnUpdateRoadMap.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnUpdateRoadMap.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateRoadMap.Image")));
-            this.btnUpdateRoadMap.Label = "Update Roadmap";
-            this.btnUpdateRoadMap.Name = "btnUpdateRoadMap";
-            this.btnUpdateRoadMap.ShowImage = true;
-            this.btnUpdateRoadMap.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateRoadMap_Click);
+            this.btnAdd_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnAdd_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Add.Image")));
+            this.btnAdd_DOT.Label = "Add New Tickets";
+            this.btnAdd_DOT.Name = "btnAdd_DOT";
+            this.btnAdd_DOT.ShowImage = true;
+            this.btnAdd_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_Program_Click);
             // 
-            // btnMailMerge
+            // btnAdd_Program
             // 
-            this.btnMailMerge.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnMailMerge.Image = ((System.Drawing.Image)(resources.GetObject("btnMailMerge.Image")));
-            this.btnMailMerge.Label = "Mail Merge";
-            this.btnMailMerge.Name = "btnMailMerge";
-            this.btnMailMerge.ShowImage = true;
-            this.btnMailMerge.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnMailMerge_Click);
+            this.btnAdd_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnAdd_Program.Image = ((System.Drawing.Image)(resources.GetObject("Add.Image")));
+            this.btnAdd_Program.Label = "Add New Tickets";
+            this.btnAdd_Program.Name = "btnAdd_Program";
+            this.btnAdd_Program.ShowImage = true;
+            this.btnAdd_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_Program_Click);
             // 
-            // btnDeveloperFromHistory
+            // btnSaveSelected_DOT
             // 
-            this.btnDeveloperFromHistory.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnDeveloperFromHistory.Image = ((System.Drawing.Image)(resources.GetObject("btnDeveloperFromHistory.Image")));
-            this.btnDeveloperFromHistory.Label = "Get History";
-            this.btnDeveloperFromHistory.Name = "btnDeveloperFromHistory";
-            this.btnDeveloperFromHistory.ShowImage = true;
-            this.btnDeveloperFromHistory.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnDeveloperFromHistory_Click);
+            this.btnSaveSelected_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnSaveSelected_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Save.Image")));
+            this.btnSaveSelected_DOT.Label = "Save Selected";
+            this.btnSaveSelected_DOT.Name = "btnSaveSelected_DOT";
+            this.btnSaveSelected_DOT.ShowImage = true;
+            this.btnSaveSelected_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveSelected_DOT_Click);
             // 
-            // btnCleanup
+            // btnUpdateEpics_DOT
             // 
-            this.btnCleanup.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnCleanup.Image = ((System.Drawing.Image)(resources.GetObject("btnCleanup.Image")));
-            this.btnCleanup.Label = "Cleanup Worksheet";
-            this.btnCleanup.Name = "btnCleanup";
-            this.btnCleanup.ShowImage = true;
-            this.btnCleanup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCleanupTable_Click);
+            this.btnUpdateEpics_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdateEpics_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Epics.Image")));
+            this.btnUpdateEpics_DOT.Label = "Update Epics";
+            this.btnUpdateEpics_DOT.Name = "btnUpdateEpics_DOT";
+            this.btnUpdateEpics_DOT.ShowImage = true;
+            this.btnUpdateEpics_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateEpics_DOT_Click);
             // 
-            // btnEmail
+            // bntUpdateProjects
             // 
-            this.btnEmail.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnEmail.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.email_2_icon;
-            this.btnEmail.Label = "Email Status";
-            this.btnEmail.Name = "btnEmail";
-            this.btnEmail.ShowImage = true;
-            this.btnEmail.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnEmail_Click);
+            this.bntUpdateProjects.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.bntUpdateProjects.Image = ((System.Drawing.Image)(resources.GetObject("Projects.Image")));
+            this.bntUpdateProjects.Label = "Update Projects";
+            this.bntUpdateProjects.Name = "bntUpdateProjects";
+            this.bntUpdateProjects.ShowImage = true;
+            this.bntUpdateProjects.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.bntUpdateProjects_Click);
+            // 
+            // btnUpdateChecklist
+            // 
+            this.btnUpdateChecklist.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdateChecklist.Image = ((System.Drawing.Image)(resources.GetObject("Checklist.Image")));
+            this.btnUpdateChecklist.Label = "Update Checklist";
+            this.btnUpdateChecklist.Name = "btnUpdateChecklist";
+            this.btnUpdateChecklist.ShowImage = true;
+            this.btnUpdateChecklist.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateChecklist_Click);
+            // 
+            // btnUpdateRoadMap_DOT
+            // 
+            this.btnUpdateRoadMap_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdateRoadMap_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Roadmap.Image")));
+            this.btnUpdateRoadMap_DOT.Label = "Update Roadmap";
+            this.btnUpdateRoadMap_DOT.Name = "btnUpdateRoadMap_DOT";
+            this.btnUpdateRoadMap_DOT.ShowImage = true;
+            this.btnUpdateRoadMap_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateRoadMap_DOT_Click);
+            // 
+            // btnMailMerge_DOT
+            // 
+            this.btnMailMerge_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnMailMerge_DOT.Image = ((System.Drawing.Image)(resources.GetObject("MailMerge.Image")));
+            this.btnMailMerge_DOT.Label = "Mail Merge";
+            this.btnMailMerge_DOT.Name = "btnMailMerge_DOT";
+            this.btnMailMerge_DOT.ShowImage = true;
+            this.btnMailMerge_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnMailMerge_DOT_Click);
+            // 
+            // btnUpdateTicketDeveloper_DOT
+            // 
+            this.btnUpdateTicketDeveloper_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnUpdateTicketDeveloper_DOT.Image = ((System.Drawing.Image)(resources.GetObject("History.Image")));
+            this.btnUpdateTicketDeveloper_DOT.Label = "Get History";
+            this.btnUpdateTicketDeveloper_DOT.Name = "btnUpdateDeveloperFromHistory";
+            this.btnUpdateTicketDeveloper_DOT.ShowImage = true;
+            this.btnUpdateTicketDeveloper_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateTicketDeveloper_DOT_Click);
+            // 
+            // btnStandardizeTable_DOT
+            // 
+            this.btnStandardizeTable_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnStandardizeTable_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Standardize.Image")));
+            this.btnStandardizeTable_DOT.Label = "Standardize Table";
+            this.btnStandardizeTable_DOT.Name = "btnStandardizeTable_DOT";
+            this.btnStandardizeTable_DOT.ShowImage = true;
+            this.btnStandardizeTable_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStandardizeTable_Click);
+            // 
+            // btnStandardizeTable_PM
+            // 
+            this.btnStandardizeTable_PM.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnStandardizeTable_PM.Image = ((System.Drawing.Image)(resources.GetObject("Standardize.Image")));
+            this.btnStandardizeTable_PM.Label = "Standardize Table";
+            this.btnStandardizeTable_PM.Name = "btnStandardizeTable_PM";
+            this.btnStandardizeTable_PM.ShowImage = true;
+            this.btnStandardizeTable_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStandardizeTable_Click);
+            // 
+            // btnEmailStatus_DOT
+            // 
+            this.btnEmailStatus_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnEmailStatus_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Email.Image")));
+            this.btnEmailStatus_DOT.Label = "Email Status";
+            this.btnEmailStatus_DOT.Name = "btnEmailStatus_DOT";
+            this.btnEmailStatus_DOT.ShowImage = true;
+            this.btnEmailStatus_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnEmailStatus_DOT_Click);
             // 
             // btnResetView
             // 
             this.btnResetView.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnResetView.Image = ((System.Drawing.Image)(resources.GetObject("btnResetView.Image")));
+            this.btnResetView.Image = ((System.Drawing.Image)(resources.GetObject("Reset.Image")));
             this.btnResetView.Label = "Reset View";
             this.btnResetView.Name = "btnResetView";
             this.btnResetView.ShowImage = true;
             this.btnResetView.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnResetView_Click);
             // 
-            // Views
+            // Views_DOT
             // 
-            this.Views.Buttons.Add(this.btnViewReleasePlan);
-            this.Views.Buttons.Add(this.btnViewRequirementsErrors);
-            this.Views.Buttons.Add(this.btnViewRequirementsStatus);
-            this.Views.Buttons.Add(this.btnViewBlockedTickets);
-            this.Views.Buttons.Add(this.btnShowHidePropertiesRow);
-            this.Views.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.Views.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
-            this.Views.Label = "Views";
-            this.Views.Name = "Views";
-            this.Views.ShowImage = true;
-            this.Views.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Views_Click);
+            this.Views_DOT.Buttons.Add(this.btnViewReleasePlan_DOT);
+            this.Views_DOT.Buttons.Add(this.btnViewRequirementsErrors_DOT);
+            this.Views_DOT.Buttons.Add(this.btnViewRequirementsStatus_DOT);
+            this.Views_DOT.Buttons.Add(this.btnViewBlockedTickets_DOT);
+            this.Views_DOT.Buttons.Add(this.btnToggleProperties);
+            this.Views_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.Views_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
+            this.Views_DOT.Label = "Views";
+            this.Views_DOT.Name = "Views_DOT";
+            this.Views_DOT.ShowImage = true;
+            this.Views_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Views_DOT_Click);
             // 
-            // btnViewReleasePlan
+            // btnViewReleasePlan_DOT
             // 
-            this.btnViewReleasePlan.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnViewReleasePlan.Description = "Release Schedule";
-            this.btnViewReleasePlan.Label = "Release Schedule";
-            this.btnViewReleasePlan.Name = "btnViewReleasePlan";
-            this.btnViewReleasePlan.ShowImage = true;
-            this.btnViewReleasePlan.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_Click);
+            this.btnViewReleasePlan_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewReleasePlan_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
+            this.btnViewReleasePlan_DOT.Description = "Release Schedule";
+            this.btnViewReleasePlan_DOT.Label = "Release Schedule";
+            this.btnViewReleasePlan_DOT.Name = "btnViewReleasePlan_DOT";
+            this.btnViewReleasePlan_DOT.ShowImage = true;
+            this.btnViewReleasePlan_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_DOT_DOT);
             // 
-            // btnViewRequirementsErrors
+            // btnViewRequirementsErrors_DOT
             // 
-            this.btnViewRequirementsErrors.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnViewRequirementsErrors.Description = "Requirements Errors";
-            this.btnViewRequirementsErrors.Label = "Requirements Errors";
-            this.btnViewRequirementsErrors.Name = "btnViewRequirementsErrors";
-            this.btnViewRequirementsErrors.ShowImage = true;
-            this.btnViewRequirementsErrors.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewRequirementsErrors_Click);
+            this.btnViewRequirementsErrors_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewRequirementsErrors_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
+            this.btnViewRequirementsErrors_DOT.Description = "Requirements Errors";
+            this.btnViewRequirementsErrors_DOT.Label = "Requirements Errors";
+            this.btnViewRequirementsErrors_DOT.Name = "btnViewRequirementsErrors_DOT";
+            this.btnViewRequirementsErrors_DOT.ShowImage = true;
+            this.btnViewRequirementsErrors_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewRequirementsErrors_DOT_Click);
             // 
-            // btnViewRequirementsStatus
+            // btnViewRequirementsStatus_DOT
             // 
-            this.btnViewRequirementsStatus.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnViewRequirementsStatus.Description = "Requirements Status";
-            this.btnViewRequirementsStatus.Label = "Requirements Status";
-            this.btnViewRequirementsStatus.Name = "btnViewRequirementsStatus";
-            this.btnViewRequirementsStatus.ShowImage = true;
-            this.btnViewRequirementsStatus.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewRequirementsStatus_Click);
+            this.btnViewRequirementsStatus_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewRequirementsStatus_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
+            this.btnViewRequirementsStatus_DOT.Description = "Requirements Status";
+            this.btnViewRequirementsStatus_DOT.Label = "Requirements Status";
+            this.btnViewRequirementsStatus_DOT.Name = "btnViewRequirementsStatus_DOT";
+            this.btnViewRequirementsStatus_DOT.ShowImage = true;
+            this.btnViewRequirementsStatus_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewRequirementsStatus_DOT_Click);
             // 
-            // btnViewBlockedTickets
+            // btnViewBlockedTickets_DOT
             // 
-            this.btnViewBlockedTickets.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnViewBlockedTickets.Description = "Blocked Tickets";
-            this.btnViewBlockedTickets.Label = "Blocked Tickets";
-            this.btnViewBlockedTickets.Name = "btnViewBlockedTickets";
-            this.btnViewBlockedTickets.ShowImage = true;
-            this.btnViewBlockedTickets.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewBlockedTickets_Click);
+            this.btnViewBlockedTickets_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewBlockedTickets_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
+            this.btnViewBlockedTickets_DOT.Description = "Blocked Tickets";
+            this.btnViewBlockedTickets_DOT.Label = "Blocked Tickets";
+            this.btnViewBlockedTickets_DOT.Name = "btnViewBlockedTickets_DOT";
+            this.btnViewBlockedTickets_DOT.ShowImage = true;
+            this.btnViewBlockedTickets_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewBlockedTickets_DOT_Click);
             // 
-            // btnShowHidePropertiesRow
+            // btnToggleProperties
             // 
-            this.btnShowHidePropertiesRow.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnShowHidePropertiesRow.Description = "Toggle Properties Row";
-            this.btnShowHidePropertiesRow.Label = "Toggle Properties Row";
-            this.btnShowHidePropertiesRow.Name = "btnShowHidePropertiesRow";
-            this.btnShowHidePropertiesRow.ShowImage = true;
-            this.btnShowHidePropertiesRow.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowHidePropertiesRow_Click);
-            // 
-            // tabJira
-            // 
-            this.tabJira.Groups.Add(this.grpJira);
-            this.tabJira.Label = "Jira";
-            this.tabJira.Name = "tabJira";
+            this.btnToggleProperties.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnToggleProperties.Image = ((System.Drawing.Image)(resources.GetObject("Views.Image")));
+            this.btnToggleProperties.Description = "Toggle Properties";
+            this.btnToggleProperties.Label = "Toggle Properties";
+            this.btnToggleProperties.Name = "btnToggleProperties";
+            this.btnToggleProperties.ShowImage = true;
+            this.btnToggleProperties.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
             this.RibbonType = "Microsoft.Excel.Workbook";
             this.Tabs.Add(this.tabHome);
-            this.Tabs.Add(this.tabJira);
+            this.Tabs.Add(this.tabDOT);
+            this.Tabs.Add(this.tabPM);
             this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.DOTTitlingRibbon_Load);
             this.tabHome.ResumeLayout(false);
             this.tabHome.PerformLayout();
-            this.grpJira.ResumeLayout(false);
-            this.grpJira.PerformLayout();
-            this.tabJira.ResumeLayout(false);
-            this.tabJira.PerformLayout();
+            this.grpDOT.ResumeLayout(false);
+            this.grpDOT.PerformLayout();
+            this.tabDOT.ResumeLayout(false);
+            this.tabDOT.PerformLayout();
+            this.tabPM.ResumeLayout(false);
+            this.tabPM.PerformLayout();
             this.ResumeLayout(false);
-
         }
 
         #endregion
 
         internal RibbonTab tabHome;
-        internal RibbonGroup grpJira;
-        internal RibbonButton btnMailMerge;
-        internal RibbonButton btnCleanup;
-        internal RibbonButton btnAddNewTickets;
-        internal RibbonButton btnImportAll;
-        internal RibbonButton btnImportSelected;
+        internal RibbonTab tabDOT;
+        internal RibbonTab tabPM;
+        //
+        internal RibbonGroup grpDOT;
+        internal RibbonGroup grpPM;
+        //
+        internal RibbonButton btnStandardizeTable_DOT;
+        internal RibbonButton btnStandardizeTable_PM;
+        internal RibbonButton btnUpdate_DOT;
+        internal RibbonButton btnUpdate_Program;
+        internal RibbonButton btnUpdateSelected_DOT;
+        internal RibbonButton btnUpdateSelected_Program;
+        internal RibbonButton btnAdd_DOT;
+        internal RibbonButton btnAdd_Program;
+        //
+        internal RibbonButton btnMailMerge_DOT;
         internal RibbonButton btnResetView;
-        internal RibbonButton btnImportChecklist;
-        internal RibbonButton btnImportProjects;
-        internal RibbonButton btnUpdate;
-        internal RibbonButton btnUpdateRoadMap;
-        internal RibbonButton btnImportEpics;
-        internal RibbonButton btnDeveloperFromHistory;
-        internal RibbonGallery Views;
-        private RibbonButton btnViewReleasePlan;
-        private RibbonButton btnViewRequirementsErrors;
-        private RibbonButton btnViewRequirementsStatus;
-        private RibbonButton btnViewBlockedTickets;
-        private RibbonButton btnShowHidePropertiesRow;
-        internal RibbonButton btnEmail;
-        internal RibbonTab tabJira;
+        internal RibbonButton btnUpdateChecklist;
+        internal RibbonButton bntUpdateProjects;
+        internal RibbonButton btnSaveSelected_DOT;
+        internal RibbonButton btnUpdateRoadMap_DOT;
+        internal RibbonButton btnUpdateEpics_DOT;
+        internal RibbonButton btnUpdateTicketDeveloper_DOT;
+        internal RibbonButton btnEmailStatus_DOT;
+        //
+        internal RibbonGallery Views_DOT;
+            private RibbonButton btnViewReleasePlan_DOT;
+            private RibbonButton btnViewRequirementsErrors_DOT;
+            private RibbonButton btnViewRequirementsStatus_DOT;
+            private RibbonButton btnViewBlockedTickets_DOT;
+            private RibbonButton btnToggleProperties;
+        //
+
+
     }
 
     partial class ThisRibbonCollection
