@@ -42,7 +42,8 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("ERR Workflow Written");
                     ColumnsToShow.Add("ERR Workflow Groomed");
                     ColumnsToShow.Add("ERR Workflow Submitted");
-                    ColumnsToShow.Add("ERR Workflow Approved");
+                    ColumnsToShow.Add("ERR Workflow Ready");
+                    ColumnsToShow.Add("ERR Workflow Approved Not Groomed");
                     ColumnsToShow.Add("ERR Workflow Bug Bucket");
                     ColumnsToShow.Add("ERR Has Workflow Issue");
 

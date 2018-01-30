@@ -270,7 +270,7 @@ namespace DOT_Titling_Excel_VSTO
             // tabJira
             // 
             this.tabJira.Groups.Add(this.grpJira);
-            this.tabJira.Label = "TabJira";
+            this.tabJira.Label = "Jira";
             this.tabJira.Name = "tabJira";
             // 
             // DOTTitlingRibbon

@@ -65,6 +65,7 @@ namespace DOT_Titling_Excel_VSTO
             TextMedium = 20,
             TextShort = 15,
             TextTiny = 9,
+            Priority = 20,
             Number = 9,
             Dollar = 9,
             Decimal = 9,
@@ -241,6 +242,9 @@ namespace DOT_Titling_Excel_VSTO
                             case "TicketType":
                                 FormatTicketType(columnRange);
                                 break;
+                            case "Priority":
+                                FormatPriority(columnRange);
+                                break;
                             case "Hidden":
                                 break;
                             default:
@@ -279,6 +283,7 @@ namespace DOT_Titling_Excel_VSTO
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Submitted", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Ready", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Approved Not Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket", new string[] { "Backlog Area", "Jira Status", "Jira Hufflepuff Sprint"});
             }
 
@@ -426,6 +431,22 @@ namespace DOT_Titling_Excel_VSTO
             cDeleted.Interior.Color = colorDeletedRow;
             //cDeleted.Font.Color = XlRgbColor.rgbDarkRed;
             cDeleted.Font.Color = colorBlack;
+        }
+
+        private static void FormatPriority(Range columnRange)
+        {
+            // 1. Critical
+            FormatCondition cStory = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
+                   XlFormatConditionOperator.xlEqual, "1. Critical", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            ColorConverter cc = new ColorConverter();
+            cStory.Interior.Color = colorYesNoRed;
+            cStory.Font.Color = colorYesNoRedFont;
+
+            // 2. High
+            FormatCondition cBug = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
+                   XlFormatConditionOperator.xlEqual, "2. High", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            cBug.Interior.Color = colorYesNoGold;
+            cBug.Font.Color = colorYesNoGoldFont;
         }
 
         private static void FormatMidLong(Range columnRange)
