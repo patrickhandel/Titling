@@ -24,7 +24,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Issue>> GetAllIssues(string type = "Tickets")
+        public async static Task<List<Issue>> GetAllIssues(string projectKey, string type = "Tickets")
         {
             try
             {
@@ -32,7 +32,7 @@ namespace DOT_Titling_Excel_VSTO
 
                 //Create the JQL
                 var jql = new System.Text.StringBuilder();
-                jql.Append("project = DOTTITLNG");
+                jql.Append("project = " + projectKey);
                 jql.Append(" AND ");
 
                 if (type == "Epics")

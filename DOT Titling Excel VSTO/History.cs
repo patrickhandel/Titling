@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using System.Linq;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
-using Atlassian.Jira;
-using System.Collections.Generic;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -20,7 +17,7 @@ namespace DOT_Titling_Excel_VSTO
                 var selection = app.Selection;
                 if (activeCell != null && activeWorksheet.Name == "Sprint Results")
                 {
-                    GetDeveloperFromHistory(app, activeWorksheet, selection);
+                    GetDeveloperFromHistory(app, activeWorksheet, selection, "DOTTITLNG");
                 }
             }
             catch (Exception ex)
@@ -29,7 +26,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static void GetDeveloperFromHistory(Excel.Application app, Worksheet activeWorksheet, Range selection)
+        public async static void GetDeveloperFromHistory(Excel.Application app, Worksheet activeWorksheet, Range selection, string projectKey)
         {
             try
             {
@@ -43,7 +40,7 @@ namespace DOT_Titling_Excel_VSTO
                         // Get Jira ID (1)
                         int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Ticket ID");
                         string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
-                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
+                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == projectKey + "-")
                         {
                             var historyItems = await ThisAddIn.GlobalJira.Issues.GetChangeLogsAsync(jiraId);
                             var developers = WorksheetPropertiesManager.GetDevelopers();

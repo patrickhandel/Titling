@@ -60,7 +60,7 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateSelectedTickets(app, activeWorksheet, selection);
+                        UpdateSelectedTickets(app, activeWorksheet, selection, "DOTTITLNG");
                         //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                     }
                     else
@@ -155,7 +155,7 @@ namespace DOT_Titling_Excel_VSTO
                 string missingColumns = MissingColumns(ws);
                 if (missingColumns == string.Empty)
                 {
-                    var issues = JiraIssue.GetAllIssues().Result;
+                    var issues = JiraIssue.GetAllIssues("").Result;
                     string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                     int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                     var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
@@ -562,12 +562,8 @@ namespace DOT_Titling_Excel_VSTO
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
             try
             {
-                var issues = JiraIssue.GetAllIssues().Result;
+                var issues = JiraIssue.GetAllIssues("DOTTITLNG").Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-
-
-
-
 
                 int cnt = issues.Count();
 
@@ -595,11 +591,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateSelectedTickets(Excel.Application app, Worksheet ws, Range selection)
+        private static void UpdateSelectedTickets(Excel.Application app, Worksheet ws, Range selection, string projectKey)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
-            var issues = JiraIssue.GetAllIssues().Result;
+            var issues = JiraIssue.GetAllIssues(projectKey).Result;
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
@@ -614,7 +610,7 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                     string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol).Trim();
-                    if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
+                    if (jiraId.Length > 10 && jiraId.Substring(0, 10) == projectKey + "-")
                     {
                         var issue = issues.FirstOrDefault(p => p.Key.Value == jiraId);
                         bool notFound = issue == null;
