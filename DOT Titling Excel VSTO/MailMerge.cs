@@ -9,7 +9,7 @@ namespace DOT_Titling_Excel_VSTO
 {
     class MailMerge
     {
-        public static void ExecuteMailMerge(Excel.Application app)
+        public static void ExecuteMailMerge_DOT(Excel.Application app)
         {
             try
             {
@@ -45,7 +45,8 @@ namespace DOT_Titling_Excel_VSTO
 
                         int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                         string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
-                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == "DOTTITLNG-")
+                        string projectKey = ThisAddIn.ProjectKeyDOT;
+                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == projectKey + "-")
                         {
                             ImportFromJira.ExecuteUpateTicketBeforeMailMerge(jiraId);
                             string summary = string.Empty;

@@ -8,7 +8,7 @@ namespace DOT_Titling_Excel_VSTO
 {
     class TableViews
     {
-        public static void ExecuteViewRequirementsErrors(Excel.Application app)
+        public static void ExecuteViewRequirementsErrors_Click(Excel.Application app)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteViewBlockedTickets(Excel.Application app)
+        public static void ExecuteViewBlockedTickets_DOT(Excel.Application app)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteViewReleasePlan(Excel.Application app)
+        public static void ExecuteViewReleasePlan_DOT(Excel.Application app)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteViewRequirementsStatus(Excel.Application app)
+        public static void ExecuteViewRequirementsStatus_DOT(Excel.Application app)
         {
             try
             {

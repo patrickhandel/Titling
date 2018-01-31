@@ -8,7 +8,7 @@ namespace DOT_Titling_Excel_VSTO
 { 
     class RoadMap
     {
-        public static void ExecuteUpdateRoadMap(Excel.Application app)
+        public static void ExecuteUpdateRoadMap_DOT(Excel.Application app)
         {
             try
             {

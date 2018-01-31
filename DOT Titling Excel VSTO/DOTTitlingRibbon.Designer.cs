@@ -175,7 +175,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnAdd_DOT.Label = "Add New Tickets";
             this.btnAdd_DOT.Name = "btnAdd_DOT";
             this.btnAdd_DOT.ShowImage = true;
-            this.btnAdd_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_Program_Click);
+            this.btnAdd_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_DOT_Click);
             // 
             // btnAdd_Program
             // 
@@ -184,7 +184,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnAdd_Program.Label = "Add New Tickets";
             this.btnAdd_Program.Name = "btnAdd_Program";
             this.btnAdd_Program.ShowImage = true;
-            this.btnAdd_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_Program_Click);
+            this.btnAdd_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_Progam_Click);
             // 
             // btnSaveSelected_DOT
             // 
@@ -247,7 +247,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdateTicketDeveloper_DOT.Label = "Get History";
             this.btnUpdateTicketDeveloper_DOT.Name = "btnUpdateDeveloperFromHistory";
             this.btnUpdateTicketDeveloper_DOT.ShowImage = true;
-            this.btnUpdateTicketDeveloper_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateTicketDeveloper_DOT_Click);
+            this.btnUpdateTicketDeveloper_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateDeveloper_DOT_Click);
             // 
             // btnStandardizeTable_DOT
             // 
@@ -307,7 +307,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewReleasePlan_DOT.Label = "Release Schedule";
             this.btnViewReleasePlan_DOT.Name = "btnViewReleasePlan_DOT";
             this.btnViewReleasePlan_DOT.ShowImage = true;
-            this.btnViewReleasePlan_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_DOT_DOT);
+            this.btnViewReleasePlan_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_DOT_Click);
             // 
             // btnViewRequirementsErrors_DOT
             // 

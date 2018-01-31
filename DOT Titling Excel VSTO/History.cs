@@ -7,17 +7,18 @@ namespace DOT_Titling_Excel_VSTO
 {
     class History
     {
-        public static void ExecuteGetDeveloperFromHistory()
+        public static void ExecuteUpdateDeveloper_DOT()
         {
             try
             {
                 var app = Globals.ThisAddIn.Application;
                 var activeWorksheet = app.ActiveSheet;
                 var activeCell = app.ActiveCell;
-                var selection = app.Selection;
+                var selection = app.Selection;                
                 if (activeCell != null && activeWorksheet.Name == "Sprint Results")
                 {
-                    GetDeveloperFromHistory(app, activeWorksheet, selection, "DOTTITLNG");
+                    string projectKey = ThisAddIn.ProjectKeyDOT;
+                    GetDeveloperFromHistory(app, activeWorksheet, selection, projectKey);
                 }
             }
             catch (Exception ex)

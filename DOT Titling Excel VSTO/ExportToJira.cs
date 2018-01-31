@@ -7,7 +7,7 @@ namespace DOT_Titling_Excel_VSTO
 {
     class ExportToJira
     {
-        public static bool ExecuteSaveSelectedTicketValues(Excel.Application app)
+        public static bool SaveSelected_DOT(Excel.Application app)
         {
             try
             {

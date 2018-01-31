@@ -24,7 +24,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Issue>> GetAllIssues(string projectKey, string type = "Tickets")
+        public async static Task<List<Issue>> GetAllStoriesAndBugs(string projectKey)
         {
             try
             {
@@ -34,42 +34,10 @@ namespace DOT_Titling_Excel_VSTO
                 var jql = new System.Text.StringBuilder();
                 jql.Append("project = " + projectKey);
                 jql.Append(" AND ");
-
-                if (type == "Epics")
-                {
-                    jql.Append("issuetype in (\"Epic\")");
-                }
-                if (type == "Tasks")
-                {
-                    jql.Append("issuetype in (\"Task\")");
-                    jql.Append(" AND ");
-                    jql.Append("\"Epic Link\" = DOTTITLNG-945");
-                }
-                if (type == "Tickets")
-                {
-                    jql.Append("issuetype in (\"Software Bug\", Story)");
-                }
-
+                jql.Append("issuetype in (\"Software Bug\", Story)");
                 jql.Append(" AND ");
                 jql.Append("summary ~ \"!DELETE\"");
-
-                var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
-                var totalIssues = issues.TotalItems;
-                var totalPages = (double)totalIssues / (double)ThisAddIn.PageSize;
-                totalPages = Math.Ceiling(totalPages);
-                var allIssues = issues.ToList();
-                for (int currentPage = 1; currentPage < totalPages; currentPage++)
-                {
-                    int startRecord = ThisAddIn.PageSize * currentPage;
-                    issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize, startRecord);
-                    allIssues.AddRange(issues.ToList());
-                    if (issues.Count() == 0)
-                    {
-                        break;
-                    }
-                }
-                var filteredIssues = allIssues.Where(i =>
-                            i.Summary != "DELETE").ToList();
+                List<Issue> filteredIssues = await FilterIssues(jql);
                 return filteredIssues;
             }
             catch (Exception ex)
@@ -78,6 +46,132 @@ namespace DOT_Titling_Excel_VSTO
                 return null;
             }
         }
+
+
+        public async static Task<List<Issue>> GetAllTasks(string projectKey)
+        {
+            try
+            {
+                ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+
+                //Create the JQL
+                var jql = new System.Text.StringBuilder();
+                jql.Append("project = " + projectKey);
+                jql.Append(" AND ");
+                jql.Append("issuetype in (\"Task\")");
+                jql.Append(" AND ");
+                jql.Append("\"Epic Link\" = " + projectKey + "-945");
+                List<Issue> filteredIssues = await FilterIssues(jql);
+                return filteredIssues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }
+
+        public async static Task<List<Issue>> GetAllEpics(string projectKey)
+        {
+            try
+            {
+                ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+
+                //Create the JQL
+                var jql = new System.Text.StringBuilder();
+                jql.Append("project = " + projectKey);
+                jql.Append(" AND ");
+                jql.Append("issuetype in (\"Epic\")");
+                jql.Append(" AND ");
+                jql.Append("summary ~ \"!DELETE\"");
+                List<Issue> filteredIssues = await FilterIssues(jql);
+                return filteredIssues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }
+
+        private static async Task<List<Issue>> FilterIssues(System.Text.StringBuilder jql)
+        {
+            var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
+            var totalIssues = issues.TotalItems;
+            var totalPages = (double)totalIssues / (double)ThisAddIn.PageSize;
+            totalPages = Math.Ceiling(totalPages);
+            var allIssues = issues.ToList();
+            for (int currentPage = 1; currentPage < totalPages; currentPage++)
+            {
+                int startRecord = ThisAddIn.PageSize * currentPage;
+                issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize, startRecord);
+                allIssues.AddRange(issues.ToList());
+                if (issues.Count() == 0)
+                {
+                    break;
+                }
+            }
+            var filteredIssues = allIssues.Where(i =>
+                        i.Summary != "DELETE").ToList();
+            return filteredIssues;
+        }
+
+        //public async static Task<List<Issue>> GetAllIssues(string projectKey, string ticketType)
+        //{
+        //    try
+        //    {
+        //        ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+
+        //        //Create the JQL
+        //        var jql = new System.Text.StringBuilder();
+        //        jql.Append("project = " + projectKey);
+
+        //        if (ticketType == "Epics")
+        //        {
+        //            jql.Append(" AND ");
+        //            jql.Append("issuetype in (\"Epic\")");
+        //        }
+        //        if (ticketType == "Tasks")
+        //        {
+        //            jql.Append(" AND ");
+        //            jql.Append("issuetype in (\"Task\")");
+        //            jql.Append(" AND ");
+        //            jql.Append("\"Epic Link\" = " + projectKey + "-945");
+        //        }
+        //        if (ticketType == "Tickets")
+        //        {
+        //            jql.Append(" AND ");
+        //            jql.Append("issuetype in (\"Software Bug\", Story)");
+        //        }
+
+        //        jql.Append(" AND ");
+        //        jql.Append("summary ~ \"!DELETE\"");
+
+        //        var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
+        //        var totalIssues = issues.TotalItems;
+        //        var totalPages = (double)totalIssues / (double)ThisAddIn.PageSize;
+        //        totalPages = Math.Ceiling(totalPages);
+        //        var allIssues = issues.ToList();
+        //        for (int currentPage = 1; currentPage < totalPages; currentPage++)
+        //        {
+        //            int startRecord = ThisAddIn.PageSize * currentPage;
+        //            issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize, startRecord);
+        //            allIssues.AddRange(issues.ToList());
+        //            if (issues.Count() == 0)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //        var filteredIssues = allIssues.Where(i =>
+        //                    i.Summary != "DELETE").ToList();
+        //        return filteredIssues;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error :" + ex);
+        //        return null;
+        //    }
+        //}
         
         public async static Task<IDictionary<string, Issue>> GetSelectedIssues(params string[] jiraIDs)
         {

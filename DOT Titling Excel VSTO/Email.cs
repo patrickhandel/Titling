@@ -145,7 +145,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void SendStatus(Excel.Application app)
+        public static void ExecuteEmailStatus_DOT(Excel.Application app)
         {
             try
             {

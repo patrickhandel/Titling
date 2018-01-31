@@ -101,7 +101,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void Execute(Excel.Application app, StandardizationType sType)
+        public static void ExecuteStandardizeTable(Excel.Application app, StandardizationType sType)
         {
             try
             {
@@ -648,7 +648,7 @@ namespace DOT_Titling_Excel_VSTO
             columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
         }
 
-        public static void ExecuteTogglePropertiesRow(Excel.Application app)
+        public static void ExecuteToggleProperties(Excel.Application app)
         {
             try
             {
