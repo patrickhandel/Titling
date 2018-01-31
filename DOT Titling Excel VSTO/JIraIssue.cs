@@ -47,7 +47,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-
         public async static Task<List<Issue>> GetAllTasks(string projectKey)
         {
             try
@@ -116,63 +115,6 @@ namespace DOT_Titling_Excel_VSTO
             return filteredIssues;
         }
 
-        //public async static Task<List<Issue>> GetAllIssues(string projectKey, string ticketType)
-        //{
-        //    try
-        //    {
-        //        ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-
-        //        //Create the JQL
-        //        var jql = new System.Text.StringBuilder();
-        //        jql.Append("project = " + projectKey);
-
-        //        if (ticketType == "Epics")
-        //        {
-        //            jql.Append(" AND ");
-        //            jql.Append("issuetype in (\"Epic\")");
-        //        }
-        //        if (ticketType == "Tasks")
-        //        {
-        //            jql.Append(" AND ");
-        //            jql.Append("issuetype in (\"Task\")");
-        //            jql.Append(" AND ");
-        //            jql.Append("\"Epic Link\" = " + projectKey + "-945");
-        //        }
-        //        if (ticketType == "Tickets")
-        //        {
-        //            jql.Append(" AND ");
-        //            jql.Append("issuetype in (\"Software Bug\", Story)");
-        //        }
-
-        //        jql.Append(" AND ");
-        //        jql.Append("summary ~ \"!DELETE\"");
-
-        //        var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
-        //        var totalIssues = issues.TotalItems;
-        //        var totalPages = (double)totalIssues / (double)ThisAddIn.PageSize;
-        //        totalPages = Math.Ceiling(totalPages);
-        //        var allIssues = issues.ToList();
-        //        for (int currentPage = 1; currentPage < totalPages; currentPage++)
-        //        {
-        //            int startRecord = ThisAddIn.PageSize * currentPage;
-        //            issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize, startRecord);
-        //            allIssues.AddRange(issues.ToList());
-        //            if (issues.Count() == 0)
-        //            {
-        //                break;
-        //            }
-        //        }
-        //        var filteredIssues = allIssues.Where(i =>
-        //                    i.Summary != "DELETE").ToList();
-        //        return filteredIssues;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Error :" + ex);
-        //        return null;
-        //    }
-        //}
-        
         public async static Task<IDictionary<string, Issue>> GetSelectedIssues(params string[] jiraIDs)
         {
             try
@@ -186,6 +128,83 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
                 return null;
             }
+        }
+
+        public static string ExtractCustomValue(Issue issue, string item)
+        {
+            string val = string.Empty;
+            item = item.Replace(" Id ", " I'd ");
+            item = item.Trim();
+            try
+            {
+                val = issue[item].Value;
+            }
+            catch
+            {
+                val = string.Empty;
+            }
+            return val;
+        }
+
+        public static string ExtractStandardValue(Issue issue, string item)
+        {
+            string val = string.Empty;
+            switch (item)
+            {
+                case "issue.Type.Name":
+                    val = issue.Type.Name;
+                    break;
+                case "issue.Key.Value":
+                    val = issue.Key.Value;
+                    break;
+                case "issue.Summary":
+                    val = issue.Summary;
+                    break;
+                case "issue.Status.Name":
+                    val = issue.Status.Name;
+                    break;
+                case "issue.Description":
+                    val = issue.Description;
+                    break;
+                case "issue.Assignee":
+                    val = issue.Assignee;
+                    break;
+                default:
+                    break;
+            }
+            return val;
+        }
+
+        public static string ExtractValueBasedOnFunction(Issue issue, string item)
+        {
+            string val = string.Empty;
+            switch (item)
+            {
+                case "Sprint":
+                    val = ExtractSprintNumber(issue);
+                    break;
+                case "Release":
+                    val = ExtractRelease(issue);
+                    break;
+                case "Fix Release":
+                    val = ExtractFixRelease(issue);
+                    break;
+                case "DOT Web Services":
+                    val = ExtractDOTWebServices(issue);
+                    break;
+                case "Labels":
+                    List<string> listofLabels = ExtractListOfLabels(issue);
+                    foreach (string label in listofLabels)
+                    {
+                        val = val + label + ", ";
+                    }
+                    if (val != string.Empty && val.Right(2) == ", ")
+                        val = val.Left(val.Length - 2);
+                    break;
+                default:
+                    break;
+            }
+            return val;
         }
 
         public static bool SaveSummary(string jiraId, string newValue, bool multiple)
@@ -206,7 +225,7 @@ namespace DOT_Titling_Excel_VSTO
             }
             catch
             {
-                MessageBox.Show("Summary could NOT successfully updated.");
+                MessageBox.Show("Summary could NOT be successfully updated.");
                 return false;
             }
         }
@@ -360,7 +379,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static string ExtractRelease(Issue issue)
+        private static string ExtractRelease(Issue issue)
         {
             string val = string.Empty;
             int c = 0;
@@ -374,7 +393,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractFixRelease(Issue issue)
+        private static string ExtractFixRelease(Issue issue)
         {
             string val = string.Empty;
             int c = 0;
@@ -386,7 +405,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractLabels(Issue issue)
+        private static string ExtractLabels(Issue issue)
         {
             string val = string.Empty;
             if (issue.Labels.Count > 0)
@@ -399,13 +418,13 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static List<string> CreateListOfLabels(string labels)
+        private static List<string> CreateListOfLabels(string labels)
         {
             labels = labels.Replace(", ", ",");
             return labels.Split(',').ToList();
         }
 
-        public static List<string> ExtractListOfLabels(Issue issue)
+        private static List<string> ExtractListOfLabels(Issue issue)
         {
             List<string> listofLabels = new List<string>();
             if (issue.Labels.Count > 0)
@@ -432,9 +451,8 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractSprintNumber(Issue issue)
+        private static string ExtractSprintNumber(Issue issue)
         {
-            //string val = ExtractCustomValue(issue, "Sprint");
             string val = string.Empty;
             int thisSprint = 0;
             int lastSprint = 0;
@@ -466,82 +484,7 @@ namespace DOT_Titling_Excel_VSTO
             }
             return retval;
         }
-		
-        public static string ExtractCustomValue(Issue issue, string item)
-        {
-            string val = string.Empty;
-            item = item.Replace(" Id ", " I'd ");
-            item = item.Trim();
-            try
-            {
-                val = issue[item].Value;
-            }
-            catch
-            {
-                val = string.Empty;
-            }
-            return val;
-        }
 
-        public static string ExtractStandardValue(Issue issue, string item)
-        {
-            string val = string.Empty;
-            switch (item)
-            {
-                case "issue.Type.Name":
-                    val = issue.Type.Name;
-                    break;
-                case "issue.Key.Value":
-                    val = issue.Key.Value;
-                    break;
-                case "issue.Summary":
-                    val = issue.Summary;
-                    break;
-                case "issue.Status.Name":
-                    val = issue.Status.Name;
-                    break;
-                case "issue.Description":
-                    val = issue.Description;
-                    break;
-                case "issue.Assignee":
-                    val = issue.Assignee;
-                    break;
-                default:
-                    break;
-            }
-            return val;
-        }
 
-        public static string ExtractValueBasedOnFunction(Issue issue, string item)
-        {
-            string val = string.Empty;
-            switch (item)
-            {
-                case "Sprint":
-                    val = ExtractSprintNumber(issue);
-                    break;
-                case "Release":
-                    val = ExtractRelease(issue);
-                    break;
-                case "Fix Release":
-                    val = ExtractFixRelease(issue);
-                    break;
-                case "DOT Web Services":
-                    val = ExtractDOTWebServices(issue);
-                    break;
-                case "Labels":
-                    List<string> listofLabels = ExtractListOfLabels(issue);
-                    foreach (string label in listofLabels)
-                    {
-                        val = val + label + ", ";
-                    }
-                    if (val != string.Empty && val.Right(2) == ", ")
-                        val = val.Left(val.Length - 2);                        
-                    break;
-                default:
-                    break;
-            }
-            return val;
-        }
     }
 }
