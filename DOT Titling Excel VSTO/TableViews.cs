@@ -8,7 +8,7 @@ namespace DOT_Titling_Excel_VSTO
 {
     class TableViews
     {
-        public static void ExecuteViewRequirementsErrors_Click(Excel.Application app)
+        public static void ExecuteViewRequirementsErrors(Excel.Application app)
         {
             try
             {
@@ -50,6 +50,39 @@ namespace DOT_Titling_Excel_VSTO
                     SSUtils.FilterTable(ws, tableRangeName, "ERR Has Workflow Issue", "x");
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
                     SSUtils.SortTable(ws, tableRangeName, "Backlog Area", XlSortOrder.xlAscending);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void ExecuteViewEpicsEstimateActual(Excel.Application app)
+        {
+            try
+            {
+                Worksheet ws = app.Worksheets["Epics"];
+                ws.Activate();
+
+                string tableRangeName = SSUtils.GetSelectedTable(app);
+                string headerRangeName = SSUtils.GetSelectedTableHeader(app);
+                if (headerRangeName != string.Empty)
+                {
+                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    int headerRow = headerRowRange.Row;
+
+                    List<string> ColumnsToShow = new List<string>();
+
+                    ColumnsToShow.Add("Epic");
+                    ColumnsToShow.Add("R");
+                    ColumnsToShow.Add("Estimate 2");
+                    ColumnsToShow.Add("Actual");
+                    ColumnsToShow.Add("Actual vs Estimate");
+
+                    SSUtils.FilterTable(ws, tableRangeName, "Release", "<8");
+                    SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
+                    SSUtils.SortTable(ws, tableRangeName, "Priority", XlSortOrder.xlAscending);
                 }
             }
             catch (Exception ex)

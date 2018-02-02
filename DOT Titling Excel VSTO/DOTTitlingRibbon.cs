@@ -314,12 +314,25 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        private void btnViewEpicsEstimateActual_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                TableViews.ExecuteViewEpicsEstimateActual(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private void btnViewRequirementsErrors_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                TableViews.ExecuteViewRequirementsErrors_Click(app);
+                TableViews.ExecuteViewRequirementsErrors(app);
             }
             catch (Exception ex)
             {

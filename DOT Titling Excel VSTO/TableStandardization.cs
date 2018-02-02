@@ -287,6 +287,8 @@ namespace DOT_Titling_Excel_VSTO
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Ready", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Approved Not Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket", new string[] { "Backlog Area", "Jira Status", "Jira Hufflepuff Sprint"});
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket but Not a Bug", new string[] { "Backlog Area" });
+                
             }
 
             if (tableRangeName == "DOTReleaseData")
