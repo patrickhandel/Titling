@@ -59,6 +59,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewRequirementsErrors_DOT = this.Factory.CreateRibbonButton();
             this.btnViewRequirementsStatus_DOT = this.Factory.CreateRibbonButton();
             this.btnViewBlockedTickets_DOT = this.Factory.CreateRibbonButton();
+            this.btnViewEpicsEstimateActual_DOT = this.Factory.CreateRibbonButton();
             this.grpStandardization_DOT = this.Factory.CreateRibbonGroup();
             this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
@@ -72,7 +73,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdateSelected_Program = this.Factory.CreateRibbonButton();
             this.btnAdd_Program = this.Factory.CreateRibbonButton();
             this.grpStandardization_PM = this.Factory.CreateRibbonGroup();
-            this.btnViewEpicsEstimateActual_DOT = this.Factory.CreateRibbonButton();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
@@ -269,7 +269,7 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.btnViewEpicsEstimateActual_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnViewEpicsEstimateActual_DOT.Description = "Epics Estimate vs. Actual";
-            this.btnViewEpicsEstimateActual_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewBlockedTickets_DOT.Image")));
+            this.btnViewEpicsEstimateActual_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewEpicsEstimateActual_DOT.Image")));
             this.btnViewEpicsEstimateActual_DOT.Label = "Epics Estimate vs. Actual";
             this.btnViewEpicsEstimateActual_DOT.Name = "btnViewEpicsEstimateActual_DOT";
             this.btnViewEpicsEstimateActual_DOT.ShowImage = true;
@@ -355,7 +355,7 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.btnUpdate_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnUpdate_Program.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdate_Program.Image")));
-            this.btnUpdate_Program.Label = "Update All Tickets";
+            this.btnUpdate_Program.Label = "Update All Issues";
             this.btnUpdate_Program.Name = "btnUpdate_Program";
             this.btnUpdate_Program.ShowImage = true;
             this.btnUpdate_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_Program_Click);
@@ -364,7 +364,7 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.btnUpdateSelected_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnUpdateSelected_Program.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateSelected_Program.Image")));
-            this.btnUpdateSelected_Program.Label = "Update Selected Tickets";
+            this.btnUpdateSelected_Program.Label = "Update Selected Issues";
             this.btnUpdateSelected_Program.Name = "btnUpdateSelected_Program";
             this.btnUpdateSelected_Program.ShowImage = true;
             this.btnUpdateSelected_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateSelected_DOT_Click);
@@ -373,7 +373,7 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.btnAdd_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnAdd_Program.Image = ((System.Drawing.Image)(resources.GetObject("btnAdd_Program.Image")));
-            this.btnAdd_Program.Label = "Add New Tickets";
+            this.btnAdd_Program.Label = "Add New Issues";
             this.btnAdd_Program.Name = "btnAdd_Program";
             this.btnAdd_Program.ShowImage = true;
             this.btnAdd_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_Progam_Click);

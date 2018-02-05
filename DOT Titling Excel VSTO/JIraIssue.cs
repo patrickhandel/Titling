@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Text;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -24,15 +25,16 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Issue>> GetAllStoriesAndBugs(string projectKey)
+        public async static Task<List<Issue>> GetAllStoriesAndBugs(List<string> listofProjects)
         {
             try
             {
                 ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-
                 //Create the JQL
-                var jql = new System.Text.StringBuilder();
-                jql.Append("project = " + projectKey);
+                var jql = new StringBuilder();
+                jql.Append("project in (");
+                jql.Append(FormatProjectList(listofProjects));
+                jql.Append(")");
                 jql.Append(" AND ");
                 jql.Append("issuetype in (\"Software Bug\", Story)");
                 jql.Append(" AND ");
@@ -47,7 +49,22 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Issue>> GetAllTasks(string projectKey)
+        private static StringBuilder FormatProjectList(List<string> listofProjects)
+        {
+            var projectList = new StringBuilder();
+            int cnt = 1;
+            int projectCount = listofProjects.Count();
+            foreach (string project in listofProjects)
+            {
+                projectList.Append(project);
+                if (cnt != projectCount)
+                    projectList.Append(", ");
+                cnt++;
+            }
+            return projectList;
+        }
+
+        public async static Task<List<Issue>> GetAllTasks(List<string> listofProjects)
         {
             try
             {
@@ -55,11 +72,11 @@ namespace DOT_Titling_Excel_VSTO
 
                 //Create the JQL
                 var jql = new System.Text.StringBuilder();
-                jql.Append("project = " + projectKey);
+                jql.Append("project = " + listofProjects[0]);
                 jql.Append(" AND ");
                 jql.Append("issuetype in (\"Task\")");
                 jql.Append(" AND ");
-                jql.Append("\"Epic Link\" = " + projectKey + "-945");
+                jql.Append("\"Epic Link\" = " + listofProjects[0] + "-945");
                 List<Issue> filteredIssues = await FilterIssues(jql);
                 return filteredIssues;
             }
@@ -70,7 +87,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Issue>> GetAllEpics(string projectKey)
+        public async static Task<List<Issue>> GetAllEpics(List<string> listofProjects)
         {
             try
             {
@@ -78,7 +95,7 @@ namespace DOT_Titling_Excel_VSTO
 
                 //Create the JQL
                 var jql = new System.Text.StringBuilder();
-                jql.Append("project = " + projectKey);
+                jql.Append("project = " + listofProjects[0]);
                 jql.Append(" AND ");
                 jql.Append("issuetype in (\"Epic\")");
                 jql.Append(" AND ");
@@ -151,6 +168,9 @@ namespace DOT_Titling_Excel_VSTO
             string val = string.Empty;
             switch (item)
             {
+                case "issue.Project":
+                    val = issue.Project;
+                    break;
                 case "issue.Type.Name":
                     val = issue.Type.Name;
                     break;
@@ -484,7 +504,5 @@ namespace DOT_Titling_Excel_VSTO
             }
             return retval;
         }
-
-
     }
 }

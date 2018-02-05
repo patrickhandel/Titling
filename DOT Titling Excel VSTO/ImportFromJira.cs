@@ -9,30 +9,22 @@ using System.Collections.Generic;
 namespace DOT_Titling_Excel_VSTO
 {
     class ImportFromJira
-    {
-        public static void ExecuteUpdateTickets(Excel.Application app, bool forProgram, string projectKey)
+    {      
+        public static void ExecuteUpdateTickets(Excel.Application app, List<string> listofProjects)
         {
             try
             {
                 var activeWorksheet = app.ActiveSheet;
-                if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
+                if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "Issues") || (activeWorksheet.Name == "DOT Releases"))
                 {
                     string missingColumns = MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateAllTickets(app, activeWorksheet, projectKey);
-                        AddNewTickets(app, activeWorksheet, forProgram, projectKey);
+                        UpdateAllTickets(app, activeWorksheet, listofProjects);
+                        AddNewTickets(app, activeWorksheet, listofProjects);
                         string dt = DateTime.Now.ToString("MM/dd/yyyy");
-                        if (activeWorksheet.Name == "Tickets")
-                        {
-                            string val = "Tickets (Updated on " + dt + ")";
-                            SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "Ticket Updated On");
-                        }
-                        if (activeWorksheet.Name == "DOT Releases")
-                        {
-                            string val = "DOT Releases (Updated on " + dt + ")";
-                            SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "DOT Releases Updated On");
-                        }
+                        string val = activeWorksheet.Name +" (Updated on " + dt + ")";
+                        SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "Updated On");
                         TableStandardization.ExecuteStandardizeTable(app, TableStandardization.StandardizationType.Light);
                     }
                     else
@@ -47,7 +39,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateSelected_DOT(Excel.Application app, string projectKey)
+        public static void ExecuteUpdateSelected_DOT(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -60,7 +52,7 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateSelectedTickets(app, activeWorksheet, selection, projectKey);
+                        UpdateSelectedTickets(app, activeWorksheet, selection, listofProjects);
                         //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                     }
                     else
@@ -75,17 +67,17 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteAdd_DOT(Excel.Application app, bool forProgram, string projectKey)
+        public static void ExecuteAdd(Excel.Application app, List<string> listofProjects)
         {
             try
             {
                 var activeWorksheet = app.ActiveSheet;
-                if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "DOT Releases"))
+                if ((activeWorksheet.Name == "Tickets") || (activeWorksheet.Name == "Issues") || (activeWorksheet.Name == "DOT Releases"))
                 {
                     string missingColumns = MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
                     {
-                        AddNewTickets(app, activeWorksheet, forProgram, projectKey);
+                        AddNewTickets(app, activeWorksheet, listofProjects);
                         //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
                     }
                     else
@@ -99,7 +91,6 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
-
 
         public static void ExecuteAddNewProjects(Excel.Application app)
         {
@@ -148,14 +139,14 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewTickets(Excel.Application app, Worksheet ws, bool forProgram, string projectKey)
+        private static void AddNewTickets(Excel.Application app, Worksheet ws, List<string> listofProjects)
         {
             try
             {
                 string missingColumns = MissingColumns(ws);
                 if (missingColumns == string.Empty)
                 {
-                    var issues = JiraIssue.GetAllStoriesAndBugs(projectKey).Result;
+                    var issues = JiraIssue.GetAllStoriesAndBugs(listofProjects).Result;
                     string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                     int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                     var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
@@ -183,25 +174,28 @@ namespace DOT_Titling_Excel_VSTO
                         //Ticket ID (2)
                         SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "Ticket ID");
 
-                        //Summary (5)
-                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary, "Summary");
+                        if (ws.Name != "Issues")
+                        {
 
-                        //TO DO FIX
-                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")), "Release");
+                            //Summary (5)
+                            SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary"), issue.Summary, "Summary");
 
-                        //Epic
-                        app.Calculation = XlCalculation.xlCalculationAutomatic;
-                        int jiraEpicColumn = SSUtils.GetColumnFromHeader(ws, "Jira Epic");
-                        string newEpic = SSUtils.GetCellValue(ws, footerRow, jiraEpicColumn);
-                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), newEpic, "Epic");
-                        app.Calculation = XlCalculation.xlCalculationManual;
+                            //TO DO FIX
+                            SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Release")), "Release");
 
-                        //Hufflepuff Sprint
-                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")), "Hufflepuff Sprint");
+                            //Epic
+                            app.Calculation = XlCalculation.xlCalculationAutomatic;
+                            int jiraEpicColumn = SSUtils.GetColumnFromHeader(ws, "Jira Epic");
+                            string newEpic = SSUtils.GetCellValue(ws, footerRow, jiraEpicColumn);
+                            SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), newEpic, "Epic");
+                            app.Calculation = XlCalculation.xlCalculationManual;
+
+                            //Hufflepuff Sprint
+                            SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Hufflepuff Sprint"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Jira Hufflepuff Sprint")), "Hufflepuff Sprint");
+                        }
                         SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                     }
                     MessageBox.Show(issues.Count() + " Tickets Added.");
-
                 }
                 else
                 {
@@ -214,7 +208,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateEpics_DOT(Excel.Application app, string projectKey)
+        public static void ExecuteUpdateEpics_DOT(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -224,8 +218,8 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateEpics(app, activeWorksheet, projectKey);
-                        AddNewEpics(app, activeWorksheet, projectKey);
+                        UpdateEpics(app, activeWorksheet, listofProjects);
+                        AddNewEpics(app, activeWorksheet, listofProjects);
                         TableStandardization.ExecuteStandardizeTable(app, TableStandardization.StandardizationType.Light);
                     }
                     else
@@ -240,14 +234,14 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewEpics(Excel.Application app, Worksheet ws, string projectKey)
+        private static void AddNewEpics(Excel.Application app, Worksheet ws, List<string> listofProjects)
         {
             try
             {
                 string missingColumns = MissingColumns(ws);
                 if (missingColumns == string.Empty)
                 {
-                    var issues = JiraIssue.GetAllEpics(projectKey).Result;
+                    var issues = JiraIssue.GetAllEpics(listofProjects).Result;
                     string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                     int column = SSUtils.GetColumnFromHeader(ws, "Epic ID");
                     var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
@@ -289,7 +283,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateChecklist(Excel.Application app, string projectKey)
+        public static void ExecuteUpdateChecklist(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -299,8 +293,8 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateChecklistTasks(app, activeWorksheet, projectKey);
-                        AddNewChecklistTasks(app, activeWorksheet, projectKey);
+                        UpdateChecklistTasks(app, activeWorksheet, listofProjects);
+                        AddNewChecklistTasks(app, activeWorksheet, listofProjects);
                         TableStandardization.ExecuteStandardizeTable(app, TableStandardization.StandardizationType.Light);
                     }
                     else
@@ -341,14 +335,14 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewChecklistTasks(Excel.Application app, Worksheet ws, string projectKey)
+        private static void AddNewChecklistTasks(Excel.Application app, Worksheet ws, List<string> listofProjects)
         {
             try
             {
                 string missingColumns = MissingColumns(ws);
                 if (missingColumns == string.Empty)
                 {
-                    var issues = JiraIssue.GetAllTasks(projectKey).Result;
+                    var issues = JiraIssue.GetAllTasks(listofProjects).Result;
                     string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                     int column = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                     var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
@@ -458,11 +452,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateEpics(Excel.Application app, Worksheet ws, string projectKey)
+        private static void UpdateEpics(Excel.Application app, Worksheet ws, List<string> listofProjects)
         {
             try
             {
-                var epics = JiraIssue.GetAllEpics(projectKey).Result;
+                var epics = JiraIssue.GetAllEpics(listofProjects).Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 int cnt = epics.Count();
@@ -491,11 +485,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateChecklistTasks(Excel.Application app, Worksheet ws, string projectKey)
+        private static void UpdateChecklistTasks(Excel.Application app, Worksheet ws, List<string> listofProjects)
         {
             try
             {
-                var tasks = JiraIssue.GetAllTasks(projectKey).Result;
+                var tasks = JiraIssue.GetAllTasks(listofProjects).Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 int cnt = tasks.Count();
@@ -557,12 +551,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateAllTickets(Excel.Application app, Worksheet ws, string projectKey)
+        private static void UpdateAllTickets(Excel.Application app, Worksheet ws, List<string> listofProjects)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
             try
             {
-                var issues = JiraIssue.GetAllStoriesAndBugs(projectKey).Result;
+                var issues = JiraIssue.GetAllStoriesAndBugs(listofProjects).Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 int cnt = issues.Count();
@@ -591,11 +585,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateSelectedTickets(Excel.Application app, Worksheet ws, Range selection, string projectKey)
+        private static void UpdateSelectedTickets(Excel.Application app, Worksheet ws, Range selection, List<string> listofProjects)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
-            var issues = JiraIssue.GetAllStoriesAndBugs(projectKey).Result;
+            var issues = JiraIssue.GetAllStoriesAndBugs(listofProjects).Result;
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
@@ -610,7 +604,7 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
                     string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol).Trim();
-                    if (jiraId.Length > 10 && jiraId.Substring(0, 10) == projectKey + "-")
+                    if (jiraId.Length > 10 && jiraId.Substring(0, 10) == listofProjects[0] + "-")
                     {
                         var issue = issues.FirstOrDefault(p => p.Key.Value == jiraId);
                         bool notFound = issue == null;

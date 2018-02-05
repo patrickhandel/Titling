@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Collections.Generic;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -17,8 +18,9 @@ namespace DOT_Titling_Excel_VSTO
                 var selection = app.Selection;                
                 if (activeCell != null && activeWorksheet.Name == "Sprint Results")
                 {
-                    string projectKey = ThisAddIn.ProjectKeyDOT;
-                    GetDeveloperFromHistory(app, activeWorksheet, selection, projectKey);
+                    List<string> listofProjects = new List<string>();
+                    listofProjects.Add(ThisAddIn.ProjectKeyDOT);
+                    GetDeveloperFromHistory(app, activeWorksheet, selection, listofProjects);
                 }
             }
             catch (Exception ex)
@@ -27,7 +29,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static void GetDeveloperFromHistory(Excel.Application app, Worksheet activeWorksheet, Range selection, string projectKey)
+        public async static void GetDeveloperFromHistory(Excel.Application app, Worksheet activeWorksheet, Range selection, List<string> listofProjects)
         {
             try
             {
@@ -41,7 +43,7 @@ namespace DOT_Titling_Excel_VSTO
                         // Get Jira ID (1)
                         int jiraIDCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Ticket ID");
                         string jiraId = SSUtils.GetCellValue(activeWorksheet, row, jiraIDCol);
-                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == projectKey + "-")
+                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == listofProjects[0] + "-")
                         {
                             var historyItems = await ThisAddIn.GlobalJira.Issues.GetChangeLogsAsync(jiraId);
                             var developers = WorksheetPropertiesManager.GetDevelopers();

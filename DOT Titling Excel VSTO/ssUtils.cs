@@ -409,6 +409,39 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        public static List<string> GetListOfProjects(Excel.Application app)
+        {
+            try
+            {
+                List<string> listofProjects = new List<string>();
+                Worksheet wsProjects = app.Worksheets["Projects"];
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsProjects.Name);
+                Range headerRowRange = wsProjects.get_Range(sHeaderRangeName, Type.Missing);
 
+                string sFooterRangeName = SSUtils.GetFooterRangeName(wsProjects.Name);
+                Range footerRowRange = wsProjects.get_Range(sFooterRangeName, Type.Missing);
+
+                int headerRow = headerRowRange.Row;
+                int footerRow = footerRowRange.Row;
+
+                for (int row = headerRow + 1; row < footerRow; row++)
+                {
+                    int includeCol = SSUtils.GetColumnFromHeader(wsProjects, "Include");
+                    string include = SSUtils.GetCellValue(wsProjects, row, includeCol).Trim();
+                    if (include == "x")
+                    {
+                        int projectKeyCol = SSUtils.GetColumnFromHeader(wsProjects, "Project Key");
+                        string projectKey = SSUtils.GetCellValue(wsProjects, row, projectKeyCol).Trim();
+                        listofProjects.Add(projectKey);
+                    }
+                }
+                return listofProjects;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error in GetListOfProjects:" + ex);
+                return null;
+            }
+        }
     }
 }

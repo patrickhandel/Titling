@@ -1,5 +1,6 @@
 ﻿using Microsoft.Office.Tools.Ribbon;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -25,9 +26,9 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                bool forProgram = false;
-                string projectKey = ThisAddIn.ProjectKeyDOT;
-                ImportFromJira.ExecuteUpdateTickets(app, forProgram, projectKey);
+                List<string> listofProjects = new List<string>();
+                listofProjects.Add(ThisAddIn.ProjectKeyDOT);
+                ImportFromJira.ExecuteUpdateTickets(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -42,9 +43,8 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                bool forProgram = true;
-                string projectKey = ThisAddIn.ProjectKeyDOT;
-                ImportFromJira.ExecuteUpdateTickets(app, forProgram, projectKey);
+                List<string> listofProjects = SSUtils.GetListOfProjects(app);
+                ImportFromJira.ExecuteUpdateTickets(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -59,9 +59,9 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                bool forProgram = false;
-                string projectKey = ThisAddIn.ProjectKeyDOT;
-                ImportFromJira.ExecuteAdd_DOT(app, forProgram, projectKey);
+                List<string> listofProjects = new List<string>();
+                listofProjects.Add(ThisAddIn.ProjectKeyDOT);
+                ImportFromJira.ExecuteAdd(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -76,8 +76,8 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                //bool forProgram = true;
-                //ImportFromJira.ExecuteAdd_Program(app, forProgram);
+                List<string> listofProjects = SSUtils.GetListOfProjects(app);
+                ImportFromJira.ExecuteAdd(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -92,8 +92,9 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                string projectKey = ThisAddIn.ProjectKeyDOT;
-                ImportFromJira.ExecuteUpdateSelected_DOT(app, projectKey);
+                List<string> listofProjects = new List<string>();
+                listofProjects.Add(ThisAddIn.ProjectKeyDOT);
+                ImportFromJira.ExecuteUpdateSelected_DOT(app, listofProjects);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -250,8 +251,9 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                string projectKey = ThisAddIn.ProjectKeyDOT;
-                ImportFromJira.ExecuteUpdateEpics_DOT(app, projectKey);
+                List<string> listofProjects = new List<string>();
+                listofProjects.Add(ThisAddIn.ProjectKeyDOT);
+                ImportFromJira.ExecuteUpdateEpics_DOT(app, listofProjects);
             }
             catch (Exception ex)
             {
@@ -347,8 +349,9 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                string projectKey = ThisAddIn.ProjectKeyDOT;
-                ImportFromJira.ExecuteUpdateChecklist(app, projectKey);
+                List<string> listofProjects = new List<string>();
+                listofProjects.Add(ThisAddIn.ProjectKeyDOT);
+                ImportFromJira.ExecuteUpdateChecklist(app, listofProjects);
             }
             catch (Exception ex)
             {

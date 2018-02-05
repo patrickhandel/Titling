@@ -14,7 +14,7 @@ namespace DOT_Titling_Excel_VSTO
                 Worksheet activeWorksheet = app.ActiveSheet;
                 Range activeCell = app.ActiveCell;
                 var selection = app.Selection;
-                if (activeCell != null && (activeWorksheet.Name == "Tickets" || activeWorksheet.Name == "DOT Releases"))
+                if (activeCell != null && (activeWorksheet.Name == "Tickets" || activeWorksheet.Name == "Issues" || activeWorksheet.Name == "DOT Releases"))
                 {
                     return SaveSelectedTicketValues(activeWorksheet, selection);
                 }
