@@ -9,12 +9,12 @@ namespace DOT_Titling_Excel_VSTO
 {
     class JiraProject
     {
-        public async static Task<Project> GetProject(string jiraId)
+        public async static Task<Project> GetProject(string issueID)
         {
             try
             {
                 ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = 1;
-                var project = await ThisAddIn.GlobalJira.Projects.GetProjectAsync(jiraId);
+                var project = await ThisAddIn.GlobalJira.Projects.GetProjectAsync(issueID);
                 return project;
             }
             catch (Exception ex)

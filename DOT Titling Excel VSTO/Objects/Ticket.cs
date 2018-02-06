@@ -2,7 +2,7 @@
 
 namespace DOT_Titling_Excel_VSTO
 {
-    class Ticket : IComparable
+    class Issue : IComparable
     {
         #region Private Members
         private string _ID;
@@ -41,9 +41,8 @@ namespace DOT_Titling_Excel_VSTO
         }
         #endregion
 
-
         #region Contructors
-        public Ticket(string id, string type, string summary, string status, string sprint)
+        public Issue(string id, string type, string summary, string status, string sprint)
         {
             _ID = id;
             _Type = type;
@@ -53,17 +52,16 @@ namespace DOT_Titling_Excel_VSTO
         }
         #endregion
 
-
         #region IComparable Members
         public int CompareTo(object obj)
         {
-            if (obj is Ticket)
+            if (obj is Issue)
             {
-                Ticket t = (Ticket)obj;
+                Issue t = (Issue)obj;
                 return _ID.CompareTo(t.ID);
             }
             else
-                throw new ArgumentException("Object is not a Ticket.");
+                throw new ArgumentException("Object is not a Issue.");
         }
         #endregion
     }

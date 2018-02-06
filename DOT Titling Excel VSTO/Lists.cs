@@ -7,33 +7,33 @@ namespace DOT_Titling_Excel_VSTO
 {
     class Lists
     {
-        public static List<Ticket> GetListOfTickets(Worksheet wsTickets)
+        public static List<Issue> GetListOfIssues(Worksheet wsIssues)
         {
             try
             {
-                string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsTickets.Name);
-                Range headerRowRange = wsTickets.get_Range(sHeaderRangeName, Type.Missing);
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsIssues.Name);
+                Range headerRowRange = wsIssues.get_Range(sHeaderRangeName, Type.Missing);
                 int headerRow = headerRowRange.Row;
 
-                string sFooterRowRange = SSUtils.GetFooterRangeName(wsTickets.Name);
-                Range footerRangeRange = wsTickets.get_Range(sFooterRowRange, Type.Missing);
+                string sFooterRowRange = SSUtils.GetFooterRangeName(wsIssues.Name);
+                Range footerRangeRange = wsIssues.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
-                int idColumn = SSUtils.GetColumnFromHeader(wsTickets, "Ticket ID");
-                int typeColumn = SSUtils.GetColumnFromHeader(wsTickets, "Ticket Type");
-                int summaryColumn = SSUtils.GetColumnFromHeader(wsTickets, "Summary");
-                int statusColumn = SSUtils.GetColumnFromHeader(wsTickets, "Jira Status");
-                int sprintColumn = SSUtils.GetColumnFromHeader(wsTickets, "DOT Sprint");
+                int idColumn = SSUtils.GetColumnFromHeader(wsIssues, "Issue ID");
+                int typeColumn = SSUtils.GetColumnFromHeader(wsIssues, "Issue Type");
+                int summaryColumn = SSUtils.GetColumnFromHeader(wsIssues, "Summary (Local)");
+                int statusColumn = SSUtils.GetColumnFromHeader(wsIssues, "Status");
+                int sprintColumn = SSUtils.GetColumnFromHeader(wsIssues, "DOT Sprint Number (Local)");
 
-                var tickets = new List<Ticket>();
+                var issues = new List<Issue>();
                 for (int row = headerRow + 1; row < footerRow; row++)
                 {
-                    string id = SSUtils.GetCellValue(wsTickets, row, idColumn);
-                    string type = SSUtils.GetCellValue(wsTickets, row, typeColumn);
-                    string summary = SSUtils.GetCellValue(wsTickets, row, summaryColumn);
-                    string status = SSUtils.GetCellValue(wsTickets, row, statusColumn);
-                    string sprint = SSUtils.GetCellValue(wsTickets, row, sprintColumn);
-                    tickets.Add(new Ticket(
+                    string id = SSUtils.GetCellValue(wsIssues, row, idColumn);
+                    string type = SSUtils.GetCellValue(wsIssues, row, typeColumn);
+                    string summary = SSUtils.GetCellValue(wsIssues, row, summaryColumn);
+                    string status = SSUtils.GetCellValue(wsIssues, row, statusColumn);
+                    string sprint = SSUtils.GetCellValue(wsIssues, row, sprintColumn);
+                    issues.Add(new Issue(
                         id,
                         type,
                         summary,
@@ -42,8 +42,8 @@ namespace DOT_Titling_Excel_VSTO
                         ));
 
                 }
-                tickets.Sort();
-                return tickets;
+                issues.Sort();
+                return issues;
             }
             catch (Exception ex)
             {
@@ -64,7 +64,7 @@ namespace DOT_Titling_Excel_VSTO
                 Range footerRangeRange = wsReleases.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
-                int numberColumn = SSUtils.GetColumnFromHeader(wsReleases, "Release");
+                int numberColumn = SSUtils.GetColumnFromHeader(wsReleases, "Release (Local)");
                 int nameColumn = SSUtils.GetColumnFromHeader(wsReleases, "Full Name");
                 int statusColumn = SSUtils.GetColumnFromHeader(wsReleases, "Status");
                 int midLongColumn = SSUtils.GetColumnFromHeader(wsReleases, "Mid/Long");
@@ -120,9 +120,9 @@ namespace DOT_Titling_Excel_VSTO
                 int footerRow = footerRangeRange.Row;
 
                 int priorityColumn = SSUtils.GetColumnFromHeader(wsEpics, "Priority");
-                int releaseNumberColumn = SSUtils.GetColumnFromHeader(wsEpics, "Release");
+                int releaseNumberColumn = SSUtils.GetColumnFromHeader(wsEpics, "Release (Local)");
                 int releaseNameColumn = SSUtils.GetColumnFromHeader(wsEpics, "Release Name");
-                int epicColumn = SSUtils.GetColumnFromHeader(wsEpics, "Epic");
+                int epicColumn = SSUtils.GetColumnFromHeader(wsEpics, "Epic (Local}");
                 int midLongColumn = SSUtils.GetColumnFromHeader(wsEpics, "Mid/Long");
                 int statusColumn = SSUtils.GetColumnFromHeader(wsEpics, "Percent Complete");
 

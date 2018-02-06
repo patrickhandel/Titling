@@ -200,7 +200,6 @@
   <ItemGroup>
     <Compile Include="Objects\Epic.cs" />
     <Compile Include="FileIO.cs" />
-    <Compile Include="History.cs" />
     <Compile Include="ImportFromJira.cs" />
     <Compile Include="JiraProject.cs" />
     <Compile Include="JIraIssue.cs" />

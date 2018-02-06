@@ -28,7 +28,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                ImportFromJira.ExecuteUpdateTickets(app, listofProjects);
+                ImportFromJira.ExecuteUpdateIssues(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -44,7 +44,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                ImportFromJira.ExecuteUpdateTickets(app, listofProjects);
+                ImportFromJira.ExecuteUpdateIssues(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -261,21 +261,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdateDeveloper_DOT_Click(object sender, RibbonControlEventArgs e)
-        {
-            try
-            {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                SSUtils.BeginExcelOperation(app);
-                History.ExecuteUpdateDeveloper_DOT();
-                SSUtils.EndExcelOperation(app, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
         // DOT VIEWS
         private void btnViewReleasePlan_DOT_Click(object sender, RibbonControlEventArgs e)
         {
@@ -303,12 +288,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnViewBlockedTickets_DOT_Click(object sender, RibbonControlEventArgs e)
+        private void btnViewBlockedIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                TableViews.ExecuteViewBlockedTickets_DOT(app);
+                TableViews.ExecuteViewBlockedIssues_DOT(app);
             }
             catch (Exception ex)
             {

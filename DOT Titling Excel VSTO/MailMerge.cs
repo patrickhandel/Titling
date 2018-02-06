@@ -16,7 +16,7 @@ namespace DOT_Titling_Excel_VSTO
                 Worksheet activeWorksheet = app.ActiveSheet;
                 Range activeCell = app.ActiveCell;
                 var selection = app.Selection;
-                if (activeCell != null && activeWorksheet.Name == "Tickets")
+                if (activeCell != null && activeWorksheet.Name == "Issues")
                 {
                     var mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
                     CreateMailMergeDocuments(app, activeWorksheet, selection, mailMergeFields);
@@ -43,12 +43,12 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         wordDocument = wordApp.Documents.Add(Template: template);
 
-                        int jiraIDCol = SSUtils.GetColumnFromHeader(ws, "Ticket ID");
-                        string jiraId = SSUtils.GetCellValue(ws, row, jiraIDCol);
+                        int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
+                        string issueID = SSUtils.GetCellValue(ws, row, issueIDCol);
                         string projectKey = ThisAddIn.ProjectKeyDOT;
-                        if (jiraId.Length > 10 && jiraId.Substring(0, 10) == projectKey + "-")
+                        if (issueID.Length > 10 && issueID.Substring(0, 10) == projectKey + "-")
                         {
-                            ImportFromJira.ExecuteUpateTicketBeforeMailMerge(jiraId);
+                            ImportFromJira.ExecuteUpateIssueBeforeMailMerge(issueID);
                             string summary = string.Empty;
                             string epicID = string.Empty;
                             foreach (var mailMergeField in mailMergeFields)
@@ -100,7 +100,7 @@ namespace DOT_Titling_Excel_VSTO
 
                             if (selection.Rows.Count == 1)
                             {
-                                if (MessageBox.Show("Open " + newfile + "?", jiraId, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
+                                if (MessageBox.Show("Open " + newfile + "?", issueID, MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes)
                                 {
                                     System.Diagnostics.Process.Start(newfile);
                                 }

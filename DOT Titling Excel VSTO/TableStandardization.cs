@@ -26,8 +26,8 @@ namespace DOT_Titling_Excel_VSTO
             YesNoRed = 7,
             YesNo = 7,
             MidLong = 13,
-            Release = 7,
-            TicketType = 15,
+            R = 7,
+            IssueType = 15,
             ProjectKey = 15,
             Hidden = 0,
             Default = 15
@@ -238,11 +238,11 @@ namespace DOT_Titling_Excel_VSTO
                             case "MidLong":
                                 FormatMidLong(columnRange);
                                 break;
-                            case "Release":
-                                FormatRelease(columnRange);
+                            case "R":
+                                FormatR(columnRange);
                                 break;
-                            case "TicketType":
-                                FormatTicketType(columnRange);
+                            case "IssueType":
+                                FormatIssueType(columnRange);
                                 break;
                             case "Priority":
                                 FormatPriority(columnRange);
@@ -261,53 +261,50 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void FormatErrorColumns(Excel.Application app, Range tableRange, string tableRangeName, int firstDataRow)
         {
-            if (tableRangeName == "TicketData")
+            if (tableRangeName == "IssueData")
             {
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary", "Jira Summary" });
-
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic", "Jira Epic" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Releases Dont Match", new string[] { "Release", "Jira Release" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Backlog Area", new string[] { "Backlog Area" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Sprints Dont Match", new string[] { "Hufflepuff Sprint", "Jira Hufflepuff Sprint" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Ticket ID" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Jira Epic ID", "Epic" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Jira Status" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Current Sprint But No Points", new string[] { "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Jira Hufflepuff Sprint" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary (Local)", "Summary" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic (Local)", "Epic", "Epic Link" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Releases Dont Match", new string[] { "Release (Local)", "Release" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Sprint", new string[] { "Sprint Number (Local)", "Sprint Number" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Sprints Dont Match", new string[] { "Sprint Number (Local)", "Sprint Number" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Issue ID" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Epic (Local)", "Epic", "Epic Link" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Story Points", "Status" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Current Sprint But No Points", new string[] { "Story Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Sprint Number" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Ticket Type" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story Not Moving or Blocked", new string[] { "Days in Same Status", "Jira Status", "Jira Status (Last Changed)" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Issue Type" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story Not Moving or Blocked", new string[] { "Days in Same Status", "Status", "Status (Last Changed)" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Need Reason for Blocker", new string[] { "Reason Blocked or Delayed"});
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Should be Assigned to Dev", new string[] { "Jira Status", "Role", "DOT Sprint" });
-
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Created", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Written", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Submitted", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Ready", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Approved Not Groomed", new string[] { "Backlog Area", "Date Submitted to DOT", "Date Approved by DOT", "Points" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket", new string[] { "Backlog Area", "Jira Status", "Jira Hufflepuff Sprint"});
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket but Not a Bug", new string[] { "Backlog Area" });
-                
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Should be Assigned to Dev", new string[] { "Status", "Role", "Sprint Number (Local)" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Created", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Written", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Groomed", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Submitted", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Ready", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Approved Not Groomed", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket", new string[] { "Sprint", "Status", "Sprint Number"});
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket but Not a Bug", new string[] { "Sprint" });
             }
 
             if (tableRangeName == "DOTReleaseData")
             {
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary", "Jira Summary" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic", "Jira Epic" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Ticket ID" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Jira Epic ID", "Epic" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Jira Status" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Jira Hufflepuff Sprint" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary (Local)", "Summary" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic (Local}", "Epic", "Epic Link" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Issue ID" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Epic(Local}", "Epic", "Epic Link" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Status" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Sprint Number" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Ticket Type" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Multiple Releases", new string[] { "Jira Release" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Issue Type" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Multiple Releases", new string[] { "Release" });
             }
 
             if (tableRangeName == "EpicData")
             {
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Jira Epic Summary", "Epic" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Jira Epic Points", "Estimate 2" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Epic", "Summary" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Story Points", "Estimate 2" });
             }
         }
 
@@ -347,20 +344,20 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void FormatRowsConditionally(Excel.Application app, Range tableRange, string tableRangeName, int firstDataRow)
         {
-            if (tableRangeName == "TicketData" || tableRangeName == "DOTReleaseData")
+            if (tableRangeName == "IssueData" || tableRangeName == "DOTReleaseData")
             {
-                //Ticket Type Column
-                Range ticketTypeColumnRange = app.get_Range(tableRangeName + "[Ticket Type]", Type.Missing);
-                string ticketTypeColumn = SSUtils.GetColumnName(ticketTypeColumnRange.Column);
+                //Issue Type Column
+                Range issueTypeColumnRange = app.get_Range(tableRangeName + "[Issue Type]", Type.Missing);
+                string issueTypeColumn = SSUtils.GetColumnName(issueTypeColumnRange.Column);
 
                 //Bug Row
-                string condBug = "=$" + ticketTypeColumn + firstDataRow + "=" + @"""Software Bug""";
+                string condBug = "=$" + issueTypeColumn + firstDataRow + "=" + @"""Software Bug""";
                 FormatCondition fcBug = (FormatCondition)tableRange.FormatConditions.Add
                     (XlFormatConditionType.xlExpression, Type.Missing, condBug, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                 fcBug.Interior.Color = colorBugRow;
 
-                //Deleted Ticket Row
-                string conDeleted = "=$" + ticketTypeColumn + firstDataRow + "=" + @"""{DELETED}""";
+                //Deleted Issue Row
+                string conDeleted = "=$" + issueTypeColumn + firstDataRow + "=" + @"""{DELETED}""";
                 FormatCondition fcDeleted = (FormatCondition)tableRange.FormatConditions.Add
                     (XlFormatConditionType.xlExpression, Type.Missing, conDeleted, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                 fcDeleted.Interior.Color = colorDeletedRow;
@@ -412,9 +409,9 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void FormatTicketType(Range columnRange)
+        private static void FormatIssueType(Range columnRange)
         {
-            // Ticket
+            // Issue
             FormatCondition cStory = (FormatCondition)columnRange.FormatConditions.Add(XlFormatConditionType.xlCellValue,
                    XlFormatConditionOperator.xlEqual, "Story", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
             ColorConverter cc = new ColorConverter();
@@ -521,7 +518,7 @@ namespace DOT_Titling_Excel_VSTO
             columnRange.HorizontalAlignment = XlHAlign.xlHAlignCenter;
         }
 
-        private static void FormatRelease(Range columnRange)
+        private static void FormatR(Range columnRange)
         {
             // From http://colorbrewer2.org
             // Convert Hex to RGB: http://www.javascripter.net/faq/hextorgb.htm

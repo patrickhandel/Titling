@@ -12,7 +12,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Worksheet ws = app.Worksheets["Tickets"];
+                Worksheet ws = app.Worksheets["Issues"];
                 ws.Activate();
 
                 string tableRangeName = SSUtils.GetSelectedTable(app);
@@ -24,17 +24,17 @@ namespace DOT_Titling_Excel_VSTO
 
                     List<string> ColumnsToShow = new List<string>();
 
-                    ColumnsToShow.Add("Ticket Type");
-                    ColumnsToShow.Add("Ticket ID");
+                    ColumnsToShow.Add("Issue Type");
+                    ColumnsToShow.Add("Issue ID");
                     ColumnsToShow.Add("Link");
-                    ColumnsToShow.Add("Summary");
-                    ColumnsToShow.Add("Epic");
+                    ColumnsToShow.Add("Summary (Local)");
+                    ColumnsToShow.Add("Epic (Local}");
                     ColumnsToShow.Add("Agreed Upon Release");
                     ColumnsToShow.Add("Epic Release");
                     ColumnsToShow.Add("WIN Release");
-                    ColumnsToShow.Add("Points");
+                    ColumnsToShow.Add("Story Points");
                     ColumnsToShow.Add("Bypass Approval");
-                    ColumnsToShow.Add("Backlog Area");
+                    ColumnsToShow.Add("Sprint");
                     ColumnsToShow.Add("Date Submitted to DOT");
                     ColumnsToShow.Add("Date Approved by DOT");
                     ColumnsToShow.Add("Days Waiting for Approval");
@@ -49,7 +49,7 @@ namespace DOT_Titling_Excel_VSTO
 
                     SSUtils.FilterTable(ws, tableRangeName, "ERR Has Workflow Issue", "x");
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
-                    SSUtils.SortTable(ws, tableRangeName, "Backlog Area", XlSortOrder.xlAscending);
+                    SSUtils.SortTable(ws, tableRangeName, "Sprint", XlSortOrder.xlAscending);
                 }
             }
             catch (Exception ex)
@@ -80,7 +80,7 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("Actual");
                     ColumnsToShow.Add("Actual vs Estimate");
 
-                    SSUtils.FilterTable(ws, tableRangeName, "Release", "<8");
+                    SSUtils.FilterTable(ws, tableRangeName, "Release Number", "<8");
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
                     SSUtils.SortTable(ws, tableRangeName, "Priority", XlSortOrder.xlAscending);
                 }
@@ -91,11 +91,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteViewBlockedTickets_DOT(Excel.Application app)
+        public static void ExecuteViewBlockedIssues_DOT(Excel.Application app)
         {
             try
             {
-                Worksheet ws = app.Worksheets["Tickets"];
+                Worksheet ws = app.Worksheets["Issues"];
                 ws.Activate();
 
                 string tableRangeName = SSUtils.GetSelectedTable(app);
@@ -107,23 +107,23 @@ namespace DOT_Titling_Excel_VSTO
 
                     List<string> ColumnsToShow = new List<string>();
 
-                    ColumnsToShow.Add("Ticket Type");
-                    ColumnsToShow.Add("Ticket ID");
+                    ColumnsToShow.Add("Issue Type");
+                    ColumnsToShow.Add("Issue ID");
                     ColumnsToShow.Add("Link");
-                    ColumnsToShow.Add("Epic");
-                    ColumnsToShow.Add("Summary");
-                    ColumnsToShow.Add("Points");
+                    ColumnsToShow.Add("Epic (Local}");
+                    ColumnsToShow.Add("Summary (Local)");
+                    ColumnsToShow.Add("Story Points");
                     ColumnsToShow.Add("WIN Release");
-                    ColumnsToShow.Add("Jira Status");
-                    ColumnsToShow.Add("Jira Status (Last Changed)");
+                    ColumnsToShow.Add("Status");
+                    ColumnsToShow.Add("Status (Last Changed)");
                     ColumnsToShow.Add("Days in Same Status");
                     ColumnsToShow.Add("Assignee");
                     ColumnsToShow.Add("ERR Story Not Moving or Blocked");
                     ColumnsToShow.Add("Reason Blocked or Delayed");
+                    ColumnsToShow.Add("ERR Need Reason for Blocker");
 
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
-
-                    SSUtils.FilterTable(ws, tableRangeName, "ERR Need Reason for Blocker", "x");
+                    SSUtils.FilterTable(ws, tableRangeName, "ERR Story Not Moving or Blocked", "x");
                     SSUtils.SortTable(ws, tableRangeName, "Assignee", XlSortOrder.xlAscending);
                 }
             }
@@ -149,14 +149,17 @@ namespace DOT_Titling_Excel_VSTO
 
                     List<string> ColumnsToShow = new List<string>();
                     ColumnsToShow.Add("R");
+                    ColumnsToShow.Add("Vendor Release");
+                    ColumnsToShow.Add("Release");
                     ColumnsToShow.Add("Mid/Long");
                     ColumnsToShow.Add("From (Date)");
                     ColumnsToShow.Add("To (Date)");
                     ColumnsToShow.Add("UAT From (Date)");
                     ColumnsToShow.Add("UAT To (Date)");
-                    ColumnsToShow.Add("Deliver to Vendors");
+                    ColumnsToShow.Add("Deliver to Vendors From");
 
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
+                    SSUtils.SortTable(ws, tableRangeName, "Release Number", XlSortOrder.xlAscending);
                 }
             }
             catch (Exception ex)
@@ -169,7 +172,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Worksheet ws = app.Worksheets["Tickets"];
+                Worksheet ws = app.Worksheets["Issues"];
                 ws.Activate();
 
                 string tableRangeName = SSUtils.GetSelectedTable(app);
@@ -180,17 +183,17 @@ namespace DOT_Titling_Excel_VSTO
                     int headerRow = headerRowRange.Row;
 
                     List<string> ColumnsToShow = new List<string>();
-                    ColumnsToShow.Add("Ticket Type");
-                    ColumnsToShow.Add("Ticket ID");
+                    ColumnsToShow.Add("Issue Type");
+                    ColumnsToShow.Add("Issue ID");
                     ColumnsToShow.Add("Link");
-                    ColumnsToShow.Add("Epic");
-                    ColumnsToShow.Add("Points");
+                    ColumnsToShow.Add("Epic (Local}");
+                    ColumnsToShow.Add("Story Points");
                     ColumnsToShow.Add("WIN Release");
-                    ColumnsToShow.Add("Hufflepuff Sprint");
-                    ColumnsToShow.Add("Jira Summary");
-                    ColumnsToShow.Add("Backlog Area");
+                    ColumnsToShow.Add("Sprint Number (Local)");
+                    ColumnsToShow.Add("Summary");
+                    ColumnsToShow.Add("Sprint");
                     ColumnsToShow.Add("ID");
-                    ColumnsToShow.Add("Jira Hufflepuff Sprint");
+                    ColumnsToShow.Add("Sprint Number");
                     ColumnsToShow.Add("Date Submitted to DOT");
                     ColumnsToShow.Add("Date Approved by DOT");
                     ColumnsToShow.Add("Bypass Approval");

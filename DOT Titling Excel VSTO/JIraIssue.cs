@@ -10,12 +10,12 @@ namespace DOT_Titling_Excel_VSTO
 {
     class JiraIssue
     {
-        public async static Task<Issue> GetIssue(string jiraId)
+        public async static Task<Atlassian.Jira.Issue> GetIssue(string issueID)
         {
             try
             {
                 ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = 1;
-                var issue = await ThisAddIn.GlobalJira.Issues.GetIssueAsync(jiraId);
+                var issue = await ThisAddIn.GlobalJira.Issues.GetIssueAsync(issueID);
                 return issue;
             }
             catch (Exception ex)
@@ -25,7 +25,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Issue>> GetAllStoriesAndBugs(List<string> listofProjects)
+        public async static Task<List<Atlassian.Jira.Issue>> GetAllStoriesAndBugs(List<string> listofProjects)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace DOT_Titling_Excel_VSTO
                 jql.Append("issuetype in (\"Software Bug\", Story)");
                 jql.Append(" AND ");
                 jql.Append("summary ~ \"!DELETE\"");
-                List<Issue> filteredIssues = await FilterIssues(jql);
+                List<Atlassian.Jira.Issue> filteredIssues = await FilterIssues(jql);
                 return filteredIssues;
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace DOT_Titling_Excel_VSTO
             return projectList;
         }
 
-        public async static Task<List<Issue>> GetAllTasks(List<string> listofProjects)
+        public async static Task<List<Atlassian.Jira.Issue>> GetAllTasks(List<string> listofProjects)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace DOT_Titling_Excel_VSTO
                 jql.Append("issuetype in (\"Task\")");
                 jql.Append(" AND ");
                 jql.Append("\"Epic Link\" = " + listofProjects[0] + "-945");
-                List<Issue> filteredIssues = await FilterIssues(jql);
+                List<Atlassian.Jira.Issue> filteredIssues = await FilterIssues(jql);
                 return filteredIssues;
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Issue>> GetAllEpics(List<string> listofProjects)
+        public async static Task<List<Atlassian.Jira.Issue>> GetAllEpics(List<string> listofProjects)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace DOT_Titling_Excel_VSTO
                 jql.Append("issuetype in (\"Epic\")");
                 jql.Append(" AND ");
                 jql.Append("summary ~ \"!DELETE\"");
-                List<Issue> filteredIssues = await FilterIssues(jql);
+                List<Atlassian.Jira.Issue> filteredIssues = await FilterIssues(jql);
                 return filteredIssues;
             }
             catch (Exception ex)
@@ -110,7 +110,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static async Task<List<Issue>> FilterIssues(System.Text.StringBuilder jql)
+        private static async Task<List<Atlassian.Jira.Issue>> FilterIssues(System.Text.StringBuilder jql)
         {
             var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
             var totalIssues = issues.TotalItems;
@@ -132,12 +132,12 @@ namespace DOT_Titling_Excel_VSTO
             return filteredIssues;
         }
 
-        public async static Task<IDictionary<string, Issue>> GetSelectedIssues(params string[] jiraIDs)
+        public async static Task<IDictionary<string, Atlassian.Jira.Issue>> GetSelectedIssues(params string[] listofIssueIDs)
         {
             try
             {
                 ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-                var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesAsync(jiraIDs);
+                var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesAsync(listofIssueIDs);
                 return issues;
             }
             catch (Exception ex)
@@ -147,7 +147,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static string ExtractCustomValue(Issue issue, string item)
+        public static string ExtractCustomValue(Atlassian.Jira.Issue issue, string item)
         {
             string val = string.Empty;
             item = item.Replace(" Id ", " I'd ");
@@ -163,7 +163,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractStandardValue(Issue issue, string item)
+        public static string ExtractStandardValue(Atlassian.Jira.Issue issue, string item)
         {
             string val = string.Empty;
             switch (item)
@@ -195,19 +195,16 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractValueBasedOnFunction(Issue issue, string item)
+        public static string ExtractValueBasedOnFunction(Atlassian.Jira.Issue issue, string item)
         {
             string val = string.Empty;
             switch (item)
             {
-                case "Sprint":
+                case "Sprint Number":
                     val = ExtractSprintNumber(issue);
                     break;
                 case "Release":
                     val = ExtractRelease(issue);
-                    break;
-                case "Fix Release":
-                    val = ExtractFixRelease(issue);
                     break;
                 case "DOT Web Services":
                     val = ExtractDOTWebServices(issue);
@@ -227,11 +224,11 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static bool SaveSummary(string jiraId, string newValue, bool multiple)
+        public static bool SaveSummary(string issueID, string newValue, bool multiple)
         {
             try
             {
-                var issue = GetIssue(jiraId).Result;
+                var issue = GetIssue(issueID).Result;
                 if (issue.Summary == newValue)
                 {
                     MessageBox.Show("No change needed.");
@@ -250,11 +247,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveRelease(string jiraId, string newValue, bool multiple)
+        public static bool SaveRelease(string issueID, string newValue, bool multiple)
         {
             try
             {
-                var issue = GetIssue(jiraId).Result;
+                var issue = GetIssue(issueID).Result;
                 string curRelease = ExtractRelease(issue);
                 if (curRelease == newValue)
                 {   if (!multiple)
@@ -284,11 +281,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveLabels(string jiraId, string newValue, bool multiple)
+        public static bool SaveLabels(string issueID, string newValue, bool multiple)
         {
             try
             {
-                var issue = GetIssue(jiraId).Result;
+                var issue = GetIssue(issueID).Result;
                 List<string> listofJiraLabels = ExtractListOfLabels(issue);
                 List<string> listofExcelLabels = CreateListOfLabels(newValue);
                 List<string> addLabels = listofExcelLabels.Except(listofJiraLabels).ToList();
@@ -344,11 +341,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveStatus(string jiraId, string newValue, bool multiple)
+        public static bool SaveStatus(string issueID, string newValue, bool multiple)
         {
             try
             {
-                var issue = GetIssue(jiraId).Result;
+                var issue = GetIssue(issueID).Result;
                 if (issue.Status.Name == newValue)
                 {
                     if (!multiple)
@@ -367,12 +364,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveCustomField(string jiraId, string field, string newValue, bool multiple)
+        public static bool SaveCustomField(string issueID, string field, string newValue, bool multiple)
         {
             try
             {
                 newValue = newValue.Trim();
-                var issue = GetIssue(jiraId).Result;
+                var issue = GetIssue(issueID).Result;
                 if (issue[field] == newValue)
                 {
                     if (!multiple)
@@ -399,7 +396,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static string ExtractRelease(Issue issue)
+        private static string ExtractRelease(Atlassian.Jira.Issue issue)
         {
             string val = string.Empty;
             int c = 0;
@@ -413,7 +410,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        private static string ExtractFixRelease(Issue issue)
+        private static string ExtractFixRelease(Atlassian.Jira.Issue issue)
         {
             string val = string.Empty;
             int c = 0;
@@ -425,7 +422,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        private static string ExtractLabels(Issue issue)
+        private static string ExtractLabels(Atlassian.Jira.Issue issue)
         {
             string val = string.Empty;
             if (issue.Labels.Count > 0)
@@ -444,7 +441,7 @@ namespace DOT_Titling_Excel_VSTO
             return labels.Split(',').ToList();
         }
 
-        private static List<string> ExtractListOfLabels(Issue issue)
+        private static List<string> ExtractListOfLabels(Atlassian.Jira.Issue issue)
         {
             List<string> listofLabels = new List<string>();
             if (issue.Labels.Count > 0)
@@ -457,7 +454,7 @@ namespace DOT_Titling_Excel_VSTO
             return listofLabels;
         }
 
-        public static string ExtractDOTWebServices(Issue issue)
+        public static string ExtractDOTWebServices(Atlassian.Jira.Issue issue)
         {
             string val = string.Empty;
             if (issue["DOT Web Services"] != null)
@@ -471,7 +468,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        private static string ExtractSprintNumber(Issue issue)
+        private static string ExtractSprintNumber(Atlassian.Jira.Issue issue)
         {
             string val = string.Empty;
             int thisSprint = 0;
@@ -493,16 +490,16 @@ namespace DOT_Titling_Excel_VSTO
                 }
             }
 
-            string retval = string.Empty;
+            string sprintNumber = string.Empty;
             if (lastSprint == 0)
             {
-                retval = "";
+                sprintNumber = "";
             }
             else
             {
-                retval = lastSprint.ToString();
+                sprintNumber = lastSprint.ToString();
             }
-            return retval;
+            return sprintNumber;
         }
     }
 }

@@ -255,7 +255,7 @@ namespace DOT_Titling_Excel_VSTO
                     case "DEV":
                         SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Development", "?");
                         SSUtils.SetCellValue(ws, row, 2, status, "?");
-                        SSUtils.SetCellValue(ws, row, 3, "Epic", "?");
+                        SSUtils.SetCellValue(ws, row, 3, "Epic (Local}", "?");
                         SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString(), "?");
                         SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString(), "?");
                         break;
