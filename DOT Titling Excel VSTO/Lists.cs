@@ -1,22 +1,22 @@
-﻿using Microsoft.Office.Interop.Excel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class Lists
     {
-        public static List<Issue> GetListOfIssues(Worksheet wsIssues)
+        public static List<Issue> GetListOfIssues(Excel.Worksheet wsIssues)
         {
             try
             {
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsIssues.Name);
-                Range headerRowRange = wsIssues.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = wsIssues.get_Range(sHeaderRangeName, Type.Missing);
                 int headerRow = headerRowRange.Row;
 
                 string sFooterRowRange = SSUtils.GetFooterRangeName(wsIssues.Name);
-                Range footerRangeRange = wsIssues.get_Range(sFooterRowRange, Type.Missing);
+                Excel.Range footerRangeRange = wsIssues.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
                 int idColumn = SSUtils.GetColumnFromHeader(wsIssues, "Issue ID");
@@ -40,7 +40,6 @@ namespace DOT_Titling_Excel_VSTO
                         status,
                         sprint
                         ));
-
                 }
                 issues.Sort();
                 return issues;
@@ -52,16 +51,16 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static List<Release> GetListOfReleases(Worksheet wsReleases)
+        public static List<Release> GetListOfReleases(Excel.Worksheet wsReleases)
         {
             try
             {
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsReleases.Name);
-                Range headerRowRange = wsReleases.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = wsReleases.get_Range(sHeaderRangeName, Type.Missing);
                 int headerRow = headerRowRange.Row;
 
                 string sFooterRowRange = SSUtils.GetFooterRangeName(wsReleases.Name);
-                Range footerRangeRange = wsReleases.get_Range(sFooterRowRange, Type.Missing);
+                Excel.Range footerRangeRange = wsReleases.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
                 int numberColumn = SSUtils.GetColumnFromHeader(wsReleases, "Release (Local)");
@@ -107,22 +106,22 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static List<Epic> GetListOfEpics(Worksheet wsEpics)
+        public static List<Epic> GetListOfEpics(Excel.Worksheet wsEpics)
         {
             try
             {
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsEpics.Name);
-                Range headerRowRange = wsEpics.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = wsEpics.get_Range(sHeaderRangeName, Type.Missing);
                 int headerRow = headerRowRange.Row;
 
                 string sFooterRowRange = SSUtils.GetFooterRangeName(wsEpics.Name);
-                Range footerRangeRange = wsEpics.get_Range(sFooterRowRange, Type.Missing);
+                Excel.Range footerRangeRange = wsEpics.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
                 int priorityColumn = SSUtils.GetColumnFromHeader(wsEpics, "Priority");
                 int releaseNumberColumn = SSUtils.GetColumnFromHeader(wsEpics, "Release (Local)");
                 int releaseNameColumn = SSUtils.GetColumnFromHeader(wsEpics, "Release Name");
-                int epicColumn = SSUtils.GetColumnFromHeader(wsEpics, "Epic (Local}");
+                int epicColumn = SSUtils.GetColumnFromHeader(wsEpics, "Epic (Local)");
                 int midLongColumn = SSUtils.GetColumnFromHeader(wsEpics, "Mid/Long");
                 int statusColumn = SSUtils.GetColumnFromHeader(wsEpics, "Percent Complete");
 

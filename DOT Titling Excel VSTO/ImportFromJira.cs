@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Linq;
-using Microsoft.Office.Interop.Excel;
-using Excel = Microsoft.Office.Interop.Excel;
-using Atlassian.Jira;
 using System.Collections.Generic;
+using Excel = Microsoft.Office.Interop.Excel;
+using Jira = Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -15,7 +14,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 var activeWorksheet = app.ActiveSheet;
-                if ((activeWorksheet.Name == "Issues") || (activeWorksheet.Name == "DOT Releases"))
+                if ((activeWorksheet.Name == "Issues") || (activeWorksheet.Name == "Program Issues") || (activeWorksheet.Name == "DOT Releases"))
                 {
                     string missingColumns = MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
@@ -39,7 +38,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateSelected_DOT(Excel.Application app, List<string> listofProjects)
+        public static void ExecuteUpdateSelectedIssues(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -67,7 +66,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteAdd(Excel.Application app, List<string> listofProjects)
+        public static void ExecuteAddIssues(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -79,30 +78,6 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         AddNewIssues(app, activeWorksheet, listofProjects);
                         //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Missing Columns: " + missingColumns);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        public static void ExecuteAddNewProjects(Excel.Application app)
-        {
-            try
-            {
-                var activeWorksheet = app.ActiveSheet;
-                if (activeWorksheet.Name == "Projects")
-                {
-                    string missingColumns = MissingColumns(activeWorksheet);
-                    if (missingColumns == string.Empty)
-                    {
-                        AddNewProjects(app, activeWorksheet);
                     }
                     else
                     {
@@ -139,7 +114,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewIssues(Excel.Application app, Worksheet ws, List<string> listofProjects)
+        private static void AddNewIssues(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
         {
             try
             {
@@ -152,8 +127,8 @@ namespace DOT_Titling_Excel_VSTO
                     var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                     List<string> listOfissueIDs = new List<string>();
-                    Range issueIDColumnRange = ws.get_Range(wsRangeName + "[Issue ID]", Type.Missing);
-                    foreach (Range cell in issueIDColumnRange.Cells)
+                    Excel.Range issueIDColumnRange = ws.get_Range(wsRangeName + "[Issue ID]", Type.Missing);
+                    foreach (Excel.Range cell in issueIDColumnRange.Cells)
                     {
                         listOfissueIDs.Add(cell.Value);
                     }
@@ -165,18 +140,17 @@ namespace DOT_Titling_Excel_VSTO
                     string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
                     foreach (var issue in issues)
                     {
-                        Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                        Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                         int footerRow = footerRangeRange.Row;
-                        Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                        Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                         rToInsert.Insert();
                         UpdateIssueValues(ws, jiraFields, footerRow, issue, false);
 
                         //Issue ID (2)
                         SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "Issue ID");
 
-                        if (ws.Name != "Issues")
+                        if (ws.Name == "Issues")
                         {
-
                             //Summary (5)
                             SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Summary (Local)"), issue.Summary, "Summary (Local)");
 
@@ -184,11 +158,11 @@ namespace DOT_Titling_Excel_VSTO
                             SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release (Local)"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Release")), "Release (Local)");
 
                             //Epic
-                            app.Calculation = XlCalculation.xlCalculationAutomatic;
+                            app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
                             int epicColumn = SSUtils.GetColumnFromHeader(ws, "Epic");
                             string newEpic = SSUtils.GetCellValue(ws, footerRow, epicColumn);
-                            SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic (Local}"), newEpic, "Epic (Local}");
-                            app.Calculation = XlCalculation.xlCalculationManual;
+                            SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic (Local)"), newEpic, "Epic (Local)");
+                            app.Calculation = Excel.XlCalculation.xlCalculationManual;
 
                             //Sprint Number (Local)
                             SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Sprint Number (Local)"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Sprint Number")), "Sprint Number (Local)");
@@ -234,7 +208,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewEpics(Excel.Application app, Worksheet ws, List<string> listofProjects)
+        private static void AddNewEpics(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
         {
             try
             {
@@ -247,8 +221,8 @@ namespace DOT_Titling_Excel_VSTO
                     var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                     List<string> listOfissueIDs = new List<string>();
-                    Range issueIDColumnRange = ws.get_Range(wsRangeName + "[Epic ID]", Type.Missing);
-                    foreach (Range cell in issueIDColumnRange.Cells)
+                    Excel.Range issueIDColumnRange = ws.get_Range(wsRangeName + "[Epic ID]", Type.Missing);
+                    foreach (Excel.Range cell in issueIDColumnRange.Cells)
                     {
                         listOfissueIDs.Add(cell.Value);
                     }
@@ -260,13 +234,13 @@ namespace DOT_Titling_Excel_VSTO
                     string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
                     foreach (var issue in issues)
                     {
-                        Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                        Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                         int footerRow = footerRangeRange.Row;
-                        Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                        Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                         rToInsert.Insert();
                         UpdateIssueValues(ws, jiraFields, footerRow, issue, false);
                         SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
-                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic (Local}"), issue.Summary, "Summary (Local)");
+                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic (Local)"), issue.Summary, "Summary (Local)");
                         SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                     }
                     MessageBox.Show(issues.Count() + " Epics Added.");
@@ -320,7 +294,6 @@ namespace DOT_Titling_Excel_VSTO
                     if (missingColumns == string.Empty)
                     {
                         UpdateProjects(app, activeWorksheet);
-                        AddNewProjects(app, activeWorksheet);
                         TableStandardization.ExecuteStandardizeTable(app, TableStandardization.StandardizationType.Light);
                     }
                     else
@@ -335,7 +308,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewChecklistTasks(Excel.Application app, Worksheet ws, List<string> listofProjects)
+        private static void AddNewChecklistTasks(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
         {
             try
             {
@@ -348,8 +321,8 @@ namespace DOT_Titling_Excel_VSTO
                     var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                     List<string> listOfissueIDs = new List<string>();
-                    Range issueIDColumnRange = ws.get_Range(wsRangeName + "[Issue ID]", Type.Missing);
-                    foreach (Range cell in issueIDColumnRange.Cells)
+                    Excel.Range issueIDColumnRange = ws.get_Range(wsRangeName + "[Issue ID]", Type.Missing);
+                    foreach (Excel.Range cell in issueIDColumnRange.Cells)
                     {
                         listOfissueIDs.Add(cell.Value);
                     }
@@ -361,13 +334,13 @@ namespace DOT_Titling_Excel_VSTO
                     string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
                     foreach (var issue in issues)
                     {
-                        Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                        Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                         int footerRow = footerRangeRange.Row;
-                        Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                        Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0", footerRow), Type.Missing);
                         rToInsert.Insert();
                         UpdateIssueValues(ws, jiraFields, footerRow, issue, false);
                         SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
-                        //SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic (Local}"), issue.Summary, "Summary (Local)");
+                        //SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic (Local)"), issue.Summary, "Summary (Local)");
                         SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                     }
                     MessageBox.Show(issues.Count() + " Tasks Added.");
@@ -384,56 +357,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewProjects(Excel.Application app, Worksheet ws)
-        {
-            try
-            {
-                string missingColumns = MissingColumns(ws);
-                if (missingColumns == string.Empty)
-                {
-                    var projects = JiraProject.GetAllProjects().Result;
-                    string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
-                    int column = SSUtils.GetColumnFromHeader(ws, "Key");
-                    var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-
-                    List<string> listOfProjectKeys = new List<string>();
-                    Range keyColumnRange = ws.get_Range(wsRangeName + "[Key]", Type.Missing);
-                    foreach (Range cell in keyColumnRange.Cells)
-                    {
-                        listOfProjectKeys.Add(cell.Value);
-                    }
-                    foreach (var key in listOfProjectKeys)
-                    {
-                        projects.Remove(projects.FirstOrDefault(x => x.Key == key.ToString()));
-                    }
-
-                    string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                    foreach (var project in projects)
-                    {
-                        Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
-                        int footerRow = footerRangeRange.Row;
-                        Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
-                        rToInsert.Insert();
-                        UpdateProjectValues(ws, jiraFields, footerRow, project, false);
-                        //SSUtils.SetCellValue(ws, footerRow, column, project.Key, "project.Key");
-                        //SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic (Local}"), issue.Summary, "Summary (Local)");
-                        //SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
-                    }
-                    MessageBox.Show(projects.Count() + " Projects Added.");
-
-                }
-                else
-                {
-                    MessageBox.Show("Missing Columns: " + missingColumns);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        private static void UpdateIssueBeforeMailMerge(Excel.Application app, Worksheet ws, string issueID)
+        private static void UpdateIssueBeforeMailMerge(Excel.Application app, Excel.Worksheet ws, string issueID)
         {
             try
             {
@@ -452,7 +376,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateEpics(Excel.Application app, Worksheet ws, List<string> listofProjects)
+        private static void UpdateEpics(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
         {
             try
             {
@@ -462,11 +386,11 @@ namespace DOT_Titling_Excel_VSTO
                 int cnt = epics.Count();
 
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
                 int headerRow = headerRowRange.Row;
 
                 string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
                 int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Epic ID");
@@ -485,7 +409,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateChecklistTasks(Excel.Application app, Worksheet ws, List<string> listofProjects)
+        private static void UpdateChecklistTasks(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
         {
             try
             {
@@ -495,11 +419,11 @@ namespace DOT_Titling_Excel_VSTO
                 int cnt = tasks.Count();
 
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
                 int headerRow = headerRowRange.Row;
 
                 string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
                 int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
@@ -518,7 +442,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateProjects(Excel.Application app, Worksheet ws)
+        private static void UpdateProjects(Excel.Application app, Excel.Worksheet ws)
         {
             try
             {
@@ -528,14 +452,14 @@ namespace DOT_Titling_Excel_VSTO
                 int cnt = projects.Count();
 
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
                 int headerRow = headerRowRange.Row;
 
                 string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
-                int keyCol = SSUtils.GetColumnFromHeader(ws, "Key");
+                int keyCol = SSUtils.GetColumnFromHeader(ws, "Project Key");
                 for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
                 {
                     string key = SSUtils.GetCellValue(ws, currentRow, keyCol);
@@ -551,7 +475,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateAllIssues(Excel.Application app, Worksheet ws, List<string> listofProjects)
+        private static void UpdateAllIssues(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
             try
@@ -562,11 +486,11 @@ namespace DOT_Titling_Excel_VSTO
                 int cnt = issues.Count();
 
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
                 int headerRow = headerRowRange.Row;
 
                 string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
                 int footerRow = footerRangeRange.Row;
 
                 int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
@@ -585,7 +509,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateSelectedIssues(Excel.Application app, Worksheet ws, Range selection, List<string> listofProjects)
+        private static void UpdateSelectedIssues(Excel.Application app, Excel.Worksheet ws, Excel.Range selection, List<string> listofProjects)
         {
             //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 
@@ -593,7 +517,7 @@ namespace DOT_Titling_Excel_VSTO
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
             string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-            Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+            Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
             int headerRow = headerRowRange.Row;
 
             int cnt = selection.Rows.Count;
@@ -615,7 +539,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateIssueValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Atlassian.Jira.Issue issue, bool notFound)
+        private static void UpdateIssueValues(Excel.Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Jira.Issue issue, bool notFound)
         {
             try
             {
@@ -659,7 +583,7 @@ namespace DOT_Titling_Excel_VSTO
                         SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
                 }
 
-                if (statusColumn != 0)
+                if (activeWorksheet.Name == "Issues" && statusColumn != 0)
                 {
                     newStatus = SSUtils.GetCellValue(activeWorksheet, row, statusColumn);
                     int statusLastChangedColumn = SSUtils.GetColumnFromHeader(activeWorksheet, "Status (Last Changed)");
@@ -694,7 +618,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateProjectValues(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Project project, bool notFound)
+        private static void UpdateProjectValues(Excel.Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Jira.Project project, bool notFound)
         {
             foreach (var jiraField in jiraFields)
             {
@@ -703,12 +627,14 @@ namespace DOT_Titling_Excel_VSTO
                 string item = jiraField.Value;
                 string formula = jiraField.Formula;
                 int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
-                    if (type == "Standard")
-                        SSUtils.SetCellValue(activeWorksheet, row, column, JiraProject.ExtractStandardValue(project, item), columnHeader);
+                if (type == "Standard")
+                    SSUtils.SetCellValue(activeWorksheet, row, column, JiraProject.ExtractStandardValue(project, item), columnHeader);
+                if (type == "Function")
+                    SSUtils.SetCellValue(activeWorksheet, row, column, JiraProject.ExtractValueBasedOnFunction(project, item), columnHeader);
             }
         }
 
-        public static string MissingColumns(Worksheet ws)
+        public static string MissingColumns(Excel.Worksheet ws)
         {
             string missingFields = string.Empty;
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
@@ -721,7 +647,7 @@ namespace DOT_Titling_Excel_VSTO
             return missingFields.Trim();
         }
 
-        private static void UpdateSprintProgress(Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Atlassian.Jira.Issue issue, bool notFound)
+        private static void UpdateSprintProgress(Excel.Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Jira.Issue issue, bool notFound)
         {
             // Get the Current Date
             string dt = DateTime.Now.ToString("MM/dd/yyyy");

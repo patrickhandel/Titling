@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using Excel = Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Interop.Excel;
 using System.Collections.Generic;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -12,14 +11,14 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Worksheet ws = app.Worksheets["Issues"];
+                Excel.Worksheet ws = app.Worksheets["Issues"];
                 ws.Activate();
 
                 string tableRangeName = SSUtils.GetSelectedTable(app);
                 string headerRangeName = SSUtils.GetSelectedTableHeader(app);
                 if (headerRangeName != string.Empty)
                 {
-                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    Excel.Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
                     int headerRow = headerRowRange.Row;
 
                     List<string> ColumnsToShow = new List<string>();
@@ -28,7 +27,7 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("Issue ID");
                     ColumnsToShow.Add("Link");
                     ColumnsToShow.Add("Summary (Local)");
-                    ColumnsToShow.Add("Epic (Local}");
+                    ColumnsToShow.Add("Epic (Local)");
                     ColumnsToShow.Add("Agreed Upon Release");
                     ColumnsToShow.Add("Epic Release");
                     ColumnsToShow.Add("WIN Release");
@@ -49,7 +48,7 @@ namespace DOT_Titling_Excel_VSTO
 
                     SSUtils.FilterTable(ws, tableRangeName, "ERR Has Workflow Issue", "x");
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
-                    SSUtils.SortTable(ws, tableRangeName, "Sprint", XlSortOrder.xlAscending);
+                    SSUtils.SortTable(ws, tableRangeName, "Sprint", Excel.XlSortOrder.xlAscending);
                 }
             }
             catch (Exception ex)
@@ -62,14 +61,14 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Worksheet ws = app.Worksheets["Epics"];
+                Excel.Worksheet ws = app.Worksheets["Epics"];
                 ws.Activate();
 
                 string tableRangeName = SSUtils.GetSelectedTable(app);
                 string headerRangeName = SSUtils.GetSelectedTableHeader(app);
                 if (headerRangeName != string.Empty)
                 {
-                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    Excel.Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
                     int headerRow = headerRowRange.Row;
 
                     List<string> ColumnsToShow = new List<string>();
@@ -82,7 +81,7 @@ namespace DOT_Titling_Excel_VSTO
 
                     SSUtils.FilterTable(ws, tableRangeName, "Release Number", "<8");
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
-                    SSUtils.SortTable(ws, tableRangeName, "Priority", XlSortOrder.xlAscending);
+                    SSUtils.SortTable(ws, tableRangeName, "Priority", Excel.XlSortOrder.xlAscending);
                 }
             }
             catch (Exception ex)
@@ -95,14 +94,14 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Worksheet ws = app.Worksheets["Issues"];
+                Excel.Worksheet ws = app.Worksheets["Issues"];
                 ws.Activate();
 
                 string tableRangeName = SSUtils.GetSelectedTable(app);
                 string headerRangeName = SSUtils.GetSelectedTableHeader(app);
                 if (headerRangeName != string.Empty)
                 {
-                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    Excel.Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
                     int headerRow = headerRowRange.Row;
 
                     List<string> ColumnsToShow = new List<string>();
@@ -110,7 +109,7 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("Issue Type");
                     ColumnsToShow.Add("Issue ID");
                     ColumnsToShow.Add("Link");
-                    ColumnsToShow.Add("Epic (Local}");
+                    ColumnsToShow.Add("Epic (Local)");
                     ColumnsToShow.Add("Summary (Local)");
                     ColumnsToShow.Add("Story Points");
                     ColumnsToShow.Add("WIN Release");
@@ -124,7 +123,7 @@ namespace DOT_Titling_Excel_VSTO
 
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
                     SSUtils.FilterTable(ws, tableRangeName, "ERR Story Not Moving or Blocked", "x");
-                    SSUtils.SortTable(ws, tableRangeName, "Assignee", XlSortOrder.xlAscending);
+                    SSUtils.SortTable(ws, tableRangeName, "Assignee", Excel.XlSortOrder.xlAscending);
                 }
             }
             catch (Exception ex)
@@ -137,14 +136,14 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Worksheet ws = app.Worksheets["Releases"];
+                Excel.Worksheet ws = app.Worksheets["Releases"];
                 ws.Activate();
 
                 string tableRangeName = SSUtils.GetSelectedTable(app);
                 string headerRangeName = SSUtils.GetSelectedTableHeader(app);
                 if (headerRangeName != string.Empty)
                 {
-                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    Excel.Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
                     int headerRow = headerRowRange.Row;
 
                     List<string> ColumnsToShow = new List<string>();
@@ -159,7 +158,7 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("Deliver to Vendors From");
 
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
-                    SSUtils.SortTable(ws, tableRangeName, "Release Number", XlSortOrder.xlAscending);
+                    SSUtils.SortTable(ws, tableRangeName, "Release Number", Excel.XlSortOrder.xlAscending);
                 }
             }
             catch (Exception ex)
@@ -172,21 +171,21 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Worksheet ws = app.Worksheets["Issues"];
+                Excel.Worksheet ws = app.Worksheets["Issues"];
                 ws.Activate();
 
                 string tableRangeName = SSUtils.GetSelectedTable(app);
                 string headerRangeName = SSUtils.GetSelectedTableHeader(app);
                 if (headerRangeName != string.Empty)
                 {
-                    Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    Excel.Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
                     int headerRow = headerRowRange.Row;
 
                     List<string> ColumnsToShow = new List<string>();
                     ColumnsToShow.Add("Issue Type");
                     ColumnsToShow.Add("Issue ID");
                     ColumnsToShow.Add("Link");
-                    ColumnsToShow.Add("Epic (Local}");
+                    ColumnsToShow.Add("Epic (Local)");
                     ColumnsToShow.Add("Story Points");
                     ColumnsToShow.Add("WIN Release");
                     ColumnsToShow.Add("Sprint Number (Local)");

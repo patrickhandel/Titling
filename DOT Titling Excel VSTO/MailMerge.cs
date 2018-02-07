@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace DOT_Titling_Excel_VSTO
@@ -13,8 +12,8 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Worksheet activeWorksheet = app.ActiveSheet;
-                Range activeCell = app.ActiveCell;
+                Excel.Worksheet activeWorksheet = app.ActiveSheet;
+                Excel.Range activeCell = app.ActiveCell;
                 var selection = app.Selection;
                 if (activeCell != null && activeWorksheet.Name == "Issues")
                 {
@@ -28,7 +27,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void CreateMailMergeDocuments(Excel.Application app, Worksheet ws, Range selection, List<MailMergeFields> mailMergeFields)
+        public static void CreateMailMergeDocuments(Excel.Application app, Excel.Worksheet ws, Excel.Range selection, List<MailMergeFields> mailMergeFields)
         {
             try
             {

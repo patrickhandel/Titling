@@ -1,18 +1,18 @@
 ﻿using System;
-using Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
 using System.IO;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class FileIO
     {
-        public static void CreateRoadMapPDF(Worksheet ws)
+        public static void CreateRoadMapPDF(Excel.Worksheet ws)
         {
             string roadMapFileName = GetNewRoadMapFileName("pdf", ws.Name);
             const int xlQualityStandard = 0;
             ws.ExportAsFixedFormat(
-                XlFixedFormatType.xlTypePDF,
+                Excel.XlFixedFormatType.xlTypePDF,
                 roadMapFileName,
                 xlQualityStandard,
                 true,
@@ -23,13 +23,13 @@ namespace DOT_Titling_Excel_VSTO
                 Type.Missing);
         }
 
-        public static void CreateRoadMapImage(Worksheet ws)
+        public static void CreateRoadMapImage(Excel.Worksheet ws)
         {
             ws.Select();
             string fileName = GetNewRoadMapFileName("jpeg", ws.Name);
             string startRange = "A1";
-            Range endRange = ws.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing);
-            Range range = ws.get_Range(startRange, endRange);
+            Excel.Range endRange = ws.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing);
+            Excel.Range range = ws.get_Range(startRange, endRange);
             range.Copy();
             System.Drawing.Image imgRange1 = Clipboard.GetImage();
             imgRange1.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);

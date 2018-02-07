@@ -1,15 +1,15 @@
-﻿using Atlassian.Jira;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Jira = Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class JiraProject
     {
-        public async static Task<Project> GetProject(string issueID)
+        public async static Task<Jira.Project> GetProject(string issueID)
         {
             try
             {
@@ -24,7 +24,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Project>> GetAllProjects()
+        public async static Task<List<Jira.Project>> GetAllProjects()
         {
             try
             {
@@ -38,7 +38,18 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static string ExtractStandardValue(Project project, string item)
+        public static string ExtractValueBasedOnFunction(Jira.Project project, string item)
+        {
+            string val = string.Empty;
+            switch (item)
+            {
+                default:
+                    break;
+            }
+            return val;
+        }
+
+        public static string ExtractStandardValue(Jira.Project project, string item)
         {
             string val = string.Empty;
             switch (item)
@@ -60,6 +71,5 @@ namespace DOT_Titling_Excel_VSTO
             }
             return val;
         }
-
     }
 }

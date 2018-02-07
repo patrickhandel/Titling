@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Drawing.Imaging;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.Drawing;
-using Microsoft.Office.Interop.Word;
-using System.Drawing.Imaging;
-using System.Net.Mail;
-using System.Net.Mime;
-using Microsoft.Office.Interop.Outlook;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -47,12 +42,12 @@ namespace DOT_Titling_Excel_VSTO
             string file5 = @ThisAddIn.OutputDir + "\\" + "file5.PNG";
             string file6 = @ThisAddIn.OutputDir + "\\" + "file6.PNG";
 
-            var attachment1 = email.Attachments.Add(@file1, OlAttachmentType.olEmbeddeditem, null, "file1");
-            var attachment2 = email.Attachments.Add(@file2, OlAttachmentType.olEmbeddeditem, null, "file2");
-            var attachment3 = email.Attachments.Add(@file3, OlAttachmentType.olEmbeddeditem, null, "file3");
-            var attachment4 = email.Attachments.Add(@file4, OlAttachmentType.olEmbeddeditem, null, "file4");
-            var attachment5 = email.Attachments.Add(@file5, OlAttachmentType.olEmbeddeditem, null, "file5");
-            var attachment6 = email.Attachments.Add(@file6, OlAttachmentType.olEmbeddeditem, null, "file6");
+            var attachment1 = email.Attachments.Add(@file1, Outlook.OlAttachmentType.olEmbeddeditem, null, "file1");
+            var attachment2 = email.Attachments.Add(@file2, Outlook.OlAttachmentType.olEmbeddeditem, null, "file2");
+            var attachment3 = email.Attachments.Add(@file3, Outlook.OlAttachmentType.olEmbeddeditem, null, "file3");
+            var attachment4 = email.Attachments.Add(@file4, Outlook.OlAttachmentType.olEmbeddeditem, null, "file4");
+            var attachment5 = email.Attachments.Add(@file5, Outlook.OlAttachmentType.olEmbeddeditem, null, "file5");
+            var attachment6 = email.Attachments.Add(@file6, Outlook.OlAttachmentType.olEmbeddeditem, null, "file6");
 
             string imageCid1 = "file1.png@123";
             string imageCid2 = "file2.png@123";

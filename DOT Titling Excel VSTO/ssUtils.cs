@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
-using Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -25,16 +24,16 @@ namespace DOT_Titling_Excel_VSTO
 
         public static string GetColumnLetter(Excel.Application app, string tableRangeName, string columnHeader)
         {
-            Range colRange = app.get_Range(tableRangeName + "[" + columnHeader + "]", Type.Missing);
+            Excel.Range colRange = app.get_Range(tableRangeName + "[" + columnHeader + "]", Type.Missing);
             if (colRange != null)
                 return GetColumnName(colRange.Column);
             return string.Empty;
         }
 
-        public static void HideTableColumns(Range headerRowRange, List<string> ColumnsToShow)
+        public static void HideTableColumns(Excel.Range headerRowRange, List<string> ColumnsToShow)
         {
             // Format each cell in the table header row
-            foreach (Range cell in headerRowRange.Cells)
+            foreach (Excel.Range cell in headerRowRange.Cells)
             {
                 int column = cell.Column;
                 string columnHeader = cell.Value;
@@ -50,10 +49,10 @@ namespace DOT_Titling_Excel_VSTO
         public static string GetSelectedTable(Excel.Application app)
         {
             string t = string.Empty;
-            Worksheet activeWorksheet = app.ActiveSheet;
-            foreach (ListObject table in activeWorksheet.ListObjects)
+            Excel.Worksheet activeWorksheet = app.ActiveSheet;
+            foreach (Excel.ListObject table in activeWorksheet.ListObjects)
             {
-                Range tableRange = table.Range;
+                Excel.Range tableRange = table.Range;
                 if (table.Active == true)
                 {
                     t = table.Name;
@@ -74,12 +73,12 @@ namespace DOT_Titling_Excel_VSTO
         }
 
 
-        public static ListObject GetListObjectFromTableName(Worksheet ws, string tableName)
+        public static Excel.ListObject GetListObjectFromTableName(Excel.Worksheet ws, string tableName)
         {
-            ListObject lo = null;
-            foreach (ListObject table in ws.ListObjects)
+            Excel.ListObject lo = null;
+            foreach (Excel.ListObject table in ws.ListObjects)
             {
-                Range tableRange = table.Range;
+                Excel.Range tableRange = table.Range;
                 if (table.Active == true && table.Name == tableName)
                 {
                     lo = table;
@@ -101,24 +100,24 @@ namespace DOT_Titling_Excel_VSTO
         public static List<string> GetListOfTables(Excel.Application app)
         {
             List<string> listofTables = new List<string>();
-            Worksheet activeWorksheet = app.ActiveSheet;
-            foreach (ListObject table in activeWorksheet.ListObjects)
+            Excel.Worksheet activeWorksheet = app.ActiveSheet;
+            foreach (Excel.ListObject table in activeWorksheet.ListObjects)
             {
                 listofTables.Add(table.Name);
-                Range tableRange = table.Range;
+                Excel.Range tableRange = table.Range;
                 if (table.Active == true)
                     MessageBox.Show(table.Name);
             }
             return listofTables;
         }
 
-        public static int GetColumnFromHeader(Worksheet ws, string columnText)
+        public static int GetColumnFromHeader(Excel.Worksheet ws, string columnText)
         {
             try
             {
                 string sHeaderRangeName = GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
-                foreach (Range cell in headerRowRange.Cells)
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                foreach (Excel.Range cell in headerRowRange.Cells)
                 {
                     if (cell.Value == columnText)
                         return cell.Column;
@@ -159,12 +158,12 @@ namespace DOT_Titling_Excel_VSTO
             return prop.Range + "[#Totals]";
         }
 
-        public static string GetCellValue(Worksheet sheet, int row, int column)
+        public static string GetCellValue(Excel.Worksheet sheet, int row, int column)
         {
             var result = string.Empty;
             if (sheet != null)
             {
-                Range rng = sheet.Cells[row, column] as Range;
+                Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
 
                 if (rng != null)
                     result = (string)rng.Text;
@@ -178,7 +177,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 var result = string.Empty;
-                Range rng = app.get_Range(rangeName);
+                Excel.Range rng = app.get_Range(rangeName);
                 if (rng != null)
                     result = (string)rng.Text;
                 return result.Trim();
@@ -190,7 +189,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void SetCellValue(Worksheet sheet, int row, int column, string val, string columnHeader)
+        public static void SetCellValue(Excel.Worksheet sheet, int row, int column, string val, string columnHeader)
         {
             try
             {
@@ -199,7 +198,7 @@ namespace DOT_Titling_Excel_VSTO
                     if (column != 0)
                     {
 
-                        Range rng = sheet.Cells[row, column] as Range;
+                        Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
                         if (rng != null)
                             rng.Value = val;
                     }
@@ -215,7 +214,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void SetCellFormula(Worksheet sheet, int row, int column, string formula)
+        public static void SetCellFormula(Excel.Worksheet sheet, int row, int column, string formula)
         {
             formula = formula.Replace("|", "\"");
             formula = formula.Replace("~NE~", "<>");
@@ -225,24 +224,24 @@ namespace DOT_Titling_Excel_VSTO
             formula = formula.Replace("~GT~", ">");
             if (sheet != null)
             {
-                Range rng = sheet.Cells[row, column] as Range;
+                Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
                 if (rng != null)
                     sheet.Cells[row, column].Formula = string.Format(formula, 1);
             }
         }
 
-        public static void SetStandardRowHeight(Worksheet ws, int headerRow, int footerRow)
+        public static void SetStandardRowHeight(Excel.Worksheet ws, int headerRow, int footerRow)
         {
-            Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
+            Excel.Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
             allRows.EntireRow.RowHeight = 15;
         }
 
         //// http://www.authorcode.com/search-text-in-excel-file-through-c/
-        public static int FindTextInColumn(Worksheet ws, string colRangeName, string valueToFind)
+        public static int FindTextInColumn(Excel.Worksheet ws, string colRangeName, string valueToFind)
         {
             try
             {
-                Range r = GetSpecifiedRange(valueToFind, ws, colRangeName);
+                Excel.Range r = GetSpecifiedRange(valueToFind, ws, colRangeName);
                 if (r != null)
                 {
                     return r.Row;
@@ -259,9 +258,9 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static Range GetSpecifiedRange(string valueToFind, Worksheet ws, string namedRange)
+        public static Excel.Range GetSpecifiedRange(string valueToFind, Excel.Worksheet ws, string namedRange)
         {
-            Range currentFind = null;
+            Excel.Range currentFind = null;
             currentFind = ws.get_Range(namedRange).Find(valueToFind, Missing.Value,
                            Excel.XlFindLookIn.xlValues,
                            Excel.XlLookAt.xlPart,
@@ -272,16 +271,16 @@ namespace DOT_Titling_Excel_VSTO
 
         public static void BeginExcelOperation(Excel.Application app)
         {
-            app.Cursor = XlMousePointer.xlWait;
-            app.Calculation = XlCalculation.xlCalculationManual;
+            app.Cursor = Excel.XlMousePointer.xlWait;
+            app.Calculation = Excel.XlCalculation.xlCalculationManual;
             app.ScreenUpdating = false;
             UnProtect(app);
         }
 
         public static void EndExcelOperation(Excel.Application app, string operationName)
         {
-            app.Cursor = XlMousePointer.xlDefault;
-            app.Calculation = XlCalculation.xlCalculationAutomatic;
+            app.Cursor = Excel.XlMousePointer.xlDefault;
+            app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
             app.ScreenUpdating = true;
             if (operationName != string.Empty)
                 MessageBox.Show(operationName + " - Operation Complete");
@@ -309,19 +308,19 @@ namespace DOT_Titling_Excel_VSTO
         private static void UnProtect(Excel.Application app)
         {
             // https://msdn.microsoft.com/library/microsoft.office.interop.excel._worksheet.protect(v=office.15).aspx
-            Worksheet ws = app.Worksheets.OfType<Worksheet>().FirstOrDefault(w => w.Name == "DOT Releases");
+            Excel.Worksheet ws = app.Worksheets.OfType<Excel.Worksheet>().FirstOrDefault(w => w.Name == "DOT Releases");
             if (ws != null)
                 app.Worksheets["DOT Releases"].Unprotect(Password: "dot333");
         }
 
-        public static int GetLastRow(Worksheet ws)
+        public static int GetLastRow(Excel.Worksheet ws)
         {
-            return ws.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing).Row;
+            return ws.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
         }
 
-        public static int GetLastColumn(Worksheet ws)
+        public static int GetLastColumn(Excel.Worksheet ws)
         {
-            return ws.Cells.SpecialCells(XlCellType.xlCellTypeLastCell, Type.Missing).Column;
+            return ws.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell, Type.Missing).Column;
         }
 
         public static string ColumnNumberToName(Int32 col_num)
@@ -366,14 +365,14 @@ namespace DOT_Titling_Excel_VSTO
             return result;
         }
 
-        public static void FilterTable(Worksheet ws, string tableRangeName, string filterColumn, string filterValue)
+        public static void FilterTable(Excel.Worksheet ws, string tableRangeName, string filterColumn, string filterValue)
         {
             try
             {
-                ListObject list = GetListObjectFromTableName(ws, tableRangeName);
+                Excel.ListObject list = GetListObjectFromTableName(ws, tableRangeName);
                 list.AutoFilter.ShowAllData();
                 int col = GetColumnFromHeader(ws, filterColumn);
-                list.Range.AutoFilter(col, filterValue, XlAutoFilterOperator.xlFilterValues);
+                list.Range.AutoFilter(col, filterValue, Excel.XlAutoFilterOperator.xlFilterValues);
             }
             catch (Exception ex)
             {
@@ -381,27 +380,27 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void SortTable(Worksheet ws, string tableRangeName, string sortColumn, XlSortOrder sortOrder)
+        public static void SortTable(Excel.Worksheet ws, string tableRangeName, string sortColumn, Excel.XlSortOrder sortOrder)
         {
             try
             {
-                ListObject list = GetListObjectFromTableName(ws, tableRangeName);
+                Excel.ListObject list = GetListObjectFromTableName(ws, tableRangeName);
                 list.Range.Sort(
                     list.ListColumns[sortColumn].Range,
                     sortOrder,
                     list.ListColumns[2].Range,
-                    Type.Missing, 
-                    XlSortOrder.xlAscending,
-                    Type.Missing, 
-                    XlSortOrder.xlAscending,
-                    XlYesNoGuess.xlYes,
+                    Type.Missing,
+                    Excel.XlSortOrder.xlAscending,
+                    Type.Missing,
+                    Excel.XlSortOrder.xlAscending,
+                    Excel.XlYesNoGuess.xlYes,
                     Type.Missing,
                     Type.Missing,
-                    XlSortOrientation.xlSortColumns,
-                    XlSortMethod.xlPinYin,
-                    XlSortDataOption.xlSortNormal,
-                    XlSortDataOption.xlSortNormal,
-                    XlSortDataOption.xlSortNormal);
+                    Excel.XlSortOrientation.xlSortColumns,
+                    Excel.XlSortMethod.xlPinYin,
+                    Excel.XlSortDataOption.xlSortNormal,
+                    Excel.XlSortDataOption.xlSortNormal,
+                    Excel.XlSortDataOption.xlSortNormal);
             }
             catch (Exception ex)
             {
@@ -414,12 +413,12 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 List<string> listofProjects = new List<string>();
-                Worksheet wsProjects = app.Worksheets["Projects"];
+                Excel.Worksheet wsProjects = app.Worksheets["Projects"];
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsProjects.Name);
-                Range headerRowRange = wsProjects.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = wsProjects.get_Range(sHeaderRangeName, Type.Missing);
 
                 string sFooterRangeName = SSUtils.GetFooterRangeName(wsProjects.Name);
-                Range footerRowRange = wsProjects.get_Range(sFooterRangeName, Type.Missing);
+                Excel.Range footerRowRange = wsProjects.get_Range(sFooterRangeName, Type.Missing);
 
                 int headerRow = headerRowRange.Row;
                 int footerRow = footerRowRange.Row;

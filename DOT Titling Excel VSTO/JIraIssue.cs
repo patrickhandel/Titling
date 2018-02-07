@@ -1,16 +1,16 @@
-﻿using Atlassian.Jira;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Text;
+using Jira = Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class JiraIssue
     {
-        public async static Task<Atlassian.Jira.Issue> GetIssue(string issueID)
+        public async static Task<Jira.Issue> GetIssue(string issueID)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Atlassian.Jira.Issue>> GetAllStoriesAndBugs(List<string> listofProjects)
+        public async static Task<List<Jira.Issue>> GetAllStoriesAndBugs(List<string> listofProjects)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace DOT_Titling_Excel_VSTO
                 jql.Append("issuetype in (\"Software Bug\", Story)");
                 jql.Append(" AND ");
                 jql.Append("summary ~ \"!DELETE\"");
-                List<Atlassian.Jira.Issue> filteredIssues = await FilterIssues(jql);
+                List<Jira.Issue> filteredIssues = await FilterIssues(jql);
                 return filteredIssues;
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace DOT_Titling_Excel_VSTO
             return projectList;
         }
 
-        public async static Task<List<Atlassian.Jira.Issue>> GetAllTasks(List<string> listofProjects)
+        public async static Task<List<Jira.Issue>> GetAllTasks(List<string> listofProjects)
         {
             try
             {
@@ -77,7 +77,7 @@ namespace DOT_Titling_Excel_VSTO
                 jql.Append("issuetype in (\"Task\")");
                 jql.Append(" AND ");
                 jql.Append("\"Epic Link\" = " + listofProjects[0] + "-945");
-                List<Atlassian.Jira.Issue> filteredIssues = await FilterIssues(jql);
+                List<Jira.Issue> filteredIssues = await FilterIssues(jql);
                 return filteredIssues;
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<List<Atlassian.Jira.Issue>> GetAllEpics(List<string> listofProjects)
+        public async static Task<List<Jira.Issue>> GetAllEpics(List<string> listofProjects)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace DOT_Titling_Excel_VSTO
                 jql.Append("issuetype in (\"Epic\")");
                 jql.Append(" AND ");
                 jql.Append("summary ~ \"!DELETE\"");
-                List<Atlassian.Jira.Issue> filteredIssues = await FilterIssues(jql);
+                List<Jira.Issue> filteredIssues = await FilterIssues(jql);
                 return filteredIssues;
             }
             catch (Exception ex)
@@ -110,7 +110,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static async Task<List<Atlassian.Jira.Issue>> FilterIssues(System.Text.StringBuilder jql)
+        private static async Task<List<Jira.Issue>> FilterIssues(StringBuilder jql)
         {
             var issues = await ThisAddIn.GlobalJira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
             var totalIssues = issues.TotalItems;
@@ -132,7 +132,7 @@ namespace DOT_Titling_Excel_VSTO
             return filteredIssues;
         }
 
-        public async static Task<IDictionary<string, Atlassian.Jira.Issue>> GetSelectedIssues(params string[] listofIssueIDs)
+        public async static Task<IDictionary<string, Jira.Issue>> GetSelectedIssues(params string[] listofIssueIDs)
         {
             try
             {
@@ -147,7 +147,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static string ExtractCustomValue(Atlassian.Jira.Issue issue, string item)
+        public static string ExtractCustomValue(Jira.Issue issue, string item)
         {
             string val = string.Empty;
             item = item.Replace(" Id ", " I'd ");
@@ -163,7 +163,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractStandardValue(Atlassian.Jira.Issue issue, string item)
+        public static string ExtractStandardValue(Jira.Issue issue, string item)
         {
             string val = string.Empty;
             switch (item)
@@ -195,7 +195,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractValueBasedOnFunction(Atlassian.Jira.Issue issue, string item)
+        public static string ExtractValueBasedOnFunction(Jira.Issue issue, string item)
         {
             string val = string.Empty;
             switch (item)
@@ -308,31 +308,7 @@ namespace DOT_Titling_Excel_VSTO
                     }
                     issue.SaveChanges();
                 }
-
-
                 return true;
-                //string curRelease = ExtractRelease(issue);
-                //if (curRelease == newValue)
-                //{
-                //    if (!multiple)
-                //        MessageBox.Show("No change needed.");
-                //    return true;
-                //}
-
-                //// Remove all of the existing versions
-                //var oldVersions = issue.AffectsVersions.ToList();
-                //foreach (var oldVersion in oldVersions)
-                //{
-                //    issue.AffectsVersions.Remove(oldVersion);
-                //}
-
-                //if (newValue.Trim() != string.Empty)
-                //    issue.AffectsVersions.Add(newValue);
-
-                //issue.SaveChanges();
-                //if (!multiple)
-                //    MessageBox.Show("Release updated successfully updated.");
-
             }
             catch
             {
@@ -396,7 +372,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static string ExtractRelease(Atlassian.Jira.Issue issue)
+        private static string ExtractRelease(Jira.Issue issue)
         {
             string val = string.Empty;
             int c = 0;
@@ -410,7 +386,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        private static string ExtractFixRelease(Atlassian.Jira.Issue issue)
+        private static string ExtractFixRelease(Jira.Issue issue)
         {
             string val = string.Empty;
             int c = 0;
@@ -422,7 +398,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        private static string ExtractLabels(Atlassian.Jira.Issue issue)
+        private static string ExtractLabels(Jira.Issue issue)
         {
             string val = string.Empty;
             if (issue.Labels.Count > 0)
@@ -441,7 +417,7 @@ namespace DOT_Titling_Excel_VSTO
             return labels.Split(',').ToList();
         }
 
-        private static List<string> ExtractListOfLabels(Atlassian.Jira.Issue issue)
+        private static List<string> ExtractListOfLabels(Jira.Issue issue)
         {
             List<string> listofLabels = new List<string>();
             if (issue.Labels.Count > 0)
@@ -454,7 +430,7 @@ namespace DOT_Titling_Excel_VSTO
             return listofLabels;
         }
 
-        public static string ExtractDOTWebServices(Atlassian.Jira.Issue issue)
+        public static string ExtractDOTWebServices(Jira.Issue issue)
         {
             string val = string.Empty;
             if (issue["DOT Web Services"] != null)
@@ -468,7 +444,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        private static string ExtractSprintNumber(Atlassian.Jira.Issue issue)
+        private static string ExtractSprintNumber(Jira.Issue issue)
         {
             string val = string.Empty;
             int thisSprint = 0;

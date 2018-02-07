@@ -1,5 +1,4 @@
-﻿using Microsoft.Office.Interop.Excel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -24,7 +23,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateRoadMap(Excel.Application app, Worksheet wsRoadmap)
+        private static void UpdateRoadMap(Excel.Application app, Excel.Worksheet wsRoadmap)
         {
             try
             {
@@ -32,7 +31,7 @@ namespace DOT_Titling_Excel_VSTO
                 FileIO.CreateRoadMapImage(wsRoadmap);
                 FileIO.CreateRoadMapPDF(wsRoadmap);
 
-                Worksheet wsRoadMapBlocks = app.Sheets["Road Map Blocks"];
+                Excel.Worksheet wsRoadMapBlocks = app.Sheets["Road Map Blocks"];
                 FileIO.CreateRoadMapImage(wsRoadMapBlocks);
                 FileIO.CreateRoadMapPDF(wsRoadMapBlocks);
 
@@ -44,12 +43,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateRoadMap_Ver1(Excel.Application app, Worksheet wsRoadmap)
+        private static void UpdateRoadMap_Ver1(Excel.Application app, Excel.Worksheet wsRoadmap)
         {
             try
             {
-                Worksheet wsEpics = app.Sheets["Epics"];
-                Worksheet wsReleases = app.Sheets["Releases"];
+                Excel.Worksheet wsEpics = app.Sheets["Epics"];
+                Excel.Worksheet wsReleases = app.Sheets["Releases"];
 
                 Int32 firstRow = 5;
                 Int32 rmRow = firstRow;
@@ -60,7 +59,7 @@ namespace DOT_Titling_Excel_VSTO
 
                 if (lastRow > rmRow + 2)
                 {
-                    Range rToDelete = wsRoadmap.get_Range(String.Format("{0}:{1}", rmRow + 2, lastRow), Type.Missing);
+                    Excel.Range rToDelete = wsRoadmap.get_Range(String.Format("{0}:{1}", rmRow + 2, lastRow), Type.Missing);
                     rToDelete.Delete();
                 }
 
@@ -135,12 +134,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateRoadMap_Ver2(Excel.Application app, Worksheet wsRoadmap)
+        private static void UpdateRoadMap_Ver2(Excel.Application app, Excel.Worksheet wsRoadmap)
         {
             try
             {
-                Worksheet wsEpics = app.Sheets["Epics"];
-                Worksheet wsReleases = app.Sheets["Releases"];
+                Excel.Worksheet wsEpics = app.Sheets["Epics"];
+                Excel.Worksheet wsReleases = app.Sheets["Releases"];
 
                 Int32 firstRow = 5;
                 Int32 rmRow = firstRow;
@@ -151,7 +150,7 @@ namespace DOT_Titling_Excel_VSTO
 
                 if (lastRow > rmRow + 2)
                 {
-                    Range rToDelete = wsRoadmap.get_Range(String.Format("{0}:{1}", rmRow + 2, lastRow), Type.Missing);
+                    Excel.Range rToDelete = wsRoadmap.get_Range(String.Format("{0}:{1}", rmRow + 2, lastRow), Type.Missing);
                     rToDelete.Delete();
                 }
 
@@ -218,7 +217,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void CreateRow(Worksheet ws, string rowType, Int32 row, string epicName, string releaseName, string status, Int32 releaseNumber, Int32 sprintFrom, Int32 sprintTo, Int32 vendorSprint)
+        private static void CreateRow(Excel.Worksheet ws, string rowType, Int32 row, string epicName, string releaseName, string status, Int32 releaseNumber, Int32 sprintFrom, Int32 sprintTo, Int32 vendorSprint)
         {
             try
             {
@@ -255,7 +254,7 @@ namespace DOT_Titling_Excel_VSTO
                     case "DEV":
                         SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Development", "?");
                         SSUtils.SetCellValue(ws, row, 2, status, "?");
-                        SSUtils.SetCellValue(ws, row, 3, "Epic (Local}", "?");
+                        SSUtils.SetCellValue(ws, row, 3, "Epic (Local)", "?");
                         SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString(), "?");
                         SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString(), "?");
                         break;
@@ -266,7 +265,6 @@ namespace DOT_Titling_Excel_VSTO
                         SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString(), "?");
                         SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString(), "?");
                         break;
-
                     case "FINAL ROW":
                         SSUtils.SetCellValue(ws, row, 1, "FINAL ROW", "?");
                         SSUtils.SetCellValue(ws, row, 2, string.Empty, "?");
@@ -284,16 +282,16 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void FormatChart(Worksheet wsRoadmap, int firstRow, int rmRow, int lastColumn)
+        private static void FormatChart(Excel.Worksheet wsRoadmap, int firstRow, int rmRow, int lastColumn)
         {
             string range1val = string.Format("A{0}:{1}5", firstRow, SSUtils.ColumnNumberToName(lastColumn));
             string range2val = string.Format("A{0}:{1}{2}", firstRow + 1, SSUtils.ColumnNumberToName(lastColumn), rmRow - 1);
             string rangeToSelect = string.Format("A{0}", firstRow);
-            Range range1 = wsRoadmap.get_Range(range1val);
-            Range range2 = wsRoadmap.get_Range(range2val);
-            Range range3 = wsRoadmap.get_Range(rangeToSelect);
+            Excel.Range range1 = wsRoadmap.get_Range(range1val);
+            Excel.Range range2 = wsRoadmap.get_Range(range2val);
+            Excel.Range range3 = wsRoadmap.get_Range(rangeToSelect);
             range1.Copy(Type.Missing);
-            range2.PasteSpecial(XlPasteType.xlPasteFormats, XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+            range2.PasteSpecial(Excel.XlPasteType.xlPasteFormats, Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
             range3.Select();
         }
 

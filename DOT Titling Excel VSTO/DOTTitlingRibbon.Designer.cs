@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.Office.Tools.Ribbon;
-using Excel = Microsoft.Office.Interop.Excel;
-using System.Windows;
+﻿using Microsoft.Office.Tools.Ribbon;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -48,18 +45,17 @@ namespace DOT_Titling_Excel_VSTO
             this.btnAdd_DOT = this.Factory.CreateRibbonButton();
             this.btnSaveSelected_DOT = this.Factory.CreateRibbonButton();
             this.btnUpdateEpics_DOT = this.Factory.CreateRibbonButton();
-            this.bntUpdateProjects = this.Factory.CreateRibbonButton();
             this.btnUpdateChecklist = this.Factory.CreateRibbonButton();
             this.btnUpdateRoadMap_DOT = this.Factory.CreateRibbonButton();
             this.btnMailMerge_DOT = this.Factory.CreateRibbonButton();
             this.btnEmailStatus_DOT = this.Factory.CreateRibbonButton();
             this.btnUpdateIssueDeveloper_DOT = this.Factory.CreateRibbonButton();
             this.Views_DOT = this.Factory.CreateRibbonGallery();
-            this.btnViewReleasePlan_DOT = this.Factory.CreateRibbonButton();
             this.btnViewRequirementsErrors_DOT = this.Factory.CreateRibbonButton();
             this.btnViewRequirementsStatus_DOT = this.Factory.CreateRibbonButton();
             this.btnViewBlockedIssues_DOT = this.Factory.CreateRibbonButton();
             this.btnViewEpicsEstimateActual_DOT = this.Factory.CreateRibbonButton();
+            this.btnViewReleasePlan_DOT = this.Factory.CreateRibbonButton();
             this.grpStandardization_DOT = this.Factory.CreateRibbonGroup();
             this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
@@ -72,6 +68,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdate_Program = this.Factory.CreateRibbonButton();
             this.btnUpdateSelected_Program = this.Factory.CreateRibbonButton();
             this.btnAdd_Program = this.Factory.CreateRibbonButton();
+            this.bntUpdateProjects = this.Factory.CreateRibbonButton();
             this.grpStandardization_PM = this.Factory.CreateRibbonGroup();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
@@ -103,7 +100,6 @@ namespace DOT_Titling_Excel_VSTO
             this.grpDOT.Items.Add(this.btnAdd_DOT);
             this.grpDOT.Items.Add(this.btnSaveSelected_DOT);
             this.grpDOT.Items.Add(this.btnUpdateEpics_DOT);
-            this.grpDOT.Items.Add(this.bntUpdateProjects);
             this.grpDOT.Items.Add(this.btnUpdateChecklist);
             this.grpDOT.Items.Add(this.btnUpdateRoadMap_DOT);
             this.grpDOT.Items.Add(this.btnMailMerge_DOT);
@@ -120,7 +116,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdate_DOT.Label = "Update All Issues";
             this.btnUpdate_DOT.Name = "btnUpdate_DOT";
             this.btnUpdate_DOT.ShowImage = true;
-            this.btnUpdate_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_DOT_Click);
+            this.btnUpdate_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateIssues_DOT_Click);
             // 
             // btnUpdateSelected_DOT
             // 
@@ -129,7 +125,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdateSelected_DOT.Label = "Update Selected Issues";
             this.btnUpdateSelected_DOT.Name = "btnUpdateSelected_DOT";
             this.btnUpdateSelected_DOT.ShowImage = true;
-            this.btnUpdateSelected_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateSelected_DOT_Click);
+            this.btnUpdateSelected_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateSelectedIssues_DOT_Click);
             // 
             // btnAdd_DOT
             // 
@@ -138,7 +134,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnAdd_DOT.Label = "Add New Issues";
             this.btnAdd_DOT.Name = "btnAdd_DOT";
             this.btnAdd_DOT.ShowImage = true;
-            this.btnAdd_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_DOT_Click);
+            this.btnAdd_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddIssues_DOT_Click);
             // 
             // btnSaveSelected_DOT
             // 
@@ -147,7 +143,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnSaveSelected_DOT.Label = "Save Selected";
             this.btnSaveSelected_DOT.Name = "btnSaveSelected_DOT";
             this.btnSaveSelected_DOT.ShowImage = true;
-            this.btnSaveSelected_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveSelected_DOT_Click);
+            this.btnSaveSelected_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveSelectedIssues_DOT_Click);
             // 
             // btnUpdateEpics_DOT
             // 
@@ -157,14 +153,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdateEpics_DOT.Name = "btnUpdateEpics_DOT";
             this.btnUpdateEpics_DOT.ShowImage = true;
             this.btnUpdateEpics_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateEpics_DOT_Click);
-            // 
-            // bntUpdateProjects
-            // 
-            this.bntUpdateProjects.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.bntUpdateProjects.Label = "Update Projects";
-            this.bntUpdateProjects.Name = "bntUpdateProjects";
-            this.bntUpdateProjects.ShowImage = true;
-            this.bntUpdateProjects.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.bntUpdateProjects_Click);
             // 
             // btnUpdateChecklist
             // 
@@ -221,16 +209,6 @@ namespace DOT_Titling_Excel_VSTO
             this.Views_DOT.ShowImage = true;
             this.Views_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.Views_DOT_Click);
             // 
-            // btnViewReleasePlan_DOT
-            // 
-            this.btnViewReleasePlan_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnViewReleasePlan_DOT.Description = "Release Schedule";
-            this.btnViewReleasePlan_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewReleasePlan_DOT.Image")));
-            this.btnViewReleasePlan_DOT.Label = "Releases: Road Map Schedule";
-            this.btnViewReleasePlan_DOT.Name = "btnViewReleasePlan_DOT";
-            this.btnViewReleasePlan_DOT.ShowImage = true;
-            this.btnViewReleasePlan_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_DOT_Click);
-            // 
             // btnViewRequirementsErrors_DOT
             // 
             this.btnViewRequirementsErrors_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -270,6 +248,16 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewEpicsEstimateActual_DOT.Name = "btnViewEpicsEstimateActual_DOT";
             this.btnViewEpicsEstimateActual_DOT.ShowImage = true;
             this.btnViewEpicsEstimateActual_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewEpicsEstimateActual_Click);
+            // 
+            // btnViewReleasePlan_DOT
+            // 
+            this.btnViewReleasePlan_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewReleasePlan_DOT.Description = "Release Schedule";
+            this.btnViewReleasePlan_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewReleasePlan_DOT.Image")));
+            this.btnViewReleasePlan_DOT.Label = "Releases: Road Map Schedule";
+            this.btnViewReleasePlan_DOT.Name = "btnViewReleasePlan_DOT";
+            this.btnViewReleasePlan_DOT.ShowImage = true;
+            this.btnViewReleasePlan_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_DOT_Click);
             // 
             // grpStandardization_DOT
             // 
@@ -327,6 +315,7 @@ namespace DOT_Titling_Excel_VSTO
             // btnToggleProperties_PM
             // 
             this.btnToggleProperties_PM.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnToggleProperties_PM.Image = ((System.Drawing.Image)(resources.GetObject("btnToggleProperties_PM.Image")));
             this.btnToggleProperties_PM.Label = "Toggle Properties";
             this.btnToggleProperties_PM.Name = "btnToggleProperties_PM";
             this.btnToggleProperties_PM.ShowImage = true;
@@ -344,6 +333,7 @@ namespace DOT_Titling_Excel_VSTO
             this.grpPM.Items.Add(this.btnUpdate_Program);
             this.grpPM.Items.Add(this.btnUpdateSelected_Program);
             this.grpPM.Items.Add(this.btnAdd_Program);
+            this.grpPM.Items.Add(this.bntUpdateProjects);
             this.grpPM.Label = "WIN Project Management";
             this.grpPM.Name = "grpPM";
             // 
@@ -354,7 +344,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdate_Program.Label = "Update All Issues";
             this.btnUpdate_Program.Name = "btnUpdate_Program";
             this.btnUpdate_Program.ShowImage = true;
-            this.btnUpdate_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdate_Program_Click);
+            this.btnUpdate_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateIssues_Program_Click);
             // 
             // btnUpdateSelected_Program
             // 
@@ -363,7 +353,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdateSelected_Program.Label = "Update Selected Issues";
             this.btnUpdateSelected_Program.Name = "btnUpdateSelected_Program";
             this.btnUpdateSelected_Program.ShowImage = true;
-            this.btnUpdateSelected_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateSelected_DOT_Click);
+            this.btnUpdateSelected_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateSelectedIssues_DOT_Click);
             // 
             // btnAdd_Program
             // 
@@ -372,7 +362,16 @@ namespace DOT_Titling_Excel_VSTO
             this.btnAdd_Program.Label = "Add New Issues";
             this.btnAdd_Program.Name = "btnAdd_Program";
             this.btnAdd_Program.ShowImage = true;
-            this.btnAdd_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAdd_Progam_Click);
+            this.btnAdd_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddIssues_Progam_Click);
+            // 
+            // bntUpdateProjects
+            // 
+            this.bntUpdateProjects.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.bntUpdateProjects.Image = ((System.Drawing.Image)(resources.GetObject("bntUpdateProjects.Image")));
+            this.bntUpdateProjects.Label = "Update Projects";
+            this.bntUpdateProjects.Name = "bntUpdateProjects";
+            this.bntUpdateProjects.ShowImage = true;
+            this.bntUpdateProjects.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.bntUpdateProjects_Click);
             // 
             // grpStandardization_PM
             // 
@@ -432,7 +431,6 @@ namespace DOT_Titling_Excel_VSTO
         internal RibbonButton btnResetView_DOT;
         internal RibbonButton btnResetView_PM;
         internal RibbonButton btnUpdateChecklist;
-        internal RibbonButton bntUpdateProjects;
         internal RibbonButton btnSaveSelected_DOT;
         internal RibbonButton btnUpdateRoadMap_DOT;
         internal RibbonButton btnUpdateEpics_DOT;
@@ -447,6 +445,7 @@ namespace DOT_Titling_Excel_VSTO
             private RibbonButton btnViewRequirementsStatus_DOT;
             private RibbonButton btnViewBlockedIssues_DOT;
         private RibbonButton btnViewEpicsEstimateActual_DOT;
+        internal RibbonButton bntUpdateProjects;
         //
     }
 

@@ -20,7 +20,7 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         // UPDATE, ADD, SAVE
-        private void btnUpdate_DOT_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdate_Program_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateIssues_Program_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnAdd_DOT_Click(object sender, RibbonControlEventArgs e)
+        private void btnAddIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                ImportFromJira.ExecuteAdd(app, listofProjects);
+                ImportFromJira.ExecuteAddIssues(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -70,14 +70,14 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnAdd_Progam_Click(object sender, RibbonControlEventArgs e)
+        private void btnAddIssues_Progam_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                ImportFromJira.ExecuteAdd(app, listofProjects);
+                ImportFromJira.ExecuteAddIssues(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -86,7 +86,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdateSelected_DOT_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateSelectedIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                ImportFromJira.ExecuteUpdateSelected_DOT(app, listofProjects);
+                ImportFromJira.ExecuteUpdateSelectedIssues(app, listofProjects);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -103,13 +103,14 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdateSelected_Program_Click(object sender, RibbonControlEventArgs e)
+        private void btnUpdateSelectedIssues_Program_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                //ImportFromJira.ExecuteUpdateSelected_Program(app);
+                List<string> listofProjects = SSUtils.GetListOfProjects(app);
+                ImportFromJira.ExecuteUpdateSelectedIssues(app, listofProjects);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -118,13 +119,13 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnSaveSelected_DOT_Click(object sender, RibbonControlEventArgs e)
+        private void btnSaveSelectedIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                bool multiple = ExportToJira.SaveSelected_DOT(app);
+                bool multiple = ExportToJira.SaveSelectedIssues(app);
                 string msg = string.Empty;
                 if (multiple == true)
                 {
@@ -144,13 +145,13 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                //bool multiple = ExportToJira.SaveSelected_Program(app);
-                //string msg = string.Empty;
-                //if (multiple == true)
-                //{
-                //    msg = "Selected Items Saved.";
-                //}
-                //SSUtils.EndExcelOperation(app, msg);
+                bool multiple = ExportToJira.SaveSelectedIssues(app);
+                string msg = string.Empty;
+                if (multiple == true)
+                {
+                    msg = "Selected Items Saved.";
+                }
+                SSUtils.EndExcelOperation(app, msg);
             }
             catch (Exception ex)
             {
@@ -328,7 +329,6 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         // OTHERS
-
         private void btnUpdateChecklist_Click(object sender, RibbonControlEventArgs e)
         {
             try
@@ -350,7 +350,6 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                //ImportFromJira.ExecuteAddNewProjects(app);
                 ImportFromJira.ExecuteUpdateProjects(app);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }

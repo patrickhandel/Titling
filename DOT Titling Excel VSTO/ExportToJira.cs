@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Windows.Forms;
-using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class ExportToJira
     {
-        public static bool SaveSelected_DOT(Excel.Application app)
+        public static bool SaveSelectedIssues(Excel.Application app)
         {
             try
             {
-                Worksheet activeWorksheet = app.ActiveSheet;
-                Range activeCell = app.ActiveCell;
+                Excel.Worksheet activeWorksheet = app.ActiveSheet;
+                Excel.Range activeCell = app.ActiveCell;
                 var selection = app.Selection;
-                if (activeCell != null && (activeWorksheet.Name == "Issues" || activeWorksheet.Name == "Issues" || activeWorksheet.Name == "DOT Releases"))
+                if (activeCell != null && (activeWorksheet.Name == "Issues" || activeWorksheet.Name == "DOT Releases"))
                 {
                     return SaveSelectedIssueValues(activeWorksheet, selection);
                 }
@@ -31,12 +30,12 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static bool SaveSelectedEpic(Worksheet ws, Range activeCell)
+        private static bool SaveSelectedEpic(Excel.Worksheet ws, Excel.Range activeCell)
         {
             try
             {
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
 
                 int column = activeCell.Column;
                 int row = activeCell.Row;
@@ -70,16 +69,16 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static bool SaveSelectedIssueValues(Worksheet ws, Range selection)
+        private static bool SaveSelectedIssueValues(Excel.Worksheet ws, Excel.Range selection)
         {
             try
             {
                 string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
 
                 int cellCount = selection.Cells.Count;
                 bool multiple = (cellCount > 1);
-                foreach (Range cell in selection.Cells)
+                foreach (Excel.Range cell in selection.Cells)
                 {
                     int row = cell.Row;
                     if (ws.Rows[row].EntireRow.Height != 0)
