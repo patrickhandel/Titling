@@ -79,11 +79,11 @@ namespace DOT_Titling_Excel_VSTO
                     string number = SSUtils.GetCellValue(wsReleases, row, numberColumn);
                     string name = SSUtils.GetCellValue(wsReleases, row, nameColumn);
                     string midLong = SSUtils.GetCellValue(wsReleases, row, midLongColumn);
-                    string sprintFrom = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, sprintFromColumn));
-                    string sprintTo = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, sprintToColumn));
-                    string uatSprintFrom = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, uatSprintFromColumn));
-                    string uatSprintTo = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, uatSprintToColumn));
-                    string vendorSprint = ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, vendorSprintColumn));
+                    string sprintFrom = SSUtils.ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, sprintFromColumn));
+                    string sprintTo = SSUtils.ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, sprintToColumn));
+                    string uatSprintFrom = SSUtils.ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, uatSprintFromColumn));
+                    string uatSprintTo = SSUtils.ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, uatSprintToColumn));
+                    string vendorSprint = SSUtils.ZeroIfEmpty(SSUtils.GetCellValue(wsReleases, row, vendorSprintColumn));
                     string status = SSUtils.GetCellValue(wsReleases, row, statusColumn);
                     releases.Add(new Release(
                         Convert.ToInt32(number),
@@ -129,7 +129,7 @@ namespace DOT_Titling_Excel_VSTO
                 for (int row = headerRow + 1; row < footerRow; row++)
                 {
                     string priority = SSUtils.GetCellValue(wsEpics, row, priorityColumn);
-                    string releaseNumber = ZeroIfEmpty(SSUtils.GetCellValue(wsEpics, row, releaseNumberColumn));
+                    string releaseNumber = SSUtils.ZeroIfEmpty(SSUtils.GetCellValue(wsEpics, row, releaseNumberColumn));
                     string releaseName = SSUtils.GetCellValue(wsEpics, row, releaseNameColumn);
                     string epicName = SSUtils.GetCellValue(wsEpics, row, epicColumn);
                     string midLong = SSUtils.GetCellValue(wsEpics, row, midLongColumn);
@@ -150,10 +150,6 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
                 return null;
             }
-        }
-        private static string ZeroIfEmpty(string s)
-        {
-            return string.IsNullOrEmpty(s) ? "0" : s;
         }
     }
 }

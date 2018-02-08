@@ -9,6 +9,37 @@ namespace DOT_Titling_Excel_VSTO
 {
     class SSUtils
     {
+        public static string ZeroIfEmpty(string s)
+        {
+            return string.IsNullOrEmpty(s) ? "0" : s;
+        }
+
+        public static bool CheckDate(String date)
+        {
+            try
+            {
+                DateTime dt = DateTime.Parse(date);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static string MissingColumns(Excel.Worksheet ws)
+        {
+            string missingFields = string.Empty;
+            var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+            foreach (var jiraField in jiraFields)
+            {
+                string columnHeader = jiraField.ColumnHeader;
+                if (GetColumnFromHeader(ws, columnHeader) == 0)
+                    missingFields = missingFields + ' ' + columnHeader;
+            }
+            return missingFields.Trim();
+        }
+
         public static string GetColumnName(int columnNumber)
         {
             const string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

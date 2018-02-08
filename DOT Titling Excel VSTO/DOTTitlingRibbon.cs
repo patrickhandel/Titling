@@ -28,7 +28,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                ImportFromJira.ExecuteUpdateIssues(app, listofProjects);
+                JiraIssues.ExecuteUpdateTable(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -44,7 +44,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                ImportFromJira.ExecuteUpdateIssues(app, listofProjects);
+                JiraProgramIssues.ExecuteUpdateTable(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -61,7 +61,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                ImportFromJira.ExecuteAddIssues(app, listofProjects);
+                JiraIssues.ExecuteAddNewRowsToTable(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                ImportFromJira.ExecuteAddIssues(app, listofProjects);
+                JiraProgramIssues.ExecuteAddNewRowsToTable(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                ImportFromJira.ExecuteUpdateSelectedIssues(app, listofProjects);
+                JiraIssues.ExecuteUpdateSelectedRows(app, listofProjects);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -110,7 +110,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                ImportFromJira.ExecuteUpdateSelectedIssues(app, listofProjects);
+                JiraProgramIssues.ExecuteUpdateSelectedRows(app, listofProjects);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -125,7 +125,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                bool multiple = ExportToJira.SaveSelectedIssues(app);
+                bool multiple = JiraIssues.ExecuteSaveSelectedCellsToJira(app);
                 string msg = string.Empty;
                 if (multiple == true)
                 {
@@ -145,7 +145,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                bool multiple = ExportToJira.SaveSelectedIssues(app);
+                bool multiple = JiraProgramIssues.ExecuteSaveSelectedCellsToJira(app);
                 string msg = string.Empty;
                 if (multiple == true)
                 {
@@ -166,7 +166,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                TableStandardization.ExecuteStandardizeTable(app, TableStandardization.StandardizationType.Thorough);
+                TableStandardization.Execute(app, TableStandardization.StandardizationType.Thorough);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -181,7 +181,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                TableStandardization.ExecuteStandardizeTable(app, TableStandardization.StandardizationType.Light);
+                TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -225,7 +225,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 //SSUtils.BeginExcelOperation(app);
-                RoadMap.ExecuteUpdateRoadMap_DOT(app);
+                RoadMap.ExecuteUpdateRoadMap(app);
                 //SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -239,7 +239,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Email.ExecuteEmailStatus_DOT(app);
+                Email.ExecuteEmailStatus(app);
             }
             catch (Exception ex)
             {
@@ -254,7 +254,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                ImportFromJira.ExecuteUpdateEpics_DOT(app, listofProjects);
+                JiraEpics.ExecuteUpdateTable(app, listofProjects);
             }
             catch (Exception ex)
             {
@@ -336,7 +336,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                ImportFromJira.ExecuteUpdateChecklist(app, listofProjects);
+                //ImportFromJira.ExecuteUpdateChecklist(app, listofProjects);
             }
             catch (Exception ex)
             {
@@ -350,7 +350,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                ImportFromJira.ExecuteUpdateProjects(app);
+                JiraProjects.ExecuteUpdateTable(app);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)

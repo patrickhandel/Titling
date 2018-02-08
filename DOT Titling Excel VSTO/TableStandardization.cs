@@ -99,7 +99,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteStandardizeTable(Excel.Application app, StandardizationType sType)
+        public static void Execute(Excel.Application app, StandardizationType sType)
         {
             try
             {

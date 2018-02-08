@@ -8,6 +8,19 @@ namespace DOT_Titling_Excel_VSTO
 {
     class Email
     {
+        public static void ExecuteEmailStatus(Excel.Application app)
+        {
+            try
+            {
+                CreateImages(app);
+                SendEmail(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private static void SendEmail(Excel.Application app)
         {
             Outlook.Application outlook = new Outlook.Application();
@@ -17,23 +30,8 @@ namespace DOT_Titling_Excel_VSTO
             email.BodyFormat = Outlook.OlBodyFormat.olFormatHTML;
             Outlook.Recipients recipients = email.Recipients;
             Outlook.Recipient recip1 = recipients.Add("hufflepuff@egov.com");
-            //Outlook.Recipient recip2 = recipients.Add("marylou.sharpe@egov.com");
             recip1.Resolve();
-            //recip2.Resolve();
             email.Display();
-
-            //string html = "<TABLE cellpadding=5>";
-            //string[] fileArray = new string[7];
-            //string[] imageCid = new string[7];
-            //for (int x = 1; x <= 6; x++)
-            //{
-            //    fileArray[x] = @ThisAddIn.OutputDir + "\\" + "file" + x + ".PNG";
-            //    var attachment = email.Attachments.Add(fileArray[x], OlAttachmentType.olEmbeddeditem, null, "file" + x);
-            //    imageCid[x] = "file" + x + ".png@123";
-            //    attachment.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001E", imageCid[x]);
-            //    html = html + String.Format("<TR><TD><img src=\"cid:{0}\"></TD></TR><TR>", imageCid);
-            //}
-            //html = html + "</TABLE>";
 
             string file1 = @ThisAddIn.OutputDir + "\\" + "file1.PNG";
             string file2 = @ThisAddIn.OutputDir + "\\" + "file2.PNG";
@@ -137,20 +135,7 @@ namespace DOT_Titling_Excel_VSTO
                     Clipboard.GetImage().Save(file6, ImageFormat.Png);
                 }
             }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        public static void ExecuteEmailStatus_DOT(Excel.Application app)
-        {
-            try
-            {
-                CreateImages(app);
-                SendEmail(app);
-            }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
             }

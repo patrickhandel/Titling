@@ -7,7 +7,7 @@ namespace DOT_Titling_Excel_VSTO
 { 
     class RoadMap
     {
-        public static void ExecuteUpdateRoadMap_DOT(Excel.Application app)
+        public static void ExecuteUpdateRoadMap(Excel.Application app)
         {
             try
             {
@@ -295,9 +295,5 @@ namespace DOT_Titling_Excel_VSTO
             range3.Select();
         }
 
-        private static string ZeroIfEmpty(string s)
-        {
-            return string.IsNullOrEmpty(s) ? "0" : s;
-        }
     }
 }

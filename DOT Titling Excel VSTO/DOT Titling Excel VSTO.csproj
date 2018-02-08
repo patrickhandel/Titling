@@ -198,11 +198,13 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="JiraEpics.cs" />
+    <Compile Include="JiraProgramIssues.cs" />
+    <Compile Include="JiraShared.cs" />
     <Compile Include="Objects\Epic.cs" />
     <Compile Include="FileIO.cs" />
-    <Compile Include="ImportFromJira.cs" />
-    <Compile Include="JiraProject.cs" />
-    <Compile Include="JIraIssue.cs" />
+    <Compile Include="JiraProjects.cs" />
+    <Compile Include="JIraIssues.cs" />
     <Compile Include="Email.cs" />
     <Compile Include="Lists.cs" />
     <Compile Include="TableViews.cs" />
