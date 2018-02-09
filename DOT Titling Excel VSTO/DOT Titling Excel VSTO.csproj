@@ -198,13 +198,14 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="DataTypeExtensions.cs" />
     <Compile Include="JiraEpics.cs" />
     <Compile Include="JiraProgramIssues.cs" />
     <Compile Include="JiraShared.cs" />
     <Compile Include="Objects\Epic.cs" />
     <Compile Include="FileIO.cs" />
     <Compile Include="JiraProjects.cs" />
-    <Compile Include="JIraIssues.cs" />
+    <Compile Include="JiraIssues.cs" />
     <Compile Include="Email.cs" />
     <Compile Include="Lists.cs" />
     <Compile Include="TableViews.cs" />
@@ -218,7 +219,6 @@
     <Compile Include="Objects\Release.cs" />
     <Compile Include="Roadmap.cs" />
     <Compile Include="ssUtils.cs" />
-    <Compile Include="ExportToJira.cs" />
     <Compile Include="TableStandardization.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

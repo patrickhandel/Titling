@@ -92,9 +92,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                List<string> listofProjects = new List<string>();
-                listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                JiraIssues.ExecuteUpdateSelectedRows(app, listofProjects);
+                JiraIssues.ExecuteUpdateSelectedRows(app);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -109,8 +107,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
-                List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                JiraProgramIssues.ExecuteUpdateSelectedRows(app, listofProjects);
+                JiraProgramIssues.ExecuteUpdateSelectedRows(app);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -262,6 +259,20 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        private void btnUpdateEpics_Program_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                List<string> listofProjects = SSUtils.GetListOfProjects(app);
+                JiraEpics.ExecuteUpdateTable(app, listofProjects);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         // DOT VIEWS
         private void btnViewReleasePlan_DOT_Click(object sender, RibbonControlEventArgs e)
         {
@@ -358,5 +369,6 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
     }
 }

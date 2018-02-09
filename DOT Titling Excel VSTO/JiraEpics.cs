@@ -41,28 +41,27 @@ namespace DOT_Titling_Excel_VSTO
         //Update Table Data
         private static void UpdateTable(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
         {
+            //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
             try
             {
                 var epics = GetAllFromJira(listofProjects).Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-
-                int cnt = epics.Count();
-
-                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
-                int headerRow = headerRowRange.Row;
-
-                string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
-                int footerRow = footerRangeRange.Row;
-
-                int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Epic ID");
+                int headerRow = SSUtils.GetHeaderRow(ws);
+                int footerRow = SSUtils.GetFooterRow(ws);
+                int projectKeyCol = SSUtils.GetColumnFromHeader(ws, "Project Key");
+                int epicIDCol = SSUtils.GetColumnFromHeader(ws, "Epic ID");
                 for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
                 {
-                    string issueID = SSUtils.GetCellValue(ws, currentRow, issueIDCol);
-                    var issue = epics.FirstOrDefault(i => i.Key == issueID);
-                    bool notFound = issue == null;
-                    UpdateRow(ws, jiraFields, currentRow, issue, notFound);
+                    string projectKey = SSUtils.GetCellValue(ws, currentRow, projectKeyCol);
+                    if (listofProjects.Contains(projectKey))
+                    {
+                        string issueID = SSUtils.GetCellValue(ws, currentRow, epicIDCol);
+                        var epic = epics.FirstOrDefault(i => i.Key == issueID);
+                        bool notFound = false;
+                        if (epic == null)
+                            notFound = true;
+                        UpdateRow(ws, jiraFields, currentRow, epic, notFound);
+                    }
                 }
                 SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
             }
@@ -104,11 +103,10 @@ namespace DOT_Titling_Excel_VSTO
                         rToInsert.Insert();
                         UpdateRow(ws, jiraFields, footerRow, issue, false);
                         SSUtils.SetCellValue(ws, footerRow, column, issue.Key.Value, "issue.Key.Value");
-                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic (Local)"), issue.Summary, "Summary (Local)");
+                        SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Epic");
                         SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                     }
                     MessageBox.Show(issues.Count() + " Epics Added.");
-
                 }
                 else
                 {
@@ -197,10 +195,11 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-
                 //Create the JQL
                 var jql = new StringBuilder();
-                jql.Append("project = " + listofProjects[0]);
+                jql.Append("project in (");
+                jql.Append(JiraShared.FormatProjectList(listofProjects));
+                jql.Append(")");
                 jql.Append(" AND ");
                 jql.Append("issuetype in (\"Epic\")");
                 jql.Append(" AND ");

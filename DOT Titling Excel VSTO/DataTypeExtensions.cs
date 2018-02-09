@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Windows.Forms;
-using Excel = Microsoft.Office.Interop.Excel;
 
 namespace DOT_Titling_Excel_VSTO
 {
-    class ExportToJira
-    {
-
-
-
-
-
-
-    }
-
     public static class DataTypeExtensions
     {
         #region Methods

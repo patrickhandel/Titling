@@ -55,6 +55,8 @@ namespace DOT_Titling_Excel_VSTO
                 range = "ProjectChecklistData";
             if (ws.Name == "Release Topics")
                 range = "DOTReleaseData";
+            if (ws.Name == "Program Issues")
+                range = "ProgramIssueData";
             if (ws.Name == "Issues")
                 range = "IssueData";
             if (ws.Name == "Projects")

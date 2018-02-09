@@ -16,23 +16,22 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var activeWorksheet = app.ActiveSheet;
-                if ((activeWorksheet.Name == "Issues") || (activeWorksheet.Name == "DOT Releases"))
+                var wsIssues = app.Sheets["Issues"];
+                wsIssues.Select();
+                //TO DO: "DOT Releases"
+                string missingColumns = SSUtils.MissingColumns(wsIssues);
+                if (missingColumns == string.Empty)
                 {
-                    string missingColumns = SSUtils.MissingColumns(activeWorksheet);
-                    if (missingColumns == string.Empty)
-                    {
-                        UpdateTable(app, activeWorksheet, listofProjects);
-                        AddNewRowsToTable(app, activeWorksheet, listofProjects);
-                        string dt = DateTime.Now.ToString("MM/dd/yyyy");
-                        string val = activeWorksheet.Name + " (Updated on " + dt + ")";
-                        SSUtils.SetCellValue(activeWorksheet, 1, 1, val, "Updated On");
-                        TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Missing Columns: " + missingColumns);
-                    }
+                    UpdateTable(app, wsIssues, listofProjects);
+                    AddNewRowsToTable(app, wsIssues, listofProjects);
+                    string dt = DateTime.Now.ToString("MM/dd/yyyy");
+                    string val = wsIssues.Name + " (Updated on " + dt + ")";
+                    SSUtils.SetCellValue(wsIssues, 1, 1, val, "Updated On");
+                    TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
+                }
+                else
+                {
+                    MessageBox.Show("Missing Columns: " + missingColumns);
                 }
             }
             catch (Exception ex)
@@ -45,18 +44,17 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var activeWorksheet = app.ActiveSheet;
-                if ((activeWorksheet.Name == "Issues") || (activeWorksheet.Name == "DOT Releases"))
+                var wsIssues = app.Sheets["Issues"];
+                wsIssues.Select();
+                //TO DO: "DOT Releases"
+                string missingColumns = SSUtils.MissingColumns(wsIssues);
+                if (missingColumns == string.Empty)
                 {
-                    string missingColumns = SSUtils.MissingColumns(activeWorksheet);
-                    if (missingColumns == string.Empty)
-                    {
-                        AddNewRowsToTable(app, activeWorksheet, listofProjects);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Missing Columns: " + missingColumns);
-                    }
+                    AddNewRowsToTable(app, wsIssues, listofProjects);
+                }
+                else
+                {
+                    MessageBox.Show("Missing Columns: " + missingColumns);
                 }
             }
             catch (Exception ex)
@@ -65,7 +63,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateSelectedRows(Excel.Application app, List<string> listofProjects)
+        public static void ExecuteUpdateSelectedRows(Excel.Application app)
         {
             try
             {
@@ -78,8 +76,7 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = SSUtils.MissingColumns(activeWorksheet);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateSelectedRows(app, activeWorksheet, selection, listofProjects);
-                        //TableStandardization.ExecuteCleanupTable(app, TableStandardization.StandardizationType.Light);
+                        UpdateSelectedRows(app, activeWorksheet, selection);
                     }
                     else
                     {
@@ -143,23 +140,16 @@ namespace DOT_Titling_Excel_VSTO
             {
                 var issues = GetAllFromJira(listofProjects).Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-
-                int cnt = issues.Count();
-
-                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
-                int headerRow = headerRowRange.Row;
-
-                string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
-                Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
-                int footerRow = footerRangeRange.Row;
-
+                int headerRow = SSUtils.GetHeaderRow(ws);
+                int footerRow = SSUtils.GetFooterRow(ws);
                 int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
                 for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
                 {
-                    string jiraID = SSUtils.GetCellValue(ws, currentRow, issueIDCol);
-                    var issue = issues.FirstOrDefault(i => i.Key == jiraID);
-                    bool notFound = issue == null;
+                    string issueID = SSUtils.GetCellValue(ws, currentRow, issueIDCol);
+                    var issue = issues.FirstOrDefault(i => i.Key == issueID);
+                    bool notFound = false;
+                    if (issue == null)
+                        notFound = true;
                     UpdateRow(ws, jiraFields, currentRow, issue, notFound);
                 }
                 SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
@@ -240,32 +230,23 @@ namespace DOT_Titling_Excel_VSTO
             SSUtils.SetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Sprint Number (Local)"), SSUtils.GetCellValue(ws, footerRow, SSUtils.GetColumnFromHeader(ws, "Sprint Number")), "Sprint Number (Local)");
         }
 
-        private static void UpdateSelectedRows(Excel.Application app, Excel.Worksheet ws, Excel.Range selection, List<string> listofProjects)
+        private static void UpdateSelectedRows(Excel.Application app, Excel.Worksheet ws, Excel.Range selection)
         {
-            //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
-
-            var issues = GetAllFromJira(listofProjects).Result;
+            List<Jira.Issue> issues = SSUtils.GetListofSelectedIssuesIDsFromTable(ws, selection);
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-
-            string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
-            Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
-            int headerRow = headerRowRange.Row;
-
-            int cnt = selection.Rows.Count;
-
             for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
             {
                 if (ws.Rows[row].EntireRow.Height != 0)
                 {
                     int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
                     string issueID = SSUtils.GetCellValue(ws, row, issueIDCol).Trim();
-                    if (issueID.Length > 10 && issueID.Substring(0, 10) == listofProjects[0] + "-")
-                    {
-                        var issue = issues.FirstOrDefault(p => p.Key.Value == issueID);
-                        bool notFound = issue == null;
-                        UpdateRow(ws, jiraFields, row, issue, notFound);
-                        SSUtils.SetStandardRowHeight(ws, row, row);
-                    }
+
+                    var issue = issues.FirstOrDefault(i => i.Key == issueID);
+                    bool notFound = false;
+                    if (issue == null)
+                        notFound = true;
+                    UpdateRow(ws, jiraFields, row, issue, notFound);
+                    SSUtils.SetStandardRowHeight(ws, row, row);
                 }
             }
         }
@@ -358,7 +339,9 @@ namespace DOT_Titling_Excel_VSTO
                 var issue = JiraShared.GetSingleFromJira(issueID).Result;
                 int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
                 int row = SSUtils.FindTextInColumn(ws, rangeName + "[Issue ID]", issueID);
-                bool notFound = issue == null;
+                bool notFound = false;
+                if (issue == null)
+                    notFound = true;
                 UpdateRow(ws, jiraFields, row, issue, notFound);
                 SSUtils.SetStandardRowHeight(ws, row, row);
             }
@@ -850,6 +833,5 @@ namespace DOT_Titling_Excel_VSTO
                 return false;
             }
         }
-
     }
 }

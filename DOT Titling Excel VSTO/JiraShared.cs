@@ -6,6 +6,7 @@ using System.Windows;
 using System.Text;
 using Jira = Atlassian.Jira;
 
+//// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
 namespace DOT_Titling_Excel_VSTO
 {
     class JiraShared
@@ -26,7 +27,27 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public async static Task<IDictionary<string, Jira.Issue>> GetSelectedFromJira(params string[] listofIssueIDs)
+        public async static Task<List<Jira.Issue>> GetSelectedFromJira(List<string> listofIssueIDs)
+        {
+            try
+            {
+                ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+                //Create the JQL
+                var jql = new StringBuilder();
+                jql.Append("key in (");
+                jql.Append(FormatListofIDs(listofIssueIDs));
+                jql.Append(")");
+                List<Jira.Issue> filteredIssues = await JiraShared.Filter(jql);
+                return filteredIssues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }
+
+        private async static Task<IDictionary<string, Jira.Issue>> GetSelectedFromJiraAlternative(params string[] listofIssueIDs)
         {
             try
             {
@@ -63,8 +84,6 @@ namespace DOT_Titling_Excel_VSTO
             return filteredIssues;
         }
 
-
-
         public static List<string> CreateListOfLabels(string labels)
         {
             labels = labels.Replace(", ", ",");
@@ -81,9 +100,25 @@ namespace DOT_Titling_Excel_VSTO
                 projectList.Append(project);
                 if (cnt != projectCount)
                     projectList.Append(", ");
+
                 cnt++;
             }
             return projectList;
+        }
+
+        public static StringBuilder FormatListofIDs(List<string> lst)
+        {
+            var idList = new StringBuilder();
+            int cnt = 1;
+            int iCnt = lst.Count();
+            foreach (string project in lst)
+            {
+                idList.Append(project);
+                if (cnt != iCnt)
+                    idList.Append(", ");
+                cnt++;
+            }
+            return idList;
         }
 
         //Extract

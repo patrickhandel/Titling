@@ -26,7 +26,7 @@ namespace DOT_Titling_Excel_VSTO
             YesNo = 7,
             MidLong = 13,
             R = 7,
-            IssueType = 15,
+            IssueType = 20,
             ProjectKey = 15,
             Hidden = 0,
             Default = 15
@@ -43,6 +43,8 @@ namespace DOT_Titling_Excel_VSTO
         public static Color colorLightDullYellow = Color.FromArgb(255, 249, 186);
         public static Color colorLightDullBlue = Color.FromArgb(203, 233, 230);
         public static Color colorDarkGrey = Color.FromArgb(51, 51, 51);
+        public static Color colorSFR = Color.FromArgb(172, 185, 202);
+        public static Color colorTask = Color.FromArgb(248, 203, 173);
 
         // Standard Colors
         public static Excel.XlRgbColor colorWhite = Excel.XlRgbColor.rgbGhostWhite;
@@ -157,104 +159,118 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void ThoroughFooterCleanup(Excel.Application app, Excel.Range headerRowRange)
         {
-            int headerRow = headerRowRange.Row;
-            int footerRow = 0;
-            int footerRowOffset = 0;
-            string footerRangeName = SSUtils.GetSelectedTableFooter(app);
-            if (footerRangeName != string.Empty)
+            try
             {
-
-                Excel.Range footerRowRange = app.get_Range(footerRangeName, Type.Missing);
-                footerRow = footerRowRange.Row;
-                footerRowOffset = footerRow - headerRow;
-                headerRowRange.Copy(Type.Missing);
-                footerRowRange.PasteSpecial(Excel.XlPasteType.xlPasteFormats, Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-            }
-
-            // Get the footer row and format it
-            if (headerRow > 2)
-            {
-                Excel.Range propertiesRowRange = headerRowRange.Offset[-1, 0];
-                if (propertiesRowRange != null)
+                int headerRow = headerRowRange.Row;
+                int footerRow = 0;
+                int footerRowOffset = 0;
+                string footerRangeName = SSUtils.GetSelectedTableFooter(app);
+                if (footerRangeName != string.Empty)
                 {
+
+                    Excel.Range footerRowRange = app.get_Range(footerRangeName, Type.Missing);
+                    footerRow = footerRowRange.Row;
+                    footerRowOffset = footerRow - headerRow;
                     headerRowRange.Copy(Type.Missing);
-                    propertiesRowRange.PasteSpecial(Excel.XlPasteType.xlPasteFormats, Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                    footerRowRange.PasteSpecial(Excel.XlPasteType.xlPasteFormats, Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
                 }
+
+                // Get the footer row and format it
+                if (headerRow > 2)
+                {
+                    Excel.Range propertiesRowRange = headerRowRange.Offset[-1, 0];
+                    if (propertiesRowRange != null)
+                    {
+                        headerRowRange.Copy(Type.Missing);
+                        propertiesRowRange.PasteSpecial(Excel.XlPasteType.xlPasteFormats, Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
             }
         }
 
         private static void ThoroughColumnCleanup(Excel.Application app, string tableRangeName, Excel.Range headerRowRange)
         {
-            //Conditional Formatting
-            //https://stackoverflow.com/questions/11858529/deleting-a-conditionalformat
-            Excel.Range tableRange = app.get_Range(tableRangeName, Type.Missing);
-            if (tableRange != null)
+            try
             {
-                tableRange.ClearFormats();
-                int column;
-                string columnHeader;
-                string colType;
-                int firstDataRow = headerRowRange.Row + 1;
-                foreach (Excel.Range cell in headerRowRange.Cells)
+                //Conditional Formatting
+                //https://stackoverflow.com/questions/11858529/deleting-a-conditionalformat
+                Excel.Range tableRange = app.get_Range(tableRangeName, Type.Missing);
+                if (tableRange != null)
                 {
-                    column = cell.Column;
-                    columnHeader = cell.Value;
-                    colType = cell.Offset[-1, 0].Value;
-                    string columnNameRange = tableRangeName + '[' + columnHeader + ']';
-                    Excel.Range columnRange = app.get_Range(columnNameRange, Type.Missing);
-                    if (columnRange != null)
+                    tableRange.ClearFormats();
+                    int column;
+                    string columnHeader;
+                    string colType;
+                    int firstDataRow = headerRowRange.Row + 1;
+                    foreach (Excel.Range cell in headerRowRange.Cells)
                     {
-                        switch (colType)
+                        column = cell.Column;
+                        columnHeader = cell.Value;
+                        colType = cell.Offset[-1, 0].Value;
+                        string columnNameRange = tableRangeName + '[' + columnHeader + ']';
+                        Excel.Range columnRange = app.get_Range(columnNameRange, Type.Missing);
+                        if (columnRange != null)
                         {
-                            case "Decimal":
-                            case "Dollar":
-                                columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-                                columnRange.NumberFormat = "#,##0.00";
-                                break;
-                            case "Number":
-                                columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-                                break;
-                            case "Percent":
-                                columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-                                columnRange.NumberFormat = "0%";
-                                break;
-                            case "Date":
-                                columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
-                                columnRange.NumberFormat = "m/d/yyyy";
-                                break;
-                            case "YesNoGreen":
-                                FormatYesNo(columnRange, colType);
-                                break;
-                            case "YesNoGold":
-                                FormatYesNo(columnRange, colType);
-                                break;
-                            case "Error":
-                            case "YesNoRed":
-                            case "YesNo":
-                                FormatYesNo(columnRange, colType);
-                                break;
-                            case "MidLong":
-                                FormatMidLong(columnRange);
-                                break;
-                            case "R":
-                                FormatR(columnRange);
-                                break;
-                            case "IssueType":
-                                FormatIssueType(columnRange);
-                                break;
-                            case "Priority":
-                                FormatPriority(columnRange);
-                                break;
-                            case "Hidden":
-                                break;
-                            default:
-                                break;
+                            switch (colType)
+                            {
+                                case "Decimal":
+                                case "Dollar":
+                                    columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                                    columnRange.NumberFormat = "#,##0.00";
+                                    break;
+                                case "Number":
+                                    columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                                    break;
+                                case "Percent":
+                                    columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                                    columnRange.NumberFormat = "0%";
+                                    break;
+                                case "Date":
+                                    columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                                    columnRange.NumberFormat = "m/d/yyyy";
+                                    break;
+                                case "YesNoGreen":
+                                    FormatYesNo(columnRange, colType);
+                                    break;
+                                case "YesNoGold":
+                                    FormatYesNo(columnRange, colType);
+                                    break;
+                                case "Error":
+                                case "YesNoRed":
+                                case "YesNo":
+                                    FormatYesNo(columnRange, colType);
+                                    break;
+                                case "MidLong":
+                                    FormatMidLong(columnRange);
+                                    break;
+                                case "R":
+                                    FormatR(columnRange);
+                                    break;
+                                case "IssueType":
+                                    FormatIssueType(columnRange);
+                                    break;
+                                case "Priority":
+                                    FormatPriority(columnRange);
+                                    break;
+                                case "Hidden":
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
+                    FormatErrorColumns(app, tableRange, tableRangeName, firstDataRow);
+                    FormatRowsConditionally(app, tableRange, tableRangeName, firstDataRow);
                 }
-                FormatErrorColumns(app, tableRange, tableRangeName, firstDataRow);
-                FormatRowsConditionally(app, tableRange, tableRangeName, firstDataRow);
-            }            
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
         }
 
         private static void FormatErrorColumns(Excel.Application app, Excel.Range tableRange, string tableRangeName, int firstDataRow)
@@ -347,68 +363,76 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void FormatRowsConditionally(Excel.Application app, Excel.Range tableRange, string tableRangeName, int firstDataRow)
         {
-            if (tableRangeName == "IssueData" || tableRangeName == "DOTReleaseData")
+            try
             {
-                //Issue Type Column
-                Excel.Range issueTypeColumnRange = app.get_Range(tableRangeName + "[Issue Type]", Type.Missing);
-                string issueTypeColumn = SSUtils.GetColumnName(issueTypeColumnRange.Column);
-
-                //Bug Row
-                string condBug = "=$" + issueTypeColumn + firstDataRow + "=" + @"""Software Bug""";
-                Excel.FormatCondition fcBug = (Excel.FormatCondition)tableRange.FormatConditions.Add
-                    (Excel.XlFormatConditionType.xlExpression, Type.Missing, condBug, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                fcBug.Interior.Color = colorBugRow;
-
-                //Deleted Issue Row
-                string conDeleted = "=$" + issueTypeColumn + firstDataRow + "=" + @"""{DELETED}""";
-                Excel.FormatCondition fcDeleted = (Excel.FormatCondition)tableRange.FormatConditions.Add
-                    (Excel.XlFormatConditionType.xlExpression, Type.Missing, conDeleted, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                fcDeleted.Interior.Color = colorDeletedRow;
-            }
-            else
-            {
-                if (tableRangeName == "SprintData" || tableRangeName == "ReleaseData" || tableRangeName == "EpicData")
+                if (tableRangeName == "IssueData" || tableRangeName == "DOTReleaseData")
                 {
-                    //Release Column
-                    Excel.Range releaseColumnRange = app.get_Range(tableRangeName + "[R]", Type.Missing);
-                    string releaseColumn = SSUtils.GetColumnName(releaseColumnRange.Column);
+                    //Issue Type Column
+                    Excel.Range issueTypeColumnRange = app.get_Range(tableRangeName + "[Issue Type]", Type.Missing);
+                    string issueTypeColumn = SSUtils.GetColumnName(issueTypeColumnRange.Column);
 
-                    //Current Sprint Row
-                    if (tableRangeName == "SprintData")
+                    //Bug Row
+                    string condBug = "=$" + issueTypeColumn + firstDataRow + "=" + @"""Software Bug""";
+                    Excel.FormatCondition fcBug = (Excel.FormatCondition)tableRange.FormatConditions.Add
+                        (Excel.XlFormatConditionType.xlExpression, Type.Missing, condBug, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    fcBug.Interior.Color = colorBugRow;
+
+                    //Deleted Issue Row
+                    string conDeleted = "=$" + issueTypeColumn + firstDataRow + "=" + @"""{DELETED}""";
+                    Excel.FormatCondition fcDeleted = (Excel.FormatCondition)tableRange.FormatConditions.Add
+                        (Excel.XlFormatConditionType.xlExpression, Type.Missing, conDeleted, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    fcDeleted.Interior.Color = colorDeletedRow;
+                }
+                else
+                {
+                    if (tableRangeName == "SprintData" || tableRangeName == "ReleaseData" || tableRangeName == "EpicData")
                     {
-                        //Sprint Column
-                        Excel.Range sprintColumnRange = app.get_Range(tableRangeName + "[Sprint]", Type.Missing);
-                        string sprintColumn = SSUtils.GetColumnName(sprintColumnRange.Column);
+                        //Release Column
+                        Excel.Range releaseColumnRange = app.get_Range(tableRangeName + "[R]", Type.Missing);
+                        string releaseColumn = SSUtils.GetColumnName(releaseColumnRange.Column);
 
-                        string conSelected = "=$" + sprintColumn + firstDataRow + "=CurrentSprint";
-                        Excel.FormatCondition fcSelected = (Excel.FormatCondition)tableRange.FormatConditions.Add
-                            (Excel.XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                        fcSelected.Interior.Color = colorSprintRow;
+                        //Current Sprint Row
+                        if (tableRangeName == "SprintData")
+                        {
+                            //Sprint Column
+                            Excel.Range sprintColumnRange = app.get_Range(tableRangeName + "[Sprint]", Type.Missing);
+                            string sprintColumn = SSUtils.GetColumnName(sprintColumnRange.Column);
 
-                        string conSelected1 = "=AND($" + releaseColumn + firstDataRow + "=CurrentRelease,$" + sprintColumn + firstDataRow + "<>CurrentSprint)";
-                        Excel.FormatCondition fcSelected1 = (Excel.FormatCondition)tableRange.FormatConditions.Add
-                            (Excel.XlFormatConditionType.xlExpression, Type.Missing, conSelected1, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                        fcSelected1.Interior.Color = colorReleaseRow;
-                    }
+                            string conSelected = "=$" + sprintColumn + firstDataRow + "=CurrentSprint";
+                            Excel.FormatCondition fcSelected = (Excel.FormatCondition)tableRange.FormatConditions.Add
+                                (Excel.XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                            fcSelected.Interior.Color = colorSprintRow;
 
-                    //Current Release Row
-                    if (tableRangeName == "ReleaseData")
-                    {
-                        string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
-                        Excel.FormatCondition fcSelected = (Excel.FormatCondition)tableRange.FormatConditions.Add
-                            (Excel.XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                        fcSelected.Interior.Color = colorReleaseRow;
-                    }
+                            string conSelected1 = "=AND($" + releaseColumn + firstDataRow + "=CurrentRelease,$" + sprintColumn + firstDataRow + "<>CurrentSprint)";
+                            Excel.FormatCondition fcSelected1 = (Excel.FormatCondition)tableRange.FormatConditions.Add
+                                (Excel.XlFormatConditionType.xlExpression, Type.Missing, conSelected1, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                            fcSelected1.Interior.Color = colorReleaseRow;
+                        }
 
-                    //Current Release Row
-                    if (tableRangeName == "EpicData")
-                    {
-                        string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
-                        Excel.FormatCondition fcSelected = (Excel.FormatCondition)tableRange.FormatConditions.Add
-                            (Excel.XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                        fcSelected.Interior.Color = colorReleaseRow;
+                        //Current Release Row
+                        if (tableRangeName == "ReleaseData")
+                        {
+                            string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
+                            Excel.FormatCondition fcSelected = (Excel.FormatCondition)tableRange.FormatConditions.Add
+                                (Excel.XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                            fcSelected.Interior.Color = colorReleaseRow;
+                        }
+
+                        //Current Release Row
+                        if (tableRangeName == "EpicData")
+                        {
+                            string conSelected = "=$" + releaseColumn + firstDataRow + "=CurrentRelease";
+                            Excel.FormatCondition fcSelected = (Excel.FormatCondition)tableRange.FormatConditions.Add
+                                (Excel.XlFormatConditionType.xlExpression, Type.Missing, conSelected, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                            fcSelected.Interior.Color = colorReleaseRow;
+                        }
                     }
                 }
+            }
+            catch
+            {
+                //MessageBox.Show("Error :" + ex);
+                //return string.Empty;
             }
         }
 
@@ -428,6 +452,18 @@ namespace DOT_Titling_Excel_VSTO
             cBug.Interior.Color = colorBugRow;
             //cBug.Font.Color = colorDarkBrown;
             cBug.Font.Color = colorBlack;
+
+            // Task 
+            Excel.FormatCondition cTask = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "Task", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            cTask.Interior.Color = colorTask;
+            cTask.Font.Color = colorBlack;
+
+            //Software Feature Request
+            Excel.FormatCondition cSFR = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "Software Feature Request", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            cSFR.Interior.Color = colorSFR;
+            cSFR.Font.Color = colorBlack;
 
             // {DELETED}
             Excel.FormatCondition cDeleted = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
