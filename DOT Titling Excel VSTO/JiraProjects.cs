@@ -22,7 +22,6 @@ namespace DOT_Titling_Excel_VSTO
                     if (missingColumns == string.Empty)
                     {
                         UpdateTable(app, activeWorksheet);
-                        TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
                     }
                     else
                     {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
-using Jira = Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -42,22 +41,6 @@ namespace DOT_Titling_Excel_VSTO
             {
                 return false;
             }
-        }
-
-        public static List<Jira.Issue> GetListofSelectedIssuesIDsFromTable(Excel.Worksheet ws, Excel.Range selection)
-        {
-            List<string> listofIssues = new List<string>();
-            for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
-            {
-                if (ws.Rows[row].EntireRow.Height != 0)
-                {
-                    int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
-                    string issueID = SSUtils.GetCellValue(ws, row, issueIDCol).Trim();
-                    listofIssues.Add(issueID);
-                }
-            }
-            var issues = JiraShared.GetSelectedFromJira(listofIssues).Result;
-            return issues;
         }
 
         public static string MissingColumns(Excel.Worksheet ws)

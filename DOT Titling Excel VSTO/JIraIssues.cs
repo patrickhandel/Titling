@@ -9,25 +9,23 @@ using Jira = Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
-    class JiraIssues
+    class JiraIssues : JiraShared
     {
         //Public Methods
-        public static void ExecuteUpdateTable(Excel.Application app, List<string> listofProjects)
+        public static void ExecuteUpdateTable(Excel.Application app, List<string> listofProjects, ImportType importType)
         {
             try
             {
                 var wsIssues = app.Sheets["Issues"];
                 wsIssues.Select();
-                //TO DO: "DOT Releases"
                 string missingColumns = SSUtils.MissingColumns(wsIssues);
                 if (missingColumns == string.Empty)
                 {
-                    UpdateTable(app, wsIssues, listofProjects);
-                    AddNewRowsToTable(app, wsIssues, listofProjects);
+                    UpdateTable(app, wsIssues, listofProjects, importType);
+                    AddNewRowsToTable(app, wsIssues, listofProjects, importType);
                     string dt = DateTime.Now.ToString("MM/dd/yyyy");
                     string val = wsIssues.Name + " (Updated on " + dt + ")";
                     SSUtils.SetCellValue(wsIssues, 1, 1, val, "Updated On");
-                    TableStandardization.Execute(app, TableStandardization.StandardizationType.Light);
                 }
                 else
                 {
@@ -40,17 +38,16 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteAddNewRowsToTable(Excel.Application app, List<string> listofProjects)
+        public static void ExecuteAddNewRowsToTable(Excel.Application app, List<string> listofProjects, ImportType importType)
         {
             try
             {
                 var wsIssues = app.Sheets["Issues"];
                 wsIssues.Select();
-                //TO DO: "DOT Releases"
                 string missingColumns = SSUtils.MissingColumns(wsIssues);
                 if (missingColumns == string.Empty)
                 {
-                    AddNewRowsToTable(app, wsIssues, listofProjects);
+                    AddNewRowsToTable(app, wsIssues, listofProjects, importType);
                 }
                 else
                 {
@@ -133,12 +130,11 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         //Update Table Data
-        private static void UpdateTable(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
+        private static void UpdateTable(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects, ImportType importType)
         {
-            //// https://bitbucket.org/farmas/atlassian.net-sdk/wiki/Home
             try
             {
-                var issues = GetAllFromJira(listofProjects).Result;
+                var issues = GetAllFromJira(listofProjects, importType).Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
                 int headerRow = SSUtils.GetHeaderRow(ws);
                 int footerRow = SSUtils.GetFooterRow(ws);
@@ -160,14 +156,14 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void AddNewRowsToTable(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects)
+        private static void AddNewRowsToTable(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects, ImportType importType)
         {
             try
             {
                 string missingColumns = SSUtils.MissingColumns(ws);
                 if (missingColumns == string.Empty)
                 {
-                    var issues = GetAllFromJira(listofProjects).Result;
+                    var issues = GetAllFromJira(listofProjects, importType).Result;
                     string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                     int column = SSUtils.GetColumnFromHeader(ws, "Issue ID");
                     var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
@@ -232,20 +228,23 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void UpdateSelectedRows(Excel.Application app, Excel.Worksheet ws, Excel.Range selection)
         {
-            List<Jira.Issue> issues = SSUtils.GetListofSelectedIssuesIDsFromTable(ws, selection);
+            List<Jira.Issue> issues = GetListofSelectedIssuesIDsFromTable(ws, selection);
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+            int headerRow = SSUtils.GetHeaderRow(ws);
+            int footerRow = SSUtils.GetFooterRow(ws);
             for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
             {
                 if (ws.Rows[row].EntireRow.Height != 0)
                 {
                     int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
                     string issueID = SSUtils.GetCellValue(ws, row, issueIDCol).Trim();
-
                     var issue = issues.FirstOrDefault(i => i.Key == issueID);
                     bool notFound = false;
                     if (issue == null)
                         notFound = true;
                     UpdateRow(ws, jiraFields, row, issue, notFound);
+                    int column = SSUtils.GetColumnFromHeader(ws, "Project Key");
+                    SSUtils.SetCellValue(ws, footerRow, column, issue.Project, "Project Key");
                     SSUtils.SetStandardRowHeight(ws, row, row);
                 }
             }
@@ -295,7 +294,7 @@ namespace DOT_Titling_Excel_VSTO
                         SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
                 }
 
-                if (activeWorksheet.Name == "Issues" && statusColumn != 0)
+                if (notFound == false && issue.Project == ThisAddIn.ProjectKeyDOT)
                 {
                     newStatus = SSUtils.GetCellValue(activeWorksheet, row, statusColumn);
                     int statusLastChangedColumn = SSUtils.GetColumnFromHeader(activeWorksheet, "Status (Last Changed)");
@@ -336,7 +335,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 string rangeName = SSUtils.GetWorksheetRangeName(ws.Name);
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
-                var issue = JiraShared.GetSingleFromJira(issueID).Result;
+                var issue = GetSingleFromJira(issueID).Result;
                 int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
                 int row = SSUtils.FindTextInColumn(ws, rangeName + "[Issue ID]", issueID);
                 bool notFound = false;
@@ -352,30 +351,6 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         //Get From Jira
-        private async static Task<List<Jira.Issue>> GetAllFromJira(List<string> listofProjects)
-        {
-            try
-            {
-                ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-                //Create the JQL
-                var jql = new StringBuilder();
-                jql.Append("project in (");
-                jql.Append(JiraShared.FormatProjectList(listofProjects));
-                jql.Append(")");
-                jql.Append(" AND ");
-                jql.Append("issuetype in (\"Software Bug\", Story)");
-                jql.Append(" AND ");
-                jql.Append("summary ~ \"!DELETE\"");
-                List<Jira.Issue> filteredIssues = await JiraShared.Filter(jql);
-                return filteredIssues;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return null;
-            }
-        }
-
         private async static Task<List<Jira.Issue>> GetAllTasksFromJira(List<string> listofProjects)
         {
             try
@@ -383,13 +358,13 @@ namespace DOT_Titling_Excel_VSTO
                 ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
 
                 //Create the JQL
-                var jql = new System.Text.StringBuilder();
+                var jql = new StringBuilder();
                 jql.Append("project = " + listofProjects[0]);
                 jql.Append(" AND ");
                 jql.Append("issuetype in (\"Task\")");
                 jql.Append(" AND ");
                 jql.Append("\"Epic Link\" = " + listofProjects[0] + "-945");
-                List<Jira.Issue> filteredIssues = await JiraShared.Filter(jql);
+                List<Jira.Issue> filteredIssues = await Filter(jql);
                 return filteredIssues;
             }
             catch (Exception ex)
@@ -554,283 +529,6 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
                 return true;
-            }
-        }
-
-        //Extraction Methods
-        private static string ExtractStandardValue(Jira.Issue issue, string item)
-        {
-            string val = string.Empty;
-            switch (item)
-            {
-                case "issue.Project":
-                    val = issue.Project;
-                    break;
-                case "issue.Type.Name":
-                    val = issue.Type.Name;
-                    break;
-                case "issue.Key.Value":
-                    val = issue.Key.Value;
-                    break;
-                case "issue.Summary":
-                    val = issue.Summary;
-                    break;
-                case "issue.Status.Name":
-                    val = issue.Status.Name;
-                    break;
-                case "issue.Description":
-                    val = issue.Description;
-                    break;
-                case "issue.Assignee":
-                    val = issue.Assignee;
-                    break;
-                default:
-                    break;
-            }
-            return val;
-        }
-
-        private static string ExtractCustomValue(Jira.Issue issue, string item)
-        {
-            string val = string.Empty;
-            item = item.Replace(" Id ", " I'd ");
-            item = item.Trim();
-            try
-            {
-                val = issue[item].Value;
-            }
-            catch
-            {
-                val = string.Empty;
-            }
-            return val;
-        }
-
-        private static string ExtractValueBasedOnFunction(Jira.Issue issue, string item)
-        {
-            string val = string.Empty;
-            switch (item)
-            {
-                case "Sprint Number":
-                    val = ExtractSprintNumber(issue);
-                    break;
-                case "Release":
-                    val = JiraShared.ExtractRelease(issue);
-                    break;
-                case "DOT Web Services":
-                    val = ExtractDOTWebServices(issue);
-                    break;
-                case "Labels":
-                    List<string> listofLabels = JiraShared.ExtractListOfLabels(issue);
-                    foreach (string label in listofLabels)
-                    {
-                        val = val + label + ", ";
-                    }
-                    if (val != string.Empty && val.Right(2) == ", ")
-                        val = val.Left(val.Length - 2);
-                    break;
-                default:
-                    break;
-            }
-            return val;
-        }
-
-        //Extraction Functions
-        private static string ExtractDOTWebServices(Jira.Issue issue)
-        {
-            string val = string.Empty;
-            if (issue["DOT Web Services"] != null)
-            {
-                foreach (var ver in issue.CustomFields["DOT Web Services"].Values)
-                {
-                    val = val + " " + ver;
-                }
-                val = val.Trim().Replace(" ", ", ");
-            }
-            return val;
-        }
-
-        private static string ExtractSprintNumber(Jira.Issue issue)
-        {
-            string val = string.Empty;
-            int thisSprint = 0;
-            int lastSprint = 0;
-            foreach (var value in issue.CustomFields["Sprint"].Values)
-            {
-                val = value;
-                if (val.Length > 2)
-                {
-                    val = val.Substring(val.Length - 3).Trim();
-                    if (val != string.Empty)
-                    {
-                        if (Int32.TryParse(val, out thisSprint))
-                        {
-                            if (thisSprint > lastSprint)
-                                lastSprint = thisSprint;
-                        }
-                    }
-                }
-            }
-
-            string sprintNumber = string.Empty;
-            if (lastSprint == 0)
-            {
-                sprintNumber = "";
-            }
-            else
-            {
-                sprintNumber = lastSprint.ToString();
-            }
-            return sprintNumber;
-        }
-
-        //Save Single Value
-        private static bool SaveSummary(string issueID, string newValue, bool multiple)
-        {
-            try
-            {
-                var issue = JiraShared.GetSingleFromJira(issueID).Result;
-                if (issue.Summary == newValue)
-                {
-                    MessageBox.Show("No change needed.");
-                    return true;
-                }
-                issue.Summary = newValue;
-                issue.SaveChanges();
-                if (!multiple)
-                    MessageBox.Show("Summary updated successfully updated.");
-                return true;
-            }
-            catch
-            {
-                MessageBox.Show("Summary could NOT be successfully updated.");
-                return false;
-            }
-        }
-
-        private static bool SaveRelease(string issueID, string newValue, bool multiple)
-        {
-            try
-            {
-                var issue = JiraShared.GetSingleFromJira(issueID).Result;
-                string curRelease = JiraShared.ExtractRelease(issue);
-                if (curRelease == newValue)
-                {
-                    if (!multiple)
-                        MessageBox.Show("No change needed.");
-                    return true;
-                }
-
-                // Remove all of the existing versions
-                var oldVersions = issue.AffectsVersions.ToList();
-                foreach (var oldVersion in oldVersions)
-                {
-                    issue.AffectsVersions.Remove(oldVersion);
-                }
-
-                if (newValue.Trim() != string.Empty)
-                    issue.AffectsVersions.Add(newValue);
-
-                issue.SaveChanges();
-                if (!multiple)
-                    MessageBox.Show("Release updated successfully updated.");
-                return true;
-            }
-            catch
-            {
-                MessageBox.Show("Release could NOT successfully updated.");
-                return false;
-            }
-        }
-
-        private static bool SaveLabels(string issueID, string newValue, bool multiple)
-        {
-            try
-            {
-                var issue = JiraShared.GetSingleFromJira(issueID).Result;
-                List<string> listofJiraLabels = JiraShared.ExtractListOfLabels(issue);
-                List<string> listofExcelLabels = JiraShared.CreateListOfLabels(newValue);
-                List<string> addLabels = listofExcelLabels.Except(listofJiraLabels).ToList();
-                List<string> removeLabels = listofJiraLabels.Except(listofExcelLabels).ToList();
-
-                if (addLabels.Count > 0)
-                {
-                    foreach (string label in addLabels)
-                    {
-                        issue.Labels.Add(label);
-                    }
-                    issue.SaveChanges();
-                }
-
-                if (removeLabels.Count > 0)
-                {
-                    foreach (string label in removeLabels)
-                    {
-                        issue.Labels.Remove(label);
-                    }
-                    issue.SaveChanges();
-                }
-                return true;
-            }
-            catch
-            {
-                MessageBox.Show("Release could NOT successfully updated.");
-                return false;
-            }
-        }
-
-        private static bool SaveStatus(string issueID, string newValue, bool multiple)
-        {
-            try
-            {
-                var issue = JiraShared.GetSingleFromJira(issueID).Result;
-                if (issue.Status.Name == newValue)
-                {
-                    if (!multiple)
-                        MessageBox.Show("No change needed.");
-                    return true;
-                }
-                issue.WorkflowTransitionAsync(newValue);
-                if (!multiple)
-                    MessageBox.Show("Status transitioned successfully.");
-                return true;
-            }
-            catch
-            {
-                MessageBox.Show("Status could NOT be transitioned to " + newValue);
-                return true;
-            }
-        }
-
-        private static bool SaveCustomField(string issueID, string field, string newValue, bool multiple)
-        {
-            try
-            {
-                newValue = newValue.Trim();
-                var issue = JiraShared.GetSingleFromJira(issueID).Result;
-                if (issue[field] == newValue)
-                {
-                    if (!multiple)
-                        MessageBox.Show("No change needed.");
-                    return true;
-                }
-                if (newValue == string.Empty)
-                {
-                    issue[field] = null;
-                }
-                else
-                {
-                    issue[field] = newValue;
-                }
-                issue.SaveChanges(); if (!multiple)
-                    MessageBox.Show(field + " successfully updated.");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                //MessageBox.Show(field + " could NOT successfully updated.");
-                return false;
             }
         }
     }

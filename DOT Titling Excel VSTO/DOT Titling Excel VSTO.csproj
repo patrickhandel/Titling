@@ -200,7 +200,6 @@
   <ItemGroup>
     <Compile Include="DataTypeExtensions.cs" />
     <Compile Include="JiraEpics.cs" />
-    <Compile Include="JiraProgramIssues.cs" />
     <Compile Include="JiraShared.cs" />
     <Compile Include="Objects\Epic.cs" />
     <Compile Include="FileIO.cs" />
