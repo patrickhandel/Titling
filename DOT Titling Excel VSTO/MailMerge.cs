@@ -47,7 +47,7 @@ namespace DOT_Titling_Excel_VSTO
                         string projectKey = ThisAddIn.ProjectKeyDOT;
                         if (issueID.Length > 10 && issueID.Substring(0, 10) == projectKey + "-")
                         {
-                            JiraIssues.ExecuteUpdateRowBeforeOperation(issueID);
+                            JiraShared.ExecuteUpdateRowBeforeOperation(app, ws, issueID, "Issue ID");
                             string summary = string.Empty;
                             string epicID = string.Empty;
                             foreach (var mailMergeField in mailMergeFields)

@@ -79,9 +79,9 @@ namespace DOT_Titling_Excel_VSTO
                 string formula = jiraField.Formula;
                 int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
                 if (type == "Standard")
-                    SSUtils.SetCellValue(activeWorksheet, row, column, JiraProjects.ExtractStandardValue(project, item), columnHeader);
+                    SSUtils.SetCellValue(activeWorksheet, row, column, ExtractStandardValue(project, item), columnHeader);
                 if (type == "Function")
-                    SSUtils.SetCellValue(activeWorksheet, row, column, JiraProjects.ExtractValueBasedOnFunction(project, item), columnHeader);
+                    SSUtils.SetCellValue(activeWorksheet, row, column, ExtractValueBasedOnFunction(project, item), columnHeader);
             }
         }
 

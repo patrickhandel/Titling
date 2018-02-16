@@ -21,6 +21,151 @@ namespace DOT_Titling_Excel_VSTO
             TasksOnly = 4,
             ChecklistTasksOnly = 5
         };
+        
+        //Public Methods
+        public static void ExecuteUpdateTable(Excel.Application app, List<string> listofProjects, ImportType importType, string idColumnName)
+        {
+            try
+            {
+                var ws = app.ActiveSheet;
+                if (ws.Name == "Issues" || ws.Name == "Epics")
+                {
+                    string missingColumns = SSUtils.MissingColumns(ws);
+                    if (missingColumns == string.Empty)
+                    {
+                        List<Jira.Issue> issues = UpdateTable(app, ws, listofProjects, importType, idColumnName);
+                        if (issues != null)
+                        {
+                            AddNewRowsToTable(app, ws, issues, listofProjects, importType, idColumnName);
+                            string dt = DateTime.Now.ToString("MM/dd/yyyy");
+                            string val = ws.Name + " (Updated on " + dt + ")";
+                            SSUtils.SetCellValue(ws, 1, 1, val, "Updated On");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(ws.Name + " can't be updated.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void ExecuteAddNewRowsToTable(Excel.Application app, List<string> listofProjects, ImportType importType, string idColumnName)
+        {
+            try
+            {
+                var ws = app.ActiveSheet;
+                if (ws.Name == "Issues" || ws.Name == "Epics")
+                {
+                    string missingColumns = SSUtils.MissingColumns(ws);
+                    if (missingColumns == string.Empty)
+                    {
+                        AddNewRowsToTable(app, ws, null, listofProjects, importType, idColumnName);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(ws.Name + " can't be updated.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void ExecuteUpdateSelectedRows(Excel.Application app, List<string> listofProjects, ImportType importType, string idColumnName)
+        {
+            try
+            {
+                var ws = app.ActiveSheet;
+                var selection = app.Selection;
+                if (ws.Name == "Issues" || ws.Name == "Epics")
+                {
+                    string missingColumns = SSUtils.MissingColumns(ws);
+                    if (missingColumns == string.Empty)
+                    {
+                        UpdateSelectedRows(app, ws, selection, idColumnName);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(ws.Name + " can't be updated.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static bool ExecuteSaveSelectedCellsToJira(Excel.Application app, List<string> listofProjects, ImportType importType, string idColumnName)
+        {
+            try
+            {
+                var ws = app.ActiveSheet;
+                var selection = app.Selection;
+                if (ws.Name == "Issues" || ws.Name == "Epics")
+                {
+                    string missingColumns = SSUtils.MissingColumns(ws);
+                    if (missingColumns == string.Empty)
+                    {
+                        return SaveSelectedCellsToJira(ws, selection, idColumnName);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                        return false;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(ws.Name + " can't be updated.");
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return false;
+            }
+        }
+
+        public static void ExecuteUpdateRowBeforeOperation(Excel.Application app, Excel.Worksheet ws, string issueID, string idColumnName)
+        {
+            try
+            {
+                string missingColumns = SSUtils.MissingColumns(ws);
+                if (missingColumns == string.Empty)
+                {
+                    UpdateRowBeforeOperation(app, ws, issueID, idColumnName);
+                }
+                else
+                {
+                    MessageBox.Show("Missing Columns: " + missingColumns);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
 
         //Get From Jira
         public async static Task<List<Jira.Issue>> GetAllFromJira(List<string> listofProjects, ImportType importType)
@@ -35,17 +180,8 @@ namespace DOT_Titling_Excel_VSTO
                 jql.Append(")");
                 string jqlIssueTypes = GetJQLForImportType(importType);
                 jql.Append(jqlIssueTypes);
-
-                ////Handle DOT specifically
-                //if (listofProjects[0] == ThisAddIn.ProjectKeyDOT)
-                //{
-                //    jql.Append(" AND ");
-                //    jql.Append("issuetype in (\"Software Bug\", Story)");
-                //}
-
                 jql.Append(" AND ");
                 jql.Append("summary ~ \"!DELETE\"");
-
                 List<Jira.Issue> filteredIssues = await Filter(jql);
                 return filteredIssues;
             }
@@ -153,6 +289,250 @@ namespace DOT_Titling_Excel_VSTO
             return filteredIssues;
         }
 
+        private async static Task<List<Jira.Issue>> GetAllTasksFromJira(List<string> listofProjects)
+        {
+            try
+            {
+                ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+
+                //Create the JQL
+                var jql = new StringBuilder();
+                jql.Append("project = " + listofProjects[0]);
+                jql.Append(" AND ");
+                jql.Append("issuetype in (\"Task\")");
+                jql.Append(" AND ");
+                jql.Append("\"Epic Link\" = " + listofProjects[0] + "-945");
+                List<Jira.Issue> filteredIssues = await Filter(jql);
+                return filteredIssues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }
+
+        //Update Table Data
+        public static List<Jira.Issue> UpdateTable(Excel.Application app, Excel.Worksheet ws, List<string> listofProjects, ImportType importType, string idColumnName)
+        {
+            try
+            {
+                var issues = GetAllFromJira(listofProjects, importType).Result;
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+                int headerRow = SSUtils.GetHeaderRow(ws);
+                int footerRow = SSUtils.GetFooterRow(ws);
+
+                int projectKeyCol = SSUtils.GetColumnFromHeader(ws, "Project Key");
+                int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
+                for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
+                {
+                    string projectKey = SSUtils.GetCellValue(ws, currentRow, projectKeyCol);
+                    if (listofProjects.Contains(projectKey))
+                    {
+                        string id = SSUtils.GetCellValue(ws, currentRow, idColumn);
+                        var issue = issues.FirstOrDefault(i => i.Key == id);
+                        UpdateRow(ws, jiraFields, currentRow, issue, issue != null);
+                    }
+                }
+                SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
+                return issues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }
+
+        public static void UpdateSelectedRows(Excel.Application app, Excel.Worksheet ws, Excel.Range selection, string idColumnName)
+        {
+            List<Jira.Issue> issues = GetListofSelectedIssuesIDsFromTable(ws, selection);
+            var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+            int headerRow = SSUtils.GetHeaderRow(ws);
+            int footerRow = SSUtils.GetFooterRow(ws);
+            for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
+            {
+                if (ws.Rows[row].EntireRow.Height != 0)
+                {
+                    int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
+                    string id = SSUtils.GetCellValue(ws, row, idColumn).Trim();
+                    var issue = issues.FirstOrDefault(i => i.Key == id);
+                    UpdateRow(ws, jiraFields, row, issue, issue != null);
+                    SSUtils.SetStandardRowHeight(ws, row, row);
+                }
+            }
+        }
+
+        public static void AddNewRowsToTable(Excel.Application app, Excel.Worksheet ws, List<Jira.Issue> issues, List<string> listofProjects, ImportType importType, string idColumnName)
+        {
+            try
+            {
+                string missingColumns = SSUtils.MissingColumns(ws);
+                if (missingColumns == string.Empty)
+                {
+                    if (issues == null)
+                        issues = GetAllFromJira(listofProjects, importType).Result;
+                    string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                    int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
+                    var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+
+                    List<string> listofIDs = new List<string>();
+                    Excel.Range idColumnRange = ws.get_Range(wsRangeName + "[" + idColumnName + "]", Type.Missing);
+                    foreach (Excel.Range cell in idColumnRange.Cells)
+                    {
+                        listofIDs.Add(cell.Value);
+                    }
+                    foreach (var id in listofIDs)
+                    {
+                        issues.Remove(issues.FirstOrDefault(x => x.Key.Value == id.ToString()));
+                    }
+
+                    string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                    foreach (var issue in issues)
+                    {
+                        Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                        int footerRow = footerRangeRange.Row;
+                        Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                        rToInsert.Insert();
+                        string status = GetStatus(ws, footerRow);
+                        UpdateRow(ws, jiraFields, footerRow, issue, issue != null);
+                        UpdateRowAfterAdd(app, ws, issue, footerRow, status);
+                        SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
+                    }
+                    MessageBox.Show(issues.Count() + " Rows Added.");
+                }
+                else
+                {
+                    MessageBox.Show("Missing Columns: " + missingColumns);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void UpdateRow(Excel.Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Jira.Issue issue, bool found)
+        {
+            try
+            {
+                foreach (var jiraField in jiraFields)
+                {
+                    string columnHeader = jiraField.ColumnHeader;
+                    string type = jiraField.Type;
+                    string item = jiraField.Value;
+                    string formula = jiraField.Formula;
+                    int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
+                    if (found)
+                    {
+                        if (type == "Standard")
+                            SSUtils.SetCellValue(activeWorksheet, row, column, ExtractStandardValue(issue, item), columnHeader);
+                        if (type == "Custom")
+                            SSUtils.SetCellValue(activeWorksheet, row, column, ExtractCustomValue(issue, item), columnHeader);
+                        if (type == "Function")
+                            SSUtils.SetCellValue(activeWorksheet, row, column, ExtractValueBasedOnFunction(issue, item), columnHeader);
+                    }
+                    else
+                    {
+                        if (item == "issue.Summary")
+                        {
+                            int issueTypeCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Issue Type");
+                            if (issueTypeCol != 0)
+                                SSUtils.SetCellValue(activeWorksheet, row, issueTypeCol, "{DELETED}", columnHeader);
+                        }
+                        SSUtils.SetCellValue(activeWorksheet, row, column, string.Empty, columnHeader);
+                    }
+                    if (type == "Formula")
+                        SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        public static void UpdateRowBeforeOperation(Excel.Application app, Excel.Worksheet ws, string issueID, string idColumnName)
+        {
+            try
+            {
+                string rangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+                var issue = GetSingleFromJira(issueID).Result;
+                int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
+                int row = SSUtils.FindTextInColumn(ws, rangeName + "[" + idColumnName + "]", issueID);
+                UpdateRow(ws, jiraFields, row, issue, issue != null);
+                SSUtils.SetStandardRowHeight(ws, row, row);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
+        private static void UpdateRowAfterAdd(Excel.Application app, Excel.Worksheet ws, Jira.Issue issue, int row, string previousStatus)
+        {
+            if (issue.Type.Name == "Story" || issue.Type.Name == "Software Bug")
+            {
+                //Issue ID
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Issue ID"), issue.Key.Value, "Issue ID");
+
+                //Summary (Local)
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Summary (Local)"), issue.Summary, "Summary (Local)");
+                
+                //Release (Local)
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release (Local)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release")), "Release (Local)");
+                
+                //Epic (Local)
+                app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
+                int epicColumn = SSUtils.GetColumnFromHeader(ws, "Epic");
+                string newEpic = SSUtils.GetCellValue(ws, row, epicColumn);
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Epic (Local)"), newEpic, "Epic (Local)");
+                app.Calculation = Excel.XlCalculation.xlCalculationManual;
+                
+                //Sprint Number (Local)
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Sprint Number (Local)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Sprint Number")), "Sprint Number (Local)");
+
+                //Status (Last Changed)
+                if (issue.Project == ThisAddIn.ProjectKeyDOT)
+                {
+                    string newStatus = GetStatus(ws, row);
+                    int statusLastChangedColumn = SSUtils.GetColumnFromHeader(ws, "Status (Last Changed)");
+                    if (statusLastChangedColumn != 0)
+                    {
+                        string currentSprint = SSUtils.GetCellValueFromNamedRange("CurrentSprintToUse");
+                        int sprintColumn = SSUtils.GetColumnFromHeader(ws, "DOT Sprint Number (Local)");
+                        string sprint = SSUtils.GetCellValue(ws, row, sprintColumn);
+
+                        if (sprint != currentSprint)
+                        {
+                            SSUtils.SetCellValue(ws, row, statusLastChangedColumn, string.Empty, "Status (Last Changed)");
+                        }
+                        else
+                        {
+                            if (newStatus == "Done" || newStatus == "Ready for Development" || newStatus == "")
+                            {
+                                SSUtils.SetCellValue(ws, row, statusLastChangedColumn, string.Empty, "Status (Last Changed)");
+                            }
+                            else
+                            if (newStatus != previousStatus)
+                            {
+                                SSUtils.SetCellValue(ws, row, statusLastChangedColumn, DateTime.Now.ToString("MM/dd/yyyy"), "Status (Last Changed)");
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (issue.Type.Name == "Epic")
+            {
+                //Epic ID
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Epic ID"), issue.Key.Value, "Epic ID");
+                //Epic
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Epic");
+            }
+        }
+
         //Extract
         public static string ExtractRelease(Jira.Issue issue)
         {
@@ -226,6 +606,180 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        //Save to Jira
+        public static bool SaveSelectedCellsToJira(Excel.Worksheet ws, Excel.Range selection, string idColumnName)
+        {
+            try
+            {
+                string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
+                Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
+
+                int cellCount = selection.Cells.Count;
+                bool multiple = (cellCount > 1);
+                foreach (Excel.Range cell in selection.Cells)
+                {
+                    int row = cell.Row;
+                    if (ws.Rows[row].EntireRow.Height != 0)
+                    {
+                        int column = cell.Column;
+                        string fieldToSave = SSUtils.GetCellValue(ws, headerRowRange.Row, column);
+                        string newValue = SSUtils.GetCellValue(ws, row, column).Trim();
+
+                        int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
+                        string id = SSUtils.GetCellValue(ws, row, idColumn);
+
+                        int typeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
+                        string type = SSUtils.GetCellValue(ws, row, typeCol);
+
+                        int summaryCol = SSUtils.GetColumnFromHeader(ws, "Summary");
+                        string summary = SSUtils.GetCellValue(ws, row, summaryCol);
+
+                        if (summary == "{DELETED}")
+                        {
+                            MessageBox.Show("Cannot update a Deleted issue.");
+                        }
+                        else
+                        {
+                            switch (fieldToSave)
+                            {
+                                case "Summary":
+                                    SaveSummary(id, newValue, multiple);
+                                    break;
+                                case "Status":
+                                    SaveStatus(id, newValue, multiple);
+                                    break;
+                                case "Bypass Approval":
+                                    if (type == "Story")
+                                    {
+                                        newValue = newValue.Trim();
+                                        if (newValue != string.Empty && newValue != "x")
+                                        {
+                                            MessageBox.Show(fieldToSave + " is not valid. Required blank of x. (" + row + ")");
+                                            break;
+                                        }
+                                        SaveYesNo(id, fieldToSave, newValue, multiple);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                    }
+                                    break;
+                                case "Date Submitted to DOT":
+                                    if (type == "Story")
+                                    {
+                                        newValue = newValue.Trim();
+                                        if (newValue != string.Empty)
+                                        {
+                                            if (SSUtils.CheckDate(newValue) == false)
+                                            {
+                                                MessageBox.Show(fieldToSave + " is not a valid date. (" + row + ")");
+                                                break;
+                                            }
+                                            DateTime dt = DateTime.Parse(newValue);
+                                            newValue = dt.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz").Remove(26, 1);
+                                        }
+                                        SaveCustomField(id, fieldToSave, newValue, multiple);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                    }
+                                    break;
+                                case "Date Approved by DOT":
+                                    if (type == "Story")
+                                    {
+                                        newValue = newValue.Trim();
+                                        if (newValue != string.Empty)
+                                        {
+                                            if (SSUtils.CheckDate(newValue) == false)
+                                            {
+                                                MessageBox.Show(fieldToSave + " is not a valid date. (" + row + ")");
+                                                break;
+                                            }
+                                            DateTime dt = DateTime.Parse(newValue);
+                                            newValue = dt.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz").Remove(26, 1);
+                                        }
+                                        SaveCustomField(id, fieldToSave, newValue, multiple);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                    }
+                                    break;
+                                case "Story - As A":
+                                    if (type == "Story")
+                                    {
+                                        SaveCustomField(id, "Story: As a(n)", newValue, multiple);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                    }
+                                    break;
+                                case "Story - Id Like":
+                                    if (type == "Story")
+                                    {
+                                        SaveCustomField(id, "Story: I'd like to be able to", newValue, multiple);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                    }
+                                    break;
+                                case "Story - So That":
+                                    if (type == "Story")
+                                    {
+                                        SaveCustomField(id, "Story: So that I can", newValue, multiple);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                    }
+                                    break;
+                                case "Story Points":
+                                    SaveCustomField(id, "Story Points", newValue, multiple);
+                                    break;
+                                case "DOT Jira ID":
+                                    if (type == "Software Bug")
+                                    {
+                                        SaveCustomField(id, fieldToSave, newValue, multiple);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a Software Bug. (" + row + ")");
+                                    }
+                                    break;
+                                case "Release":
+                                    SaveRelease(id, newValue, multiple);
+                                    break;
+                                case "Labels":
+                                    SaveLabels(id, newValue, multiple);
+                                    break;
+                                case "Epic Link":
+                                    SaveCustomField(id, "Epic Link", newValue, multiple);
+                                    break;
+                                case "SWAG":
+                                    SaveCustomField(id, "SWAG", newValue, multiple);
+                                    break;
+                                case "Reason Blocked or Delayed":
+                                    SaveCustomField(id, "Reason Blocked or Delayed", newValue, multiple);
+                                    break;
+                                default:
+                                    MessageBox.Show(fieldToSave + " can't be updated. (" + row + ")");
+                                    break;
+                            }
+                        }
+                    }
+                }
+                return multiple;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return true;
+            }
+        }
+
         //Save Single Value
         public static bool SaveSummary(string issueID, string newValue, bool multiple)
         {
@@ -246,6 +800,34 @@ namespace DOT_Titling_Excel_VSTO
             catch
             {
                 MessageBox.Show("Summary could NOT be successfully updated.");
+                return false;
+            }
+        }
+
+        //Save Single Value
+        public static bool SaveYesNo(string issueID, string item, string newValue, bool multiple)
+        {
+            try
+            {
+                var issue = GetSingleFromJira(issueID).Result;
+                string yesNo = ExtractValueBasedOnFunction(issue, item);
+                if (yesNo == newValue)
+                {
+                    if (!multiple)
+                        MessageBox.Show("No change needed.");
+                    return true;
+                }
+                if (newValue == "x")
+                    SaveCustomField(issueID, item, "Yes", multiple);
+                if (newValue == "")
+                    SaveCustomField(issueID, item, string.Empty, multiple);
+                if (!multiple)
+                    MessageBox.Show(item + " updated successfully updated.");
+                return true;
+            }
+            catch
+            {
+                MessageBox.Show(item + " could NOT be successfully updated.");
                 return false;
             }
         }
@@ -345,7 +927,7 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         //Extraction Methods
-        public static string ExtractStandardValue(Jira.Issue issue, string item)
+        private static string ExtractStandardValue(Jira.Issue issue, string item)
         {
             string val = string.Empty;
             switch (item)
@@ -377,7 +959,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractCustomValue(Jira.Issue issue, string item)
+        private static string ExtractCustomValue(Jira.Issue issue, string item)
         {
             string val = string.Empty;
             item = item.Replace(" Id ", " I'd ");
@@ -393,7 +975,7 @@ namespace DOT_Titling_Excel_VSTO
             return val;
         }
 
-        public static string ExtractValueBasedOnFunction(Jira.Issue issue, string item)
+        private static string ExtractValueBasedOnFunction(Jira.Issue issue, string item)
         {
             string val = string.Empty;
             switch (item)
@@ -406,6 +988,9 @@ namespace DOT_Titling_Excel_VSTO
                     break;
                 case "DOT Web Services":
                     val = ExtractDOTWebServices(issue);
+                    break;
+                case "Bypass Approval":
+                    val = ExtractYesNo(issue, item);
                     break;
                 case "Labels":
                     List<string> listofLabels = ExtractListOfLabels(issue);
@@ -471,8 +1056,17 @@ namespace DOT_Titling_Excel_VSTO
             return sprintNumber;
         }
 
+        private static string ExtractYesNo(Jira.Issue issue, string item)
+        {
+            string retval = string.Empty;
+            string yesNo = ExtractCustomValue(issue, item);
+            if (yesNo == "Yes")
+                retval = "x";
+            return retval;
+        }
+
         //Lists
-        public static List<string> CreateListOfLabels(string labels)
+        private static List<string> CreateListOfLabels(string labels)
         {
             labels = labels.Replace(", ", ",");
             return labels.Split(',').ToList();
@@ -495,7 +1089,7 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         //String Builders
-        public static StringBuilder FormatProjectList(List<string> listofProjects)
+        private static StringBuilder FormatProjectList(List<string> listofProjects)
         {
             var projectList = new StringBuilder();
             int cnt = 1;
@@ -511,7 +1105,7 @@ namespace DOT_Titling_Excel_VSTO
             return projectList;
         }
 
-        public static StringBuilder FormatListofIDs(List<string> lst)
+        private static StringBuilder FormatListofIDs(List<string> lst)
         {
             var idList = new StringBuilder();
             int cnt = 1;
@@ -526,6 +1120,13 @@ namespace DOT_Titling_Excel_VSTO
             return idList;
         }
 
-
+        private static string GetStatus(Excel.Worksheet ws, int footerRow)
+        {
+            string status = string.Empty;
+            int statusColumn = SSUtils.GetColumnFromHeader(ws, "Status");
+            if (statusColumn != 0)
+                status = SSUtils.GetCellValue(ws, footerRow, statusColumn);
+            return status;
+        }
     }
 }

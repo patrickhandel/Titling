@@ -199,12 +199,10 @@
   -->
   <ItemGroup>
     <Compile Include="DataTypeExtensions.cs" />
-    <Compile Include="JiraEpics.cs" />
     <Compile Include="JiraShared.cs" />
     <Compile Include="Objects\Epic.cs" />
     <Compile Include="FileIO.cs" />
     <Compile Include="JiraProjects.cs" />
-    <Compile Include="JiraIssues.cs" />
     <Compile Include="Email.cs" />
     <Compile Include="Lists.cs" />
     <Compile Include="TableViews.cs" />

@@ -18,7 +18,7 @@ namespace DOT_Titling_Excel_VSTO
         public static string ProjectKeyDOT = "DOTTITLNG";
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
-        {
+        {            
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
