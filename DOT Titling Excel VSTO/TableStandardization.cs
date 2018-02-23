@@ -128,8 +128,8 @@ namespace DOT_Titling_Excel_VSTO
                     }
 
                     // Format the first row in the worksheet
-                    Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                    Excel.Range r = activeWorksheet.get_Range("A1");
+                    Excel.Worksheet ws = app.ActiveSheet;
+                    Excel.Range r = ws.get_Range("A1");
                     r.EntireRow.RowHeight = 40;
 
                     // Format the table header row
@@ -300,6 +300,7 @@ namespace DOT_Titling_Excel_VSTO
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Approved Not Groomed", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket", new string[] { "Sprint", "Status", "Sprint Number"});
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket but Not a Bug", new string[] { "Sprint" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story from Previous Release should be done", new string[] { "WIN Release", "Epic Release Number" });
             }
 
             if (tableRangeName == "DOTReleaseData")

@@ -15,18 +15,22 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var activeWorksheet = app.ActiveSheet;
-                if ((activeWorksheet.Name == "Projects"))
+                Excel.Worksheet ws = app.ActiveSheet;
+                if ((ws.Name == "Projects"))
                 {
-                    string missingColumns = SSUtils.MissingColumns(activeWorksheet);
+                    string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateTable(app, activeWorksheet);
+                        UpdateTable(app, ws);
                     }
                     else
                     {
                         MessageBox.Show("Missing Columns: " + missingColumns);
                     }
+                }
+                else
+                {
+                    MessageBox.Show(ws.Name + " can't be updated.");
                 }
             }
             catch (Exception ex)
@@ -69,7 +73,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void UpdateValues(Excel.Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Jira.Project project, bool notFound)
+        private static void UpdateValues(Excel.Worksheet ws, List<JiraFields> jiraFields, int row, Jira.Project project, bool notFound)
         {
             foreach (var jiraField in jiraFields)
             {
@@ -77,16 +81,16 @@ namespace DOT_Titling_Excel_VSTO
                 string type = jiraField.Type;
                 string item = jiraField.Value;
                 string formula = jiraField.Formula;
-                int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
+                int column = SSUtils.GetColumnFromHeader(ws, columnHeader);
                 if (type == "Standard")
-                    SSUtils.SetCellValue(activeWorksheet, row, column, ExtractStandardValue(project, item), columnHeader);
+                    SSUtils.SetCellValue(ws, row, column, ExtractStandardValue(project, item), columnHeader);
                 if (type == "Function")
-                    SSUtils.SetCellValue(activeWorksheet, row, column, ExtractValueBasedOnFunction(project, item), columnHeader);
+                    SSUtils.SetCellValue(ws, row, column, ExtractValueBasedOnFunction(project, item), columnHeader);
             }
         }
 
         //Get From Jira
-        private async static Task<Jira.Project> GetSingleFromJira(string issueID)
+        public async static Task<Jira.Project> GetSingleFromJira(string issueID)
         {
             try
             {

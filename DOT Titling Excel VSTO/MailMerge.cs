@@ -12,13 +12,13 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                Excel.Worksheet activeWorksheet = app.ActiveSheet;
-                Excel.Range activeCell = app.ActiveCell;
-                var selection = app.Selection;
-                if (activeCell != null && activeWorksheet.Name == "Issues")
+                Excel.Worksheet ws = app.ActiveSheet;
+                var activeCell = app.ActiveCell;
+                if (activeCell != null && ws.Name == "Issues")
                 {
+                    var selection = app.Selection;
                     var mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
-                    CreateMailMergeDocuments(app, activeWorksheet, selection, mailMergeFields);
+                    CreateMailMergeDocuments(app, ws, selection, mailMergeFields);
                 }
             }
             catch (Exception ex)

@@ -11,10 +11,14 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var activeWorksheet = app.ActiveSheet;
-                if (activeWorksheet.Name == "Road Map")
+                Excel.Worksheet ws = app.ActiveSheet;
+                if (ws.Name == "Road Map")
                 {
-                    UpdateRoadMap(app, activeWorksheet);
+                    UpdateRoadMap(app, ws);
+                }
+                else
+                {
+                    MessageBox.Show(ws.Name + " can't be updated.");
                 }
             }
             catch (Exception ex)

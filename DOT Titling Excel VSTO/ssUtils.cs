@@ -96,8 +96,8 @@ namespace DOT_Titling_Excel_VSTO
         public static string GetSelectedTable(Excel.Application app)
         {
             string t = string.Empty;
-            Excel.Worksheet activeWorksheet = app.ActiveSheet;
-            foreach (Excel.ListObject table in activeWorksheet.ListObjects)
+            Excel.Worksheet ws = app.ActiveSheet;
+            foreach (Excel.ListObject table in ws.ListObjects)
             {
                 Excel.Range tableRange = table.Range;
                 if (table.Active == true)
@@ -137,7 +137,7 @@ namespace DOT_Titling_Excel_VSTO
         public static string GetSelectedTableFooter(Excel.Application app)
         {
             string f = string.Empty;
-            Excel.Worksheet activeWorksheet = app.ActiveSheet;
+            Excel.Worksheet ws = app.ActiveSheet;
             string tableName = GetSelectedTable(app);
             if (tableName != string.Empty)
                 f = tableName + "[#Totals]";
@@ -147,8 +147,8 @@ namespace DOT_Titling_Excel_VSTO
         public static List<string> GetListOfTables(Excel.Application app)
         {
             List<string> listofTables = new List<string>();
-            Excel.Worksheet activeWorksheet = app.ActiveSheet;
-            foreach (Excel.ListObject table in activeWorksheet.ListObjects)
+            Excel.Worksheet ws = app.ActiveSheet;
+            foreach (Excel.ListObject table in ws.ListObjects)
             {
                 listofTables.Add(table.Name);
                 Excel.Range tableRange = table.Range;

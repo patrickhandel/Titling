@@ -27,7 +27,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var ws = app.ActiveSheet;
+                Excel.Worksheet ws = app.ActiveSheet;
                 if (ws.Name == "Issues" || ws.Name == "Epics")
                 {
                     string missingColumns = SSUtils.MissingColumns(ws);
@@ -62,7 +62,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var ws = app.ActiveSheet;
+                Excel.Worksheet ws = app.ActiveSheet;
                 if (ws.Name == "Issues" || ws.Name == "Epics")
                 {
                     string missingColumns = SSUtils.MissingColumns(ws);
@@ -90,10 +90,10 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var ws = app.ActiveSheet;
-                var selection = app.Selection;
+                Excel.Worksheet ws = app.ActiveSheet;
                 if (ws.Name == "Issues" || ws.Name == "Epics")
                 {
+                    var selection = app.Selection;
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
@@ -119,10 +119,10 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var ws = app.ActiveSheet;
-                var selection = app.Selection;
+                Excel.Worksheet ws = app.ActiveSheet;
                 if (ws.Name == "Issues" || ws.Name == "Epics")
                 {
+                    var selection = app.Selection;
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
@@ -412,7 +412,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void UpdateRow(Excel.Worksheet activeWorksheet, List<JiraFields> jiraFields, int row, Jira.Issue issue, bool found)
+        public static void UpdateRow(Excel.Worksheet ws, List<JiraFields> jiraFields, int row, Jira.Issue issue, bool found)
         {
             try
             {
@@ -422,28 +422,28 @@ namespace DOT_Titling_Excel_VSTO
                     string type = jiraField.Type;
                     string item = jiraField.Value;
                     string formula = jiraField.Formula;
-                    int column = SSUtils.GetColumnFromHeader(activeWorksheet, columnHeader);
+                    int column = SSUtils.GetColumnFromHeader(ws, columnHeader);
                     if (found)
                     {
                         if (type == "Standard")
-                            SSUtils.SetCellValue(activeWorksheet, row, column, ExtractStandardValue(issue, item), columnHeader);
+                            SSUtils.SetCellValue(ws, row, column, ExtractStandardValue(issue, item), columnHeader);
                         if (type == "Custom")
-                            SSUtils.SetCellValue(activeWorksheet, row, column, ExtractCustomValue(issue, item), columnHeader);
+                            SSUtils.SetCellValue(ws, row, column, ExtractCustomValue(issue, item), columnHeader);
                         if (type == "Function")
-                            SSUtils.SetCellValue(activeWorksheet, row, column, ExtractValueBasedOnFunction(issue, item), columnHeader);
+                            SSUtils.SetCellValue(ws, row, column, ExtractValueBasedOnFunction(issue, item), columnHeader);
                     }
                     else
                     {
                         if (item == "issue.Summary")
                         {
-                            int issueTypeCol = SSUtils.GetColumnFromHeader(activeWorksheet, "Issue Type");
+                            int issueTypeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
                             if (issueTypeCol != 0)
-                                SSUtils.SetCellValue(activeWorksheet, row, issueTypeCol, "{DELETED}", columnHeader);
+                                SSUtils.SetCellValue(ws, row, issueTypeCol, "{DELETED}", columnHeader);
                         }
-                        SSUtils.SetCellValue(activeWorksheet, row, column, string.Empty, columnHeader);
+                        SSUtils.SetCellValue(ws, row, column, string.Empty, columnHeader);
                     }
                     if (type == "Formula")
-                        SSUtils.SetCellFormula(activeWorksheet, row, column, formula);
+                        SSUtils.SetCellFormula(ws, row, column, formula);
                 }
             }
             catch (Exception ex)
@@ -764,6 +764,10 @@ namespace DOT_Titling_Excel_VSTO
                                 case "Reason Blocked or Delayed":
                                     SaveCustomField(id, "Reason Blocked or Delayed", newValue, multiple);
                                     break;
+                                case "Sprint":
+                                    //SaveCustomField(id, "Sprint", newValue, multiple);
+                                    SaveSprint(id, newValue, multiple);
+                                    break;
                                 default:
                                     MessageBox.Show(fieldToSave + " can't be updated. (" + row + ")");
                                     break;
@@ -863,6 +867,59 @@ namespace DOT_Titling_Excel_VSTO
             catch
             {
                 MessageBox.Show("Release could NOT successfully updated.");
+                return false;
+            }
+        }
+
+        //PWH
+        public static bool SaveSprint(string issueID, string newValue, bool multiple)
+        {
+            try
+            {
+                newValue = newValue.Trim();
+                var issue = GetSingleFromJira(issueID).Result;
+                if (issue["Sprint"] == newValue)
+                {
+                    if (!multiple)
+                        MessageBox.Show("No change needed.");
+                    return true;
+                }
+
+                //string projectID = issue.Project;
+                //var project = JiraProjects.GetSingleFromJira(projectID);
+
+
+                //foreach (var sprint in project.Result.Sp)
+                //{
+                //    val = val + " " + ver;
+                //}
+
+
+                //    var allIssues = _jira.Issues.Queryable
+                //.Where(i => i.Project == AppSettings.TargetProjectName
+                //            && i["Sprint"] == new LiteralMatch(sprintName))
+                //.ToList();
+
+                string id = issue["Sprint"].Value;
+
+
+                if (newValue == string.Empty)
+                {
+                    issue["Sprint"] = null;
+                }
+                else
+                {
+                    Jira.LiteralMatch s = new Jira.LiteralMatch(newValue);
+                    issue["Sprint"].Value = s.ToString();
+                }
+                issue.SaveChanges(); if (!multiple)
+                    MessageBox.Show("Sprint successfully updated.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                //MessageBox.Show("Sprint could NOT successfully updated.");
                 return false;
             }
         }

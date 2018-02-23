@@ -75,7 +75,7 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                var wsCover = app.Sheets["Cover"];
+                Excel.Worksheet wsCover = app.Sheets["Cover"];
                 wsCover.Select();
 
                 string file1 = @ThisAddIn.OutputDir + "\\" + "file1.PNG";
