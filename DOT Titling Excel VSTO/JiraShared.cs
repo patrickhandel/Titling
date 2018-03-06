@@ -23,7 +23,7 @@ namespace DOT_Titling_Excel_VSTO
         };
         
         //Public Methods
-        public static void ExecuteUpdateTable(Excel.Application app, List<string> listofProjects, ImportType importType, string idColumnName)
+        public static void ExecuteUpdateTable(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -33,6 +33,13 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
+                        string idColumnName = "Issue ID";
+                        ImportType importType = ImportType.StoriesAndBugsOnly;
+                        if (ws.Name == "Epics")
+                        {
+                            idColumnName = "Epic ID";
+                            importType = ImportType.EpicsOnly;
+                        }
                         List<Jira.Issue> issues = UpdateTable(app, ws, listofProjects, importType, idColumnName);
                         if (issues != null)
                         {
@@ -58,7 +65,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteAddNewRowsToTable(Excel.Application app, List<string> listofProjects, ImportType importType, string idColumnName)
+        public static void ExecuteAddNewRowsToTable(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -68,6 +75,13 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
+                        string idColumnName = "Issue ID";
+                        ImportType importType = ImportType.StoriesAndBugsOnly;
+                        if (ws.Name == "Epics")
+                        {
+                            idColumnName = "Epic ID";
+                            importType = ImportType.EpicsOnly;
+                        }
                         AddNewRowsToTable(app, ws, null, listofProjects, importType, idColumnName);
                     }
                     else
@@ -86,7 +100,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateSelectedRows(Excel.Application app, List<string> listofProjects, ImportType importType, string idColumnName)
+        public static void ExecuteUpdateSelectedRows(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -97,6 +111,9 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
+                        string idColumnName = "Issue ID";
+                        if (ws.Name == "Epics")
+                            idColumnName = "Epic ID";
                         UpdateSelectedRows(app, ws, selection, idColumnName);
                     }
                     else
@@ -346,7 +363,7 @@ namespace DOT_Titling_Excel_VSTO
 
         public static void UpdateSelectedRows(Excel.Application app, Excel.Worksheet ws, Excel.Range selection, string idColumnName)
         {
-            List<Jira.Issue> issues = GetListofSelectedIssuesIDsFromTable(ws, selection);
+            List<Jira.Issue> issues = GetListofSelectedIssuesIDsFromTable(ws, selection, idColumnName);
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
             int headerRow = SSUtils.GetHeaderRow(ws);
             int footerRow = SSUtils.GetFooterRow(ws);
@@ -538,11 +555,11 @@ namespace DOT_Titling_Excel_VSTO
         {
             string val = string.Empty;
             int c = 0;
-            foreach (var ver in issue.AffectsVersions)
+            foreach (var ver in issue.FixVersions)
             {
                 if (c > 0)
                     val = val + "; ";
-                val = val + issue.AffectsVersions[c].Name;
+                val = val + issue.FixVersions[c].Name;
                 c++;
             }
             return val;
@@ -850,14 +867,15 @@ namespace DOT_Titling_Excel_VSTO
                 }
 
                 // Remove all of the existing versions
-                var oldVersions = issue.AffectsVersions.ToList();
+                /// PWH VERSION
+                var oldVersions = issue.FixVersions.ToList();
                 foreach (var oldVersion in oldVersions)
                 {
-                    issue.AffectsVersions.Remove(oldVersion);
+                    issue.FixVersions.Remove(oldVersion);
                 }
 
                 if (newValue.Trim() != string.Empty)
-                    issue.AffectsVersions.Add(newValue);
+                    issue.FixVersions.Add(newValue);
 
                 issue.SaveChanges();
                 if (!multiple)
@@ -1129,14 +1147,14 @@ namespace DOT_Titling_Excel_VSTO
             return labels.Split(',').ToList();
         }
 
-        public static List<Jira.Issue> GetListofSelectedIssuesIDsFromTable(Excel.Worksheet ws, Excel.Range selection)
+        public static List<Jira.Issue> GetListofSelectedIssuesIDsFromTable(Excel.Worksheet ws, Excel.Range selection, string idColumnName)
         {
             List<string> listofIssues = new List<string>();
             for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
             {
                 if (ws.Rows[row].EntireRow.Height != 0)
                 {
-                    int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
+                    int issueIDCol = SSUtils.GetColumnFromHeader(ws, idColumnName);
                     string issueID = SSUtils.GetCellValue(ws, row, issueIDCol).Trim();
                     listofIssues.Add(issueID);
                 }

@@ -28,7 +28,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                JiraShared.ExecuteUpdateTable(app, listofProjects, JiraShared.ImportType.StoriesAndBugsOnly, "Issue ID");
+                JiraShared.ExecuteUpdateTable(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -44,7 +44,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                JiraShared.ExecuteUpdateTable(app, listofProjects, JiraShared.ImportType.AllIssues, "Issue ID");
+                JiraShared.ExecuteUpdateTable(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -61,7 +61,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                JiraShared.ExecuteAddNewRowsToTable(app, listofProjects, JiraShared.ImportType.StoriesAndBugsOnly, "Issue ID");
+                JiraShared.ExecuteAddNewRowsToTable(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                JiraShared.ExecuteAddNewRowsToTable(app, listofProjects, JiraShared.ImportType.AllIssues, "Issue ID");
+                JiraShared.ExecuteAddNewRowsToTable(app, listofProjects);
                 SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                JiraShared.ExecuteUpdateSelectedRows(app, listofProjects, JiraShared.ImportType.StoriesAndBugsOnly, "Issue ID");
+                JiraShared.ExecuteUpdateSelectedRows(app, listofProjects);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -110,7 +110,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                JiraShared.ExecuteUpdateSelectedRows(app, listofProjects, JiraShared.ImportType.AllIssues, "Issue ID");
+                JiraShared.ExecuteUpdateSelectedRows(app, listofProjects);
                 SSUtils.EndExcelOperation(app, "Selected Items Updated");
             }
             catch (Exception ex)
@@ -257,7 +257,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                JiraShared.ExecuteUpdateTable(app, listofProjects, JiraShared.ImportType.EpicsOnly, "Epic ID");
+                JiraShared.ExecuteUpdateTable(app, listofProjects);
             }
             catch (Exception ex)
             {
@@ -271,7 +271,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                JiraShared.ExecuteUpdateTable(app, listofProjects, JiraShared.ImportType.EpicsOnly, "Epic ID");
+                JiraShared.ExecuteUpdateTable(app, listofProjects);
             }
             catch (Exception ex)
             {
