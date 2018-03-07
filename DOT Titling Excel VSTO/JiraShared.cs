@@ -132,7 +132,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool ExecuteSaveSelectedCellsToJira(Excel.Application app, List<string> listofProjects, ImportType importType, string idColumnName)
+        public static bool ExecuteSaveSelectedCellsToJira(Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -143,6 +143,9 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
+                        string idColumnName = "Issue ID";
+                        if (ws.Name == "Epics")
+                            idColumnName = "Epic ID";
                         return SaveSelectedCellsToJira(ws, selection, idColumnName);
                     }
                     else
@@ -645,8 +648,16 @@ namespace DOT_Titling_Excel_VSTO
                         int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
                         string id = SSUtils.GetCellValue(ws, row, idColumn);
 
-                        int typeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
-                        string type = SSUtils.GetCellValue(ws, row, typeCol);
+                        string type = string.Empty;
+                        if (idColumnName == "Issue ID")
+                        { 
+                            int typeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
+                            type = SSUtils.GetCellValue(ws, row, typeCol);
+                        }
+                        if (idColumnName == "Epic ID")
+                        {
+                            type = "Epic";
+                        }
 
                         int summaryCol = SSUtils.GetColumnFromHeader(ws, "Summary");
                         string summary = SSUtils.GetCellValue(ws, row, summaryCol);

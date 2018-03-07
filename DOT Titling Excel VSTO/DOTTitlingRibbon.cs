@@ -127,7 +127,7 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = new List<string>();
                 listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                bool multiple = JiraShared.ExecuteSaveSelectedCellsToJira(app, listofProjects, JiraShared.ImportType.AllIssues, "Issue ID");
+                bool multiple = JiraShared.ExecuteSaveSelectedCellsToJira(app, listofProjects);
                 string msg = string.Empty;
                 if (multiple == true)
                 {
@@ -148,7 +148,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Application app = Globals.ThisAddIn.Application;
                 SSUtils.BeginExcelOperation(app);
                 List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                bool multiple = JiraShared.ExecuteSaveSelectedCellsToJira(app, listofProjects, JiraShared.ImportType.AllIssues, "Issue ID");
+                bool multiple = JiraShared.ExecuteSaveSelectedCellsToJira(app, listofProjects);
                 string msg = string.Empty;
                 if (multiple == true)
                 {
