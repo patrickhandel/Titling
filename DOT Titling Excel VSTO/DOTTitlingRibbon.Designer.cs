@@ -41,11 +41,14 @@ namespace DOT_Titling_Excel_VSTO
             this.tabHome = this.Factory.CreateRibbonTab();
             this.tabDOT = this.Factory.CreateRibbonTab();
             this.grpDOT = this.Factory.CreateRibbonGroup();
+            this.grpStandardization_DOT = this.Factory.CreateRibbonGroup();
+            this.tabPM = this.Factory.CreateRibbonTab();
+            this.grpPM = this.Factory.CreateRibbonGroup();
+            this.grpStandardization_PM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_DOT = this.Factory.CreateRibbonButton();
             this.btnUpdateSelected_DOT = this.Factory.CreateRibbonButton();
             this.btnAdd_DOT = this.Factory.CreateRibbonButton();
             this.btnSaveSelected_DOT = this.Factory.CreateRibbonButton();
-            this.btnUpdateEpics_DOT = this.Factory.CreateRibbonButton();
             this.btnUpdateChecklist = this.Factory.CreateRibbonButton();
             this.btnUpdateRoadMap_DOT = this.Factory.CreateRibbonButton();
             this.btnMailMerge_DOT = this.Factory.CreateRibbonButton();
@@ -57,21 +60,16 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewBlockedIssues_DOT = this.Factory.CreateRibbonButton();
             this.btnViewEpicsEstimateActual_DOT = this.Factory.CreateRibbonButton();
             this.btnViewReleasePlan_DOT = this.Factory.CreateRibbonButton();
-            this.grpStandardization_DOT = this.Factory.CreateRibbonGroup();
             this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_DOT = this.Factory.CreateRibbonButton();
-            this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
-            this.btnResetView_PM = this.Factory.CreateRibbonButton();
-            this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
-            this.tabPM = this.Factory.CreateRibbonTab();
-            this.grpPM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_Program = this.Factory.CreateRibbonButton();
             this.btnUpdateSelected_Program = this.Factory.CreateRibbonButton();
             this.btnAdd_Program = this.Factory.CreateRibbonButton();
             this.bntUpdateProjects = this.Factory.CreateRibbonButton();
-            this.btnUpdateEpics_Program = this.Factory.CreateRibbonButton();
-            this.grpStandardization_PM = this.Factory.CreateRibbonGroup();
+            this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
+            this.btnResetView_PM = this.Factory.CreateRibbonButton();
+            this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
@@ -101,7 +99,6 @@ namespace DOT_Titling_Excel_VSTO
             this.grpDOT.Items.Add(this.btnUpdateSelected_DOT);
             this.grpDOT.Items.Add(this.btnAdd_DOT);
             this.grpDOT.Items.Add(this.btnSaveSelected_DOT);
-            this.grpDOT.Items.Add(this.btnUpdateEpics_DOT);
             this.grpDOT.Items.Add(this.btnUpdateChecklist);
             this.grpDOT.Items.Add(this.btnUpdateRoadMap_DOT);
             this.grpDOT.Items.Add(this.btnMailMerge_DOT);
@@ -110,6 +107,38 @@ namespace DOT_Titling_Excel_VSTO
             this.grpDOT.Items.Add(this.Views_DOT);
             this.grpDOT.Label = "DOT Titling Project";
             this.grpDOT.Name = "grpDOT";
+            // 
+            // grpStandardization_DOT
+            // 
+            this.grpStandardization_DOT.Items.Add(this.btnStandardizeTable_DOT);
+            this.grpStandardization_DOT.Items.Add(this.btnResetView_DOT);
+            this.grpStandardization_DOT.Items.Add(this.btnToggleProperties_DOT);
+            this.grpStandardization_DOT.Label = "Table Standardization";
+            this.grpStandardization_DOT.Name = "grpStandardization_DOT";
+            // 
+            // tabPM
+            // 
+            this.tabPM.Groups.Add(this.grpPM);
+            this.tabPM.Groups.Add(this.grpStandardization_PM);
+            this.tabPM.Label = "WIN PM";
+            this.tabPM.Name = "tabPM";
+            // 
+            // grpPM
+            // 
+            this.grpPM.Items.Add(this.btnUpdate_Program);
+            this.grpPM.Items.Add(this.btnUpdateSelected_Program);
+            this.grpPM.Items.Add(this.btnAdd_Program);
+            this.grpPM.Items.Add(this.bntUpdateProjects);
+            this.grpPM.Label = "WIN Project Management";
+            this.grpPM.Name = "grpPM";
+            // 
+            // grpStandardization_PM
+            // 
+            this.grpStandardization_PM.Items.Add(this.btnStandardizeTable_PM);
+            this.grpStandardization_PM.Items.Add(this.btnResetView_PM);
+            this.grpStandardization_PM.Items.Add(this.btnToggleProperties_PM);
+            this.grpStandardization_PM.Label = "Table Standardization";
+            this.grpStandardization_PM.Name = "grpStandardization_PM";
             // 
             // btnUpdate_DOT
             // 
@@ -146,15 +175,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnSaveSelected_DOT.Name = "btnSaveSelected_DOT";
             this.btnSaveSelected_DOT.ShowImage = true;
             this.btnSaveSelected_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveSelectedIssues_DOT_Click);
-            // 
-            // btnUpdateEpics_DOT
-            // 
-            this.btnUpdateEpics_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnUpdateEpics_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnUpdateEpics_DOT.Image")));
-            this.btnUpdateEpics_DOT.Label = "Update Epics";
-            this.btnUpdateEpics_DOT.Name = "btnUpdateEpics_DOT";
-            this.btnUpdateEpics_DOT.ShowImage = true;
-            this.btnUpdateEpics_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateEpics_DOT_Click);
             // 
             // btnUpdateChecklist
             // 
@@ -261,14 +281,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewReleasePlan_DOT.ShowImage = true;
             this.btnViewReleasePlan_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_DOT_Click);
             // 
-            // grpStandardization_DOT
-            // 
-            this.grpStandardization_DOT.Items.Add(this.btnStandardizeTable_DOT);
-            this.grpStandardization_DOT.Items.Add(this.btnResetView_DOT);
-            this.grpStandardization_DOT.Items.Add(this.btnToggleProperties_DOT);
-            this.grpStandardization_DOT.Label = "Table Standardization";
-            this.grpStandardization_DOT.Name = "grpStandardization_DOT";
-            // 
             // btnStandardizeTable_DOT
             // 
             this.btnStandardizeTable_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -295,50 +307,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_DOT.Name = "btnToggleProperties_DOT";
             this.btnToggleProperties_DOT.ShowImage = true;
             this.btnToggleProperties_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
-            // 
-            // btnStandardizeTable_PM
-            // 
-            this.btnStandardizeTable_PM.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnStandardizeTable_PM.Image = ((System.Drawing.Image)(resources.GetObject("btnStandardizeTable_PM.Image")));
-            this.btnStandardizeTable_PM.Label = "Standardize Table";
-            this.btnStandardizeTable_PM.Name = "btnStandardizeTable_PM";
-            this.btnStandardizeTable_PM.ShowImage = true;
-            this.btnStandardizeTable_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStandardizeTable_Click);
-            // 
-            // btnResetView_PM
-            // 
-            this.btnResetView_PM.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnResetView_PM.Image = ((System.Drawing.Image)(resources.GetObject("btnResetView_PM.Image")));
-            this.btnResetView_PM.Label = "Reset View";
-            this.btnResetView_PM.Name = "btnResetView_PM";
-            this.btnResetView_PM.ShowImage = true;
-            this.btnResetView_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnResetView_Click);
-            // 
-            // btnToggleProperties_PM
-            // 
-            this.btnToggleProperties_PM.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnToggleProperties_PM.Image = ((System.Drawing.Image)(resources.GetObject("btnToggleProperties_PM.Image")));
-            this.btnToggleProperties_PM.Label = "Toggle Properties";
-            this.btnToggleProperties_PM.Name = "btnToggleProperties_PM";
-            this.btnToggleProperties_PM.ShowImage = true;
-            this.btnToggleProperties_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
-            // 
-            // tabPM
-            // 
-            this.tabPM.Groups.Add(this.grpPM);
-            this.tabPM.Groups.Add(this.grpStandardization_PM);
-            this.tabPM.Label = "WIN PM";
-            this.tabPM.Name = "tabPM";
-            // 
-            // grpPM
-            // 
-            this.grpPM.Items.Add(this.btnUpdate_Program);
-            this.grpPM.Items.Add(this.btnUpdateSelected_Program);
-            this.grpPM.Items.Add(this.btnAdd_Program);
-            this.grpPM.Items.Add(this.bntUpdateProjects);
-            this.grpPM.Items.Add(this.btnUpdateEpics_Program);
-            this.grpPM.Label = "WIN Project Management";
-            this.grpPM.Name = "grpPM";
             // 
             // btnUpdate_Program
             // 
@@ -376,21 +344,32 @@ namespace DOT_Titling_Excel_VSTO
             this.bntUpdateProjects.ShowImage = true;
             this.bntUpdateProjects.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.bntUpdateProjects_Click);
             // 
-            // btnUpdateEpics_Program
+            // btnStandardizeTable_PM
             // 
-            this.btnUpdateEpics_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnUpdateEpics_Program.Label = "Update Epics";
-            this.btnUpdateEpics_Program.Name = "btnUpdateEpics_Program";
-            this.btnUpdateEpics_Program.ShowImage = true;
-            this.btnUpdateEpics_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateEpics_Program_Click);
+            this.btnStandardizeTable_PM.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnStandardizeTable_PM.Image = ((System.Drawing.Image)(resources.GetObject("btnStandardizeTable_PM.Image")));
+            this.btnStandardizeTable_PM.Label = "Standardize Table";
+            this.btnStandardizeTable_PM.Name = "btnStandardizeTable_PM";
+            this.btnStandardizeTable_PM.ShowImage = true;
+            this.btnStandardizeTable_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStandardizeTable_Click);
             // 
-            // grpStandardization_PM
+            // btnResetView_PM
             // 
-            this.grpStandardization_PM.Items.Add(this.btnStandardizeTable_PM);
-            this.grpStandardization_PM.Items.Add(this.btnResetView_PM);
-            this.grpStandardization_PM.Items.Add(this.btnToggleProperties_PM);
-            this.grpStandardization_PM.Label = "Table Standardization";
-            this.grpStandardization_PM.Name = "grpStandardization_PM";
+            this.btnResetView_PM.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnResetView_PM.Image = ((System.Drawing.Image)(resources.GetObject("btnResetView_PM.Image")));
+            this.btnResetView_PM.Label = "Reset View";
+            this.btnResetView_PM.Name = "btnResetView_PM";
+            this.btnResetView_PM.ShowImage = true;
+            this.btnResetView_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnResetView_Click);
+            // 
+            // btnToggleProperties_PM
+            // 
+            this.btnToggleProperties_PM.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnToggleProperties_PM.Image = ((System.Drawing.Image)(resources.GetObject("btnToggleProperties_PM.Image")));
+            this.btnToggleProperties_PM.Label = "Toggle Properties";
+            this.btnToggleProperties_PM.Name = "btnToggleProperties_PM";
+            this.btnToggleProperties_PM.ShowImage = true;
+            this.btnToggleProperties_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
             // DOTTitlingRibbon
             // 
@@ -415,6 +394,7 @@ namespace DOT_Titling_Excel_VSTO
             this.grpStandardization_PM.ResumeLayout(false);
             this.grpStandardization_PM.PerformLayout();
             this.ResumeLayout(false);
+
         }
 
         #endregion
@@ -443,7 +423,6 @@ namespace DOT_Titling_Excel_VSTO
         internal RibbonButton btnUpdateChecklist;
         internal RibbonButton btnSaveSelected_DOT;
         internal RibbonButton btnUpdateRoadMap_DOT;
-        internal RibbonButton btnUpdateEpics_DOT;
         internal RibbonButton btnUpdateIssueDeveloper_DOT;
         internal RibbonButton btnEmailStatus_DOT;
         internal RibbonButton btnToggleProperties_DOT;
@@ -456,7 +435,6 @@ namespace DOT_Titling_Excel_VSTO
             private RibbonButton btnViewBlockedIssues_DOT;
         private RibbonButton btnViewEpicsEstimateActual_DOT;
         internal RibbonButton bntUpdateProjects;
-        internal RibbonButton btnUpdateEpics_Program;
         //
     }
 

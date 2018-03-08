@@ -250,35 +250,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdateEpics_DOT_Click(object sender, RibbonControlEventArgs e)
-        {
-            try
-            {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                List<string> listofProjects = new List<string>();
-                listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                JiraShared.ExecuteUpdateTable(app, listofProjects);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        private void btnUpdateEpics_Program_Click(object sender, RibbonControlEventArgs e)
-        {
-            try
-            {
-                Excel.Application app = Globals.ThisAddIn.Application;
-                List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                JiraShared.ExecuteUpdateTable(app, listofProjects);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
         // DOT VIEWS
         private void btnViewReleasePlan_DOT_Click(object sender, RibbonControlEventArgs e)
         {

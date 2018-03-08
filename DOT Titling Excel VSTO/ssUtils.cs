@@ -244,14 +244,13 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     if (column != 0)
                     {
-
                         Excel.Range rng = sheet.Cells[row, column] as Excel.Range;
                         if (rng != null)
                             rng.Value = val;
                     }
                     else
                     {
-                        MessageBox.Show(columnHeader + " is missing");
+                        //MessageBox.Show(columnHeader + " is missing");
                     }
                 }
             }
@@ -279,7 +278,15 @@ namespace DOT_Titling_Excel_VSTO
 
         public static void SetStandardRowHeight(Excel.Worksheet ws, int headerRow, int footerRow)
         {
-            Excel.Range allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
+            Excel.Range allRows = null;
+            if (headerRow == footerRow)
+            {
+                allRows = ws.get_Range(String.Format("{0}:{1}", headerRow, footerRow), Type.Missing);
+            }
+            else
+            { 
+                allRows = ws.get_Range(String.Format("{0}:{1}", headerRow + 1, footerRow - 1), Type.Missing);
+            }
             allRows.EntireRow.RowHeight = 15;
         }
 

@@ -28,13 +28,17 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Worksheet ws = app.ActiveSheet;
-                if (ws.Name == "Issues" || ws.Name == "Epics")
+                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
                 {
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
                         string idColumnName = "Issue ID";
                         ImportType importType = ImportType.StoriesAndBugsOnly;
+                        if (ws.Name == "Program Issues")
+                        {
+                            importType = ImportType.AllIssues;
+                        }
                         if (ws.Name == "Epics")
                         {
                             idColumnName = "Epic ID";
@@ -70,13 +74,17 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Worksheet ws = app.ActiveSheet;
-                if (ws.Name == "Issues" || ws.Name == "Epics")
+                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
                 {
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
                         string idColumnName = "Issue ID";
                         ImportType importType = ImportType.StoriesAndBugsOnly;
+                        if (ws.Name == "Progam Issues")
+                        {
+                            importType = ImportType.AllIssues;
+                        }
                         if (ws.Name == "Epics")
                         {
                             idColumnName = "Epic ID";
@@ -105,7 +113,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Worksheet ws = app.ActiveSheet;
-                if (ws.Name == "Issues" || ws.Name == "Epics")
+                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
                 {
                     var selection = app.Selection;
                     string missingColumns = SSUtils.MissingColumns(ws);
@@ -137,7 +145,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Worksheet ws = app.ActiveSheet;
-                if (ws.Name == "Issues" || ws.Name == "Epics")
+                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
                 {
                     var selection = app.Selection;
                     string missingColumns = SSUtils.MissingColumns(ws);
