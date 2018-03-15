@@ -510,7 +510,10 @@ namespace DOT_Titling_Excel_VSTO
                 
                 //Release (Local)
                 SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release (Local)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release")), "Release (Local)");
-                
+
+                //Release (Local)
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release (Save)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release")), "Release (Save)");
+
                 //Epic (Local)
                 app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
                 int epicColumn = SSUtils.GetColumnFromHeader(ws, "Epic");
