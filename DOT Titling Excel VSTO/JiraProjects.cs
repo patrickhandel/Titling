@@ -11,7 +11,7 @@ namespace DOT_Titling_Excel_VSTO
     class JiraProjects
     {
         //Public Methods
-        public static void ExecuteUpdateTable(Excel.Application app)
+        public static void ExecuteUpdateTable(Jira.Jira jira, Excel.Application app)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateTable(app, ws);
+                        UpdateTable(jira, app, ws);
                     }
                     else
                     {
@@ -40,11 +40,11 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         //Update Table Data
-        private static void UpdateTable(Excel.Application app, Excel.Worksheet ws)
+        private static void UpdateTable(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws)
         {
             try
             {
-                var projects = GetAllFromJira().Result;
+                var projects = GetAllFromJira(jira).Result;
                 var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
 
                 int cnt = projects.Count();
@@ -90,12 +90,12 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         //Get From Jira
-        public async static Task<Jira.Project> GetSingleFromJira(string issueID)
+        public async static Task<Jira.Project> GetSingleFromJira(Jira.Jira jira, string issueID)
         {
             try
             {
-                ThisAddIn.GlobalJira.Issues.MaxIssuesPerRequest = 1;
-                var project = await ThisAddIn.GlobalJira.Projects.GetProjectAsync(issueID);
+                jira.Issues.MaxIssuesPerRequest = 1;
+                var project = await jira.Projects.GetProjectAsync(issueID);
                 return project;
             }
             catch (Exception ex)
@@ -105,11 +105,11 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private async static Task<List<Jira.Project>> GetAllFromJira()
+        private async static Task<List<Jira.Project>> GetAllFromJira(Jira.Jira jira)
         {
             try
             {
-                var projects = await ThisAddIn.GlobalJira.Projects.GetProjectsAsync();
+                var projects = await jira.Projects.GetProjectsAsync();
                 return projects.ToList();
             }
             catch (Exception ex)

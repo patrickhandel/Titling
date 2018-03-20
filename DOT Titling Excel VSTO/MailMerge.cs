@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
+using Jira = Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class MailMerge
     {
-        public static void ExecuteMailMerge_DOT(Excel.Application app)
+        public static void ExecuteMailMerge_DOT(Jira.Jira jira, Excel.Application app)
         {
             try
             {
@@ -18,7 +19,7 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     var selection = app.Selection;
                     var mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
-                    CreateMailMergeDocuments(app, ws, selection, mailMergeFields);
+                    CreateMailMergeDocuments(jira, app, ws, selection, mailMergeFields);
                 }
             }
             catch (Exception ex)
@@ -27,7 +28,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void CreateMailMergeDocuments(Excel.Application app, Excel.Worksheet ws, Excel.Range selection, List<MailMergeFields> mailMergeFields)
+        public static void CreateMailMergeDocuments(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, Excel.Range selection, List<MailMergeFields> mailMergeFields)
         {
             try
             {
@@ -47,7 +48,7 @@ namespace DOT_Titling_Excel_VSTO
                         string projectKey = ThisAddIn.ProjectKeyDOT;
                         if (issueID.Length > 10 && issueID.Substring(0, 10) == projectKey + "-")
                         {
-                            JiraShared.ExecuteUpdateRowBeforeOperation(app, ws, issueID, "Issue ID");
+                            JiraShared.ExecuteUpdateRowBeforeOperation(jira, app, ws, issueID, "Issue ID");
                             string summary = string.Empty;
                             string epicID = string.Empty;
                             foreach (var mailMergeField in mailMergeFields)
