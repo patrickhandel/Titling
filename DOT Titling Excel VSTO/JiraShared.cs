@@ -228,7 +228,7 @@ namespace DOT_Titling_Excel_VSTO
                 case ImportType.AllIssues:
                     break;
                 case ImportType.StoriesAndBugsOnly:
-                    jql = " AND issuetype in (\"Software Bug\", Story)";
+                    jql = " AND issuetype in (\"Software Bug\", \"Bug\", Story)";
                     break;
                 case ImportType.EpicsOnly:
                     jql = " AND issuetype in (\"Epic\")";
@@ -500,7 +500,7 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void UpdateRowAfterAdd(Excel.Application app, Excel.Worksheet ws, Jira.Issue issue, int row, string previousStatus)
         {
-            if (issue.Type.Name == "Story" || issue.Type.Name == "Software Bug")
+            if (issue.Type.Name == "Story" || issue.Type.Name == "Software Bug" || issue.Type.Name == "Bug")
             {
                 //Issue ID
                 SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Issue ID"), issue.Key.Value, "Issue ID");
@@ -625,7 +625,8 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     issue[field] = newValue;
                 }
-                issue.SaveChanges(); if (!multiple)
+                issue.SaveChanges();
+                if (!multiple)
                     MessageBox.Show(field + " successfully updated.");
                 return true;
             }
@@ -779,13 +780,13 @@ namespace DOT_Titling_Excel_VSTO
                                     SaveCustomField(jira, id, "Story Points", newValue, multiple);
                                     break;
                                 case "DOT Jira ID":
-                                    if (type == "Software Bug")
+                                    if (type == "Software Bug" || type == "Bug")
                                     {
                                         SaveCustomField(jira, id, fieldToSave, newValue, multiple);
                                     }
                                     else
                                     {
-                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a Software Bug. (" + row + ")");
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a bBug. (" + row + ")");
                                     }
                                     break;
                                 case "Release":

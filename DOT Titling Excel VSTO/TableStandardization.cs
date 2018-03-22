@@ -372,11 +372,17 @@ namespace DOT_Titling_Excel_VSTO
                     Excel.Range issueTypeColumnRange = app.get_Range(tableRangeName + "[Issue Type]", Type.Missing);
                     string issueTypeColumn = SSUtils.GetColumnName(issueTypeColumnRange.Column);
 
-                    //Bug Row
+                    //Software Bug Row
                     string condBug = "=$" + issueTypeColumn + firstDataRow + "=" + @"""Software Bug""";
                     Excel.FormatCondition fcBug = (Excel.FormatCondition)tableRange.FormatConditions.Add
                         (Excel.XlFormatConditionType.xlExpression, Type.Missing, condBug, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
                     fcBug.Interior.Color = colorBugRow;
+
+                    //Bug Row
+                    string condBug1 = "=$" + issueTypeColumn + firstDataRow + "=" + @"""Bug""";
+                    Excel.FormatCondition fcBug1 = (Excel.FormatCondition)tableRange.FormatConditions.Add
+                        (Excel.XlFormatConditionType.xlExpression, Type.Missing, condBug1, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+                    fcBug1.Interior.Color = colorBugRow;
 
                     //Deleted Issue Row
                     string conDeleted = "=$" + issueTypeColumn + firstDataRow + "=" + @"""{DELETED}""";
@@ -453,6 +459,14 @@ namespace DOT_Titling_Excel_VSTO
             cBug.Interior.Color = colorBugRow;
             //cBug.Font.Color = colorDarkBrown;
             cBug.Font.Color = colorBlack;
+
+            // Bug
+            Excel.FormatCondition cBug1 = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "Bug", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            cBug1.Interior.Color = colorBugRow;
+            //cBug.Font.Color = colorDarkBrown;
+            cBug1.Font.Color = colorBlack;
+
 
             // Task 
             Excel.FormatCondition cTask = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
