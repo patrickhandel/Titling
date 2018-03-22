@@ -41,10 +41,6 @@ namespace DOT_Titling_Excel_VSTO
             this.tabHome = this.Factory.CreateRibbonTab();
             this.tabDOT = this.Factory.CreateRibbonTab();
             this.grpDOT = this.Factory.CreateRibbonGroup();
-            this.grpStandardization_DOT = this.Factory.CreateRibbonGroup();
-            this.tabPM = this.Factory.CreateRibbonTab();
-            this.grpPM = this.Factory.CreateRibbonGroup();
-            this.grpStandardization_PM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_DOT = this.Factory.CreateRibbonButton();
             this.btnUpdateSelected_DOT = this.Factory.CreateRibbonButton();
             this.btnAdd_DOT = this.Factory.CreateRibbonButton();
@@ -60,13 +56,18 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewBlockedIssues_DOT = this.Factory.CreateRibbonButton();
             this.btnViewEpicsEstimateActual_DOT = this.Factory.CreateRibbonButton();
             this.btnViewReleasePlan_DOT = this.Factory.CreateRibbonButton();
+            this.btnViewReleaseNotes_DOT = this.Factory.CreateRibbonButton();
+            this.grpStandardization_DOT = this.Factory.CreateRibbonGroup();
             this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_DOT = this.Factory.CreateRibbonButton();
+            this.tabPM = this.Factory.CreateRibbonTab();
+            this.grpPM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_Program = this.Factory.CreateRibbonButton();
             this.btnUpdateSelected_Program = this.Factory.CreateRibbonButton();
             this.btnAdd_Program = this.Factory.CreateRibbonButton();
             this.bntUpdateProjects = this.Factory.CreateRibbonButton();
+            this.grpStandardization_PM = this.Factory.CreateRibbonGroup();
             this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
             this.btnResetView_PM = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
@@ -107,38 +108,6 @@ namespace DOT_Titling_Excel_VSTO
             this.grpDOT.Items.Add(this.Views_DOT);
             this.grpDOT.Label = "DOT Titling Project";
             this.grpDOT.Name = "grpDOT";
-            // 
-            // grpStandardization_DOT
-            // 
-            this.grpStandardization_DOT.Items.Add(this.btnStandardizeTable_DOT);
-            this.grpStandardization_DOT.Items.Add(this.btnResetView_DOT);
-            this.grpStandardization_DOT.Items.Add(this.btnToggleProperties_DOT);
-            this.grpStandardization_DOT.Label = "Table Standardization";
-            this.grpStandardization_DOT.Name = "grpStandardization_DOT";
-            // 
-            // tabPM
-            // 
-            this.tabPM.Groups.Add(this.grpPM);
-            this.tabPM.Groups.Add(this.grpStandardization_PM);
-            this.tabPM.Label = "WIN PM";
-            this.tabPM.Name = "tabPM";
-            // 
-            // grpPM
-            // 
-            this.grpPM.Items.Add(this.btnUpdate_Program);
-            this.grpPM.Items.Add(this.btnUpdateSelected_Program);
-            this.grpPM.Items.Add(this.btnAdd_Program);
-            this.grpPM.Items.Add(this.bntUpdateProjects);
-            this.grpPM.Label = "WIN Project Management";
-            this.grpPM.Name = "grpPM";
-            // 
-            // grpStandardization_PM
-            // 
-            this.grpStandardization_PM.Items.Add(this.btnStandardizeTable_PM);
-            this.grpStandardization_PM.Items.Add(this.btnResetView_PM);
-            this.grpStandardization_PM.Items.Add(this.btnToggleProperties_PM);
-            this.grpStandardization_PM.Label = "Table Standardization";
-            this.grpStandardization_PM.Name = "grpStandardization_PM";
             // 
             // btnUpdate_DOT
             // 
@@ -224,6 +193,7 @@ namespace DOT_Titling_Excel_VSTO
             this.Views_DOT.Buttons.Add(this.btnViewBlockedIssues_DOT);
             this.Views_DOT.Buttons.Add(this.btnViewEpicsEstimateActual_DOT);
             this.Views_DOT.Buttons.Add(this.btnViewReleasePlan_DOT);
+            this.Views_DOT.Buttons.Add(this.btnViewReleaseNotes_DOT);
             this.Views_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.Views_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Views_DOT.Image")));
             this.Views_DOT.Label = "Views";
@@ -280,6 +250,28 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewReleasePlan_DOT.Name = "btnViewReleasePlan_DOT";
             this.btnViewReleasePlan_DOT.ShowImage = true;
             this.btnViewReleasePlan_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_DOT_Click);
+
+
+            // 
+            // btnViewReleaseNotes_DOT
+            // 
+            this.btnViewReleaseNotes_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnViewReleaseNotes_DOT.Description = "Release Notes";
+            this.btnViewReleaseNotes_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewReleasePlan_DOT.Image")));
+            this.btnViewReleaseNotes_DOT.Label = "Releases: Release Notes";
+            this.btnViewReleaseNotes_DOT.Name = "btnViewReleaseNotes_DOT";
+            this.btnViewReleaseNotes_DOT.ShowImage = true;
+            this.btnViewReleaseNotes_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleaseNotes_DOT_Click);
+
+
+            // 
+            // grpStandardization_DOT
+            // 
+            this.grpStandardization_DOT.Items.Add(this.btnStandardizeTable_DOT);
+            this.grpStandardization_DOT.Items.Add(this.btnResetView_DOT);
+            this.grpStandardization_DOT.Items.Add(this.btnToggleProperties_DOT);
+            this.grpStandardization_DOT.Label = "Table Standardization";
+            this.grpStandardization_DOT.Name = "grpStandardization_DOT";
             // 
             // btnStandardizeTable_DOT
             // 
@@ -307,6 +299,22 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_DOT.Name = "btnToggleProperties_DOT";
             this.btnToggleProperties_DOT.ShowImage = true;
             this.btnToggleProperties_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
+            // 
+            // tabPM
+            // 
+            this.tabPM.Groups.Add(this.grpPM);
+            this.tabPM.Groups.Add(this.grpStandardization_PM);
+            this.tabPM.Label = "WIN PM";
+            this.tabPM.Name = "tabPM";
+            // 
+            // grpPM
+            // 
+            this.grpPM.Items.Add(this.btnUpdate_Program);
+            this.grpPM.Items.Add(this.btnUpdateSelected_Program);
+            this.grpPM.Items.Add(this.btnAdd_Program);
+            this.grpPM.Items.Add(this.bntUpdateProjects);
+            this.grpPM.Label = "WIN Project Management";
+            this.grpPM.Name = "grpPM";
             // 
             // btnUpdate_Program
             // 
@@ -343,6 +351,14 @@ namespace DOT_Titling_Excel_VSTO
             this.bntUpdateProjects.Name = "bntUpdateProjects";
             this.bntUpdateProjects.ShowImage = true;
             this.bntUpdateProjects.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.bntUpdateProjects_Click);
+            // 
+            // grpStandardization_PM
+            // 
+            this.grpStandardization_PM.Items.Add(this.btnStandardizeTable_PM);
+            this.grpStandardization_PM.Items.Add(this.btnResetView_PM);
+            this.grpStandardization_PM.Items.Add(this.btnToggleProperties_PM);
+            this.grpStandardization_PM.Label = "Table Standardization";
+            this.grpStandardization_PM.Name = "grpStandardization_PM";
             // 
             // btnStandardizeTable_PM
             // 
@@ -430,6 +446,7 @@ namespace DOT_Titling_Excel_VSTO
         //
         internal RibbonGallery Views_DOT;
             private RibbonButton btnViewReleasePlan_DOT;
+            private RibbonButton btnViewReleaseNotes_DOT;
             private RibbonButton btnViewRequirementsErrors_DOT;
             private RibbonButton btnViewRequirementsStatus_DOT;
             private RibbonButton btnViewBlockedIssues_DOT;

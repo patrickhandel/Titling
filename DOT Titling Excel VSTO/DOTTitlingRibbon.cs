@@ -315,6 +315,19 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         // DOT VIEWS
+        private void btnViewReleaseNotes_DOT_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                TableViews.ExecuteViewReleaseNotes_DOT(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private void btnViewReleasePlan_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try

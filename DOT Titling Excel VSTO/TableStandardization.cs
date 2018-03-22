@@ -10,6 +10,7 @@ namespace DOT_Titling_Excel_VSTO
         public enum ColumnWidth
         {
             TextLong = 40,
+            TextExtraLong = 110,
             TextMedium = 20,
             TextShort = 15,
             TextTiny = 9,
@@ -122,7 +123,7 @@ namespace DOT_Titling_Excel_VSTO
                         columnHeader = cell.Value;
                         colType = cell.Offset[-1, 0].Value;
                         cell.IndentLevel = 0;
-                        if (colType == "TextLong")
+                        if (colType == "TextLong" || colType == "TextExtraLong")
                                 cell.IndentLevel = 1;
                         cell.EntireColumn.ColumnWidth = GetColumnWidth(colType);
                     }
@@ -279,7 +280,7 @@ namespace DOT_Titling_Excel_VSTO
             {
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary (Local)", "Summary" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic (Local)", "Epic", "Epic Link" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Releases Dont Match", new string[] { "Release (Local)", "Release" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Releases Dont Match", new string[] { "Release (Local)", "Fix Version" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Sprint", new string[] { "Sprint Number (Local)", "Sprint Number" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Sprints Dont Match", new string[] { "Sprint Number (Local)", "Sprint Number" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Issue ID" });
@@ -313,7 +314,7 @@ namespace DOT_Titling_Excel_VSTO
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Sprint Number" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
                 FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Issue Type" });
-                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Multiple Releases", new string[] { "Release" });
+                FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Multiple Releases", new string[] { "Fix Version" });
             }
 
             if (tableRangeName == "EpicData")

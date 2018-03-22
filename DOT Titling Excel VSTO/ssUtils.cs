@@ -11,7 +11,7 @@ namespace DOT_Titling_Excel_VSTO
     {
         public static int GetFooterRow(Excel.Worksheet ws)
         {
-            string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+            string sFooterRowRange = GetFooterRangeName(ws.Name);
             Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
             int footerRow = footerRangeRange.Row;
             return footerRow;
@@ -19,7 +19,7 @@ namespace DOT_Titling_Excel_VSTO
 
         public static int GetHeaderRow(Excel.Worksheet ws)
         {
-            string sHeaderRangeName = SSUtils.GetHeaderRangeName(ws.Name);
+            string sHeaderRangeName = GetHeaderRangeName(ws.Name);
             Excel.Range headerRowRange = ws.get_Range(sHeaderRangeName, Type.Missing);
             int headerRow = headerRowRange.Row;
             return headerRow;
@@ -132,6 +132,23 @@ namespace DOT_Titling_Excel_VSTO
                 }
             }
             return lo;
+        }
+
+        public static void SetColumnWidth(Excel.Worksheet ws, string columnHeader, int width)
+        {
+            try
+            {
+                int col = GetColumnFromHeader(ws, columnHeader);
+                if (col != 0)
+                {
+                    Excel.Range cell = ws.Cells[1, col] as Excel.Range;
+                    cell.EntireColumn.ColumnWidth = width;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
         }
 
         public static string GetSelectedTableFooter(Excel.Application app)
@@ -479,12 +496,12 @@ namespace DOT_Titling_Excel_VSTO
 
                 for (int row = headerRow + 1; row < footerRow; row++)
                 {
-                    int includeCol = SSUtils.GetColumnFromHeader(wsProjects, "Include");
-                    string include = SSUtils.GetCellValue(wsProjects, row, includeCol).Trim();
+                    int includeCol = GetColumnFromHeader(wsProjects, "Include");
+                    string include = GetCellValue(wsProjects, row, includeCol).Trim();
                     if (include == "x")
                     {
-                        int projectKeyCol = SSUtils.GetColumnFromHeader(wsProjects, "Project Key");
-                        string projectKey = SSUtils.GetCellValue(wsProjects, row, projectKeyCol).Trim();
+                        int projectKeyCol = GetColumnFromHeader(wsProjects, "Project Key");
+                        string projectKey = GetCellValue(wsProjects, row, projectKeyCol).Trim();
                         listofProjects.Add(projectKey);
                     }
                 }

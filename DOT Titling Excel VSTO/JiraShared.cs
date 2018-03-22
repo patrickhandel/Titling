@@ -509,10 +509,10 @@ namespace DOT_Titling_Excel_VSTO
                 SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Summary (Local)"), issue.Summary, "Summary (Local)");
                 
                 //Release (Local)
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release (Local)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release")), "Release (Local)");
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release (Local)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Fix Version")), "Release (Local)");
 
                 //Release (Local)
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release (Save)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release")), "Release (Save)");
+                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Affects Version"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Fix Version")), "Affects Version");
 
                 //Epic (Local)
                 app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
@@ -565,7 +565,7 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         //Extract
-        public static string ExtractRelease(Jira.Issue issue)
+        public static string ExtractFixVersion(Jira.Issue issue)
         {
             string val = string.Empty;
             int c = 0;
@@ -574,6 +574,20 @@ namespace DOT_Titling_Excel_VSTO
                 if (c > 0)
                     val = val + "; ";
                 val = val + issue.FixVersions[c].Name;
+                c++;
+            }
+            return val;
+        }
+
+        public static string ExtractAffectsVersion(Jira.Issue issue)
+        {
+            string val = string.Empty;
+            int c = 0;
+            foreach (var ver in issue.AffectsVersions)
+            {
+                if (c > 0)
+                    val = val + "; ";
+                val = val + issue.AffectsVersions[c].Name;
                 c++;
             }
             return val;
@@ -789,8 +803,11 @@ namespace DOT_Titling_Excel_VSTO
                                         MessageBox.Show(fieldToSave + " can't be updated because it is not a bBug. (" + row + ")");
                                     }
                                     break;
-                                case "Release":
-                                    SaveRelease(jira, id, newValue, multiple);
+                                case "Fix Version":
+                                    SaveFixVersion(jira, id, newValue, multiple);
+                                    break;
+                                case "Affects Version":
+                                    SaveAffectsVersion(jira, id, newValue, multiple);
                                     break;
                                 case "Labels":
                                     SaveLabels(jira, id, newValue, multiple);
@@ -876,13 +893,13 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static bool SaveRelease(Jira.Jira jira, string issueID, string newValue, bool multiple)
+        public static bool SaveFixVersion(Jira.Jira jira, string issueID, string newValue, bool multiple)
         {
             try
             {
                 var issue = GetSingleFromJira(jira, issueID).Result;
-                string curRelease = ExtractRelease(issue);
-                if (curRelease == newValue)
+                string curVersion = ExtractFixVersion(issue);
+                if (curVersion == newValue)
                 {
                     if (!multiple)
                         MessageBox.Show("No change needed.");
@@ -901,15 +918,52 @@ namespace DOT_Titling_Excel_VSTO
 
                 issue.SaveChanges();
                 if (!multiple)
-                    MessageBox.Show("Release updated successfully updated.");
+                    MessageBox.Show("Fix Version updated successfully updated.");
                 return true;
             }
             catch
             {
-                MessageBox.Show("Release could NOT successfully updated.");
+                MessageBox.Show("Fix Version could NOT successfully updated.");
                 return false;
             }
         }
+
+        //PWH
+        public static bool SaveAffectsVersion(Jira.Jira jira, string issueID, string newValue, bool multiple)
+        {
+            try
+            {
+                var issue = GetSingleFromJira(jira, issueID).Result;
+                string curVersion = ExtractAffectsVersion(issue);
+                if (curVersion == newValue)
+                {
+                    if (!multiple)
+                        MessageBox.Show("No change needed.");
+                    return true;
+                }
+
+                // Remove all of the existing versions
+                var oldVersions = issue.AffectsVersions.ToList();
+                foreach (var oldVersion in oldVersions)
+                {
+                    issue.AffectsVersions.Remove(oldVersion);
+                }
+
+                if (newValue.Trim() != string.Empty)
+                    issue.AffectsVersions.Add(newValue);
+
+                issue.SaveChanges();
+                if (!multiple)
+                    MessageBox.Show("Affects Version updated successfully updated.");
+                return true;
+            }
+            catch
+            {
+                MessageBox.Show("Affects Version could NOT successfully updated.");
+                return false;
+            }
+        }
+
 
         public static bool SaveSprint(Jira.Jira jira, string issueID, string newValue, bool multiple)
         {
@@ -934,7 +988,8 @@ namespace DOT_Titling_Excel_VSTO
                     Jira.LiteralMatch s = new Jira.LiteralMatch(newValue);
                     issue["Sprint"].Value = s.ToString();
                 }
-                issue.SaveChanges(); if (!multiple)
+                issue.SaveChanges();
+                if (!multiple)
                     MessageBox.Show("Sprint successfully updated.");
                 return true;
             }
@@ -977,7 +1032,7 @@ namespace DOT_Titling_Excel_VSTO
             }
             catch
             {
-                MessageBox.Show("Release could NOT successfully updated.");
+                MessageBox.Show("Labels could NOT successfully updated.");
                 return false;
             }
         }
@@ -1062,8 +1117,11 @@ namespace DOT_Titling_Excel_VSTO
                 case "Sprint Number":
                     val = ExtractSprintNumber(issue);
                     break;
-                case "Release":
-                    val = ExtractRelease(issue);
+                case "Fix Version":
+                    val = ExtractFixVersion(issue);
+                    break;
+                case "Affects Version":
+                    val = ExtractAffectsVersion(issue);
                     break;
                 case "DOT Web Services":
                     val = ExtractDOTWebServices(issue);

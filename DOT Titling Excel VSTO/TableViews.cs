@@ -7,6 +7,43 @@ namespace DOT_Titling_Excel_VSTO
 {
     class TableViews
     {
+        public static void ExecuteViewReleaseNotes_DOT(Excel.Application app)
+        {
+            try
+            {
+                Excel.Worksheet ws = app.Worksheets["Issues"];
+                ws.Activate();
+
+                string tableRangeName = SSUtils.GetSelectedTable(app);
+                string headerRangeName = SSUtils.GetSelectedTableHeader(app);
+                if (headerRangeName != string.Empty)
+                {
+                    Excel.Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    int headerRow = headerRowRange.Row;
+
+                    List<string> ColumnsToShow = new List<string>();
+
+                    ColumnsToShow.Add("Issue Type");
+                    ColumnsToShow.Add("Issue ID");
+                    SSUtils.SetColumnWidth(ws, "Issue ID", 20);
+                    ColumnsToShow.Add("Epic");
+                    ColumnsToShow.Add("Summary");
+                    SSUtils.SetColumnWidth(ws, "Summary", 150);
+                    ColumnsToShow.Add("Epic ID");
+                    ColumnsToShow.Add("WIN Release");
+                    ColumnsToShow.Add("DOT Jira ID");
+                    ColumnsToShow.Add("Affects Version");
+
+                    SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
+                    SSUtils.SortTable(ws, tableRangeName, "WIN Release", Excel.XlSortOrder.xlAscending);
+                    SSUtils.SortTable(ws, tableRangeName, "Issue Type", Excel.XlSortOrder.xlDescending);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
         public static void ExecuteViewRequirementsErrors(Excel.Application app)
         {
             try
@@ -149,7 +186,7 @@ namespace DOT_Titling_Excel_VSTO
                     List<string> ColumnsToShow = new List<string>();
                     ColumnsToShow.Add("R");
                     ColumnsToShow.Add("Vendor Release");
-                    ColumnsToShow.Add("Release");
+                    ColumnsToShow.Add("Fix Version");
                     ColumnsToShow.Add("Mid/Long");
                     ColumnsToShow.Add("From (Date)");
                     ColumnsToShow.Add("To (Date)");
