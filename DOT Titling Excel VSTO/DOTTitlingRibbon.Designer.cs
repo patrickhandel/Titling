@@ -71,6 +71,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
             this.btnResetView_PM = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
+            this.btnSaveSelected_Program = this.Factory.CreateRibbonButton();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
@@ -250,20 +251,16 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewReleasePlan_DOT.Name = "btnViewReleasePlan_DOT";
             this.btnViewReleasePlan_DOT.ShowImage = true;
             this.btnViewReleasePlan_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleasePlan_DOT_Click);
-
-
             // 
             // btnViewReleaseNotes_DOT
             // 
             this.btnViewReleaseNotes_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnViewReleaseNotes_DOT.Description = "Release Notes";
-            this.btnViewReleaseNotes_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewReleasePlan_DOT.Image")));
+            this.btnViewReleaseNotes_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewReleaseNotes_DOT.Image")));
             this.btnViewReleaseNotes_DOT.Label = "Releases: Release Notes";
             this.btnViewReleaseNotes_DOT.Name = "btnViewReleaseNotes_DOT";
             this.btnViewReleaseNotes_DOT.ShowImage = true;
             this.btnViewReleaseNotes_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleaseNotes_DOT_Click);
-
-
             // 
             // grpStandardization_DOT
             // 
@@ -312,6 +309,7 @@ namespace DOT_Titling_Excel_VSTO
             this.grpPM.Items.Add(this.btnUpdate_Program);
             this.grpPM.Items.Add(this.btnUpdateSelected_Program);
             this.grpPM.Items.Add(this.btnAdd_Program);
+            this.grpPM.Items.Add(this.btnSaveSelected_Program);
             this.grpPM.Items.Add(this.bntUpdateProjects);
             this.grpPM.Label = "WIN Project Management";
             this.grpPM.Name = "grpPM";
@@ -387,6 +385,15 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_PM.ShowImage = true;
             this.btnToggleProperties_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
+            // btnSaveSelected_Program
+            // 
+            this.btnSaveSelected_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnSaveSelected_Program.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveSelected_DOT.Image")));
+            this.btnSaveSelected_Program.Label = "Save Selected";
+            this.btnSaveSelected_Program.Name = "btnSaveSelected_Program";
+            this.btnSaveSelected_Program.ShowImage = true;
+            this.btnSaveSelected_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveSelected_Program_Click);
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -452,6 +459,7 @@ namespace DOT_Titling_Excel_VSTO
             private RibbonButton btnViewBlockedIssues_DOT;
         private RibbonButton btnViewEpicsEstimateActual_DOT;
         internal RibbonButton bntUpdateProjects;
+        internal RibbonButton btnSaveSelected_Program;
         //
     }
 

@@ -427,6 +427,5 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
-
     }
 }
