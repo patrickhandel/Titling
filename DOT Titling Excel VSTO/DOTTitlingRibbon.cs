@@ -46,6 +46,38 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        private static bool AuthenticateJira(Excel.Application app, string type)
+        {
+            try
+            {
+                if (type == "DOT")
+                {
+                    return true;
+                }
+                else
+                {
+                    Excel.Worksheet wsUser = app.Sheets["User"];
+                    Excel.Range rangeJiraUserName = wsUser.get_Range("JiraUserName");
+                    Excel.Range rangeJiraPassword = wsUser.get_Range("JiraPassword");
+                    string jiraUserName = rangeJiraUserName.Value2;
+                    string jiraPassword = rangeJiraPassword.Value2;
+                    if (jiraUserName.Trim() == string.Empty || jiraPassword.Trim() == string.Empty)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return false;
+            }
+        }
+
         // UPDATE, ADD, SAVE
         private void btnUpdateIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
@@ -426,6 +458,11 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
             }
+        }
+
+        private void button1_Click(object sender, RibbonControlEventArgs e)
+        {
+
         }
     }
 }

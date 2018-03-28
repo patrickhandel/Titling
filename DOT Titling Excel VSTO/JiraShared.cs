@@ -790,6 +790,16 @@ namespace DOT_Titling_Excel_VSTO
                                         MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
                                     }
                                     break;
+                                case "Release Notes":
+                                    if (type == "Story")
+                                    {
+                                        SaveCustomField(jira, id, "Release Notes", newValue, multiple);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
+                                    }
+                                    break;
                                 case "Story Points":
                                     SaveCustomField(jira, id, "Story Points", newValue, multiple);
                                     break;

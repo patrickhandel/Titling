@@ -61,21 +61,26 @@ namespace DOT_Titling_Excel_VSTO
             this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_DOT = this.Factory.CreateRibbonButton();
+            this.grpLogin = this.Factory.CreateRibbonGroup();
+            this.button1 = this.Factory.CreateRibbonButton();
             this.tabPM = this.Factory.CreateRibbonTab();
             this.grpPM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_Program = this.Factory.CreateRibbonButton();
             this.btnUpdateSelected_Program = this.Factory.CreateRibbonButton();
             this.btnAdd_Program = this.Factory.CreateRibbonButton();
+            this.btnSaveSelected_Program = this.Factory.CreateRibbonButton();
             this.bntUpdateProjects = this.Factory.CreateRibbonButton();
             this.grpStandardization_PM = this.Factory.CreateRibbonGroup();
             this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
             this.btnResetView_PM = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
-            this.btnSaveSelected_Program = this.Factory.CreateRibbonButton();
+            this.editBoxUserName = this.Factory.CreateRibbonEditBox();
+            this.editBoxPassword = this.Factory.CreateRibbonEditBox();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
             this.grpStandardization_DOT.SuspendLayout();
+            this.grpLogin.SuspendLayout();
             this.tabPM.SuspendLayout();
             this.grpPM.SuspendLayout();
             this.grpStandardization_PM.SuspendLayout();
@@ -92,6 +97,7 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.tabDOT.Groups.Add(this.grpDOT);
             this.tabDOT.Groups.Add(this.grpStandardization_DOT);
+            this.tabDOT.Groups.Add(this.grpLogin);
             this.tabDOT.Label = "DOT";
             this.tabDOT.Name = "tabDOT";
             // 
@@ -297,6 +303,20 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_DOT.ShowImage = true;
             this.btnToggleProperties_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
+            // grpLogin
+            // 
+            this.grpLogin.Items.Add(this.editBoxUserName);
+            this.grpLogin.Items.Add(this.editBoxPassword);
+            this.grpLogin.Items.Add(this.button1);
+            this.grpLogin.Label = "Login";
+            this.grpLogin.Name = "grpLogin";
+            // 
+            // button1
+            // 
+            this.button1.Label = "button1";
+            this.button1.Name = "button1";
+            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            // 
             // tabPM
             // 
             this.tabPM.Groups.Add(this.grpPM);
@@ -340,6 +360,15 @@ namespace DOT_Titling_Excel_VSTO
             this.btnAdd_Program.Name = "btnAdd_Program";
             this.btnAdd_Program.ShowImage = true;
             this.btnAdd_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAddIssues_Progam_Click);
+            // 
+            // btnSaveSelected_Program
+            // 
+            this.btnSaveSelected_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnSaveSelected_Program.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveSelected_Program.Image")));
+            this.btnSaveSelected_Program.Label = "Save Selected";
+            this.btnSaveSelected_Program.Name = "btnSaveSelected_Program";
+            this.btnSaveSelected_Program.ShowImage = true;
+            this.btnSaveSelected_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveSelected_Program_Click);
             // 
             // bntUpdateProjects
             // 
@@ -385,14 +414,15 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_PM.ShowImage = true;
             this.btnToggleProperties_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
-            // btnSaveSelected_Program
+            // editBoxUserName
             // 
-            this.btnSaveSelected_Program.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnSaveSelected_Program.Image = ((System.Drawing.Image)(resources.GetObject("btnSaveSelected_DOT.Image")));
-            this.btnSaveSelected_Program.Label = "Save Selected";
-            this.btnSaveSelected_Program.Name = "btnSaveSelected_Program";
-            this.btnSaveSelected_Program.ShowImage = true;
-            this.btnSaveSelected_Program.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSaveSelected_Program_Click);
+            this.editBoxUserName.Label = "User Name";
+            this.editBoxUserName.Name = "editBoxUserName";
+            // 
+            // editBoxPassword
+            // 
+            this.editBoxPassword.Label = "Password";
+            this.editBoxPassword.Name = "editBoxPassword";
             // 
             // DOTTitlingRibbon
             // 
@@ -410,6 +440,8 @@ namespace DOT_Titling_Excel_VSTO
             this.grpDOT.PerformLayout();
             this.grpStandardization_DOT.ResumeLayout(false);
             this.grpStandardization_DOT.PerformLayout();
+            this.grpLogin.ResumeLayout(false);
+            this.grpLogin.PerformLayout();
             this.tabPM.ResumeLayout(false);
             this.tabPM.PerformLayout();
             this.grpPM.ResumeLayout(false);
@@ -460,6 +492,10 @@ namespace DOT_Titling_Excel_VSTO
         private RibbonButton btnViewEpicsEstimateActual_DOT;
         internal RibbonButton bntUpdateProjects;
         internal RibbonButton btnSaveSelected_Program;
+        internal RibbonGroup grpLogin;
+        internal RibbonButton button1;
+        internal RibbonEditBox editBoxUserName;
+        internal RibbonEditBox editBoxPassword;
         //
     }
 
