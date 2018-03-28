@@ -270,6 +270,7 @@
       <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
     </Compile>
     <AppDesigner Include="Properties\" />
+    <None Include="WIN VSTO Created by Patick Handel.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -282,10 +283,16 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>DOT Titling Excel VSTO_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>WIN VSTO Created by Patick Handel.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>CA550ED77A1DAFCC7B2C234325D2208853BDCA61</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>9ABC34D856317C9EE0466E2ED964EE31BC05CDEB</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>WIN VSTO Created by Patick Handel.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

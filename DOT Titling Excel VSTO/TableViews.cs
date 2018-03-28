@@ -31,6 +31,8 @@ namespace DOT_Titling_Excel_VSTO
                     SSUtils.SetColumnWidth(ws, "Summary", 150);
                     ColumnsToShow.Add("Epic ID");
                     ColumnsToShow.Add("WIN Release");
+                    ColumnsToShow.Add("Epic Release");
+                    ColumnsToShow.Add("Agreed Upon Release");
                     ColumnsToShow.Add("DOT Jira ID");
                     ColumnsToShow.Add("Affects Version");
 
