@@ -115,7 +115,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Worksheet ws = app.ActiveSheet;
                 if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
                 {
-                    var selection = app.Selection;
+                    Excel.Range selection = app.Selection;
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
@@ -147,7 +147,7 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Worksheet ws = app.ActiveSheet;
                 if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
                 {
-                    var selection = app.Selection;
+                    Excel.Range selection = app.Selection;
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {

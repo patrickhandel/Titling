@@ -62,7 +62,11 @@ namespace DOT_Titling_Excel_VSTO
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_DOT = this.Factory.CreateRibbonButton();
             this.grpLogin = this.Factory.CreateRibbonGroup();
+            this.editBoxUserName = this.Factory.CreateRibbonEditBox();
+            this.editBoxPassword = this.Factory.CreateRibbonEditBox();
             this.button1 = this.Factory.CreateRibbonButton();
+            this.toggleButton1 = this.Factory.CreateRibbonToggleButton();
+            this.label1 = this.Factory.CreateRibbonLabel();
             this.tabPM = this.Factory.CreateRibbonTab();
             this.grpPM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_Program = this.Factory.CreateRibbonButton();
@@ -74,8 +78,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
             this.btnResetView_PM = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
-            this.editBoxUserName = this.Factory.CreateRibbonEditBox();
-            this.editBoxPassword = this.Factory.CreateRibbonEditBox();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
@@ -308,14 +310,38 @@ namespace DOT_Titling_Excel_VSTO
             this.grpLogin.Items.Add(this.editBoxUserName);
             this.grpLogin.Items.Add(this.editBoxPassword);
             this.grpLogin.Items.Add(this.button1);
+            this.grpLogin.Items.Add(this.toggleButton1);
+            this.grpLogin.Items.Add(this.label1);
             this.grpLogin.Label = "Login";
             this.grpLogin.Name = "grpLogin";
+            // 
+            // editBoxUserName
+            // 
+            this.editBoxUserName.Label = "User Name";
+            this.editBoxUserName.Name = "editBoxUserName";
+            this.editBoxUserName.Text = null;
+            // 
+            // editBoxPassword
+            // 
+            this.editBoxPassword.Label = "Password";
+            this.editBoxPassword.Name = "editBoxPassword";
+            this.editBoxPassword.Text = null;
             // 
             // button1
             // 
             this.button1.Label = "button1";
             this.button1.Name = "button1";
             this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            // 
+            // toggleButton1
+            // 
+            this.toggleButton1.Label = "toggleButton1";
+            this.toggleButton1.Name = "toggleButton1";
+            // 
+            // label1
+            // 
+            this.label1.Label = "label1";
+            this.label1.Name = "label1";
             // 
             // tabPM
             // 
@@ -414,16 +440,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_PM.ShowImage = true;
             this.btnToggleProperties_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
-            // editBoxUserName
-            // 
-            this.editBoxUserName.Label = "User Name";
-            this.editBoxUserName.Name = "editBoxUserName";
-            // 
-            // editBoxPassword
-            // 
-            this.editBoxPassword.Label = "Password";
-            this.editBoxPassword.Name = "editBoxPassword";
-            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -496,6 +512,8 @@ namespace DOT_Titling_Excel_VSTO
         internal RibbonButton button1;
         internal RibbonEditBox editBoxUserName;
         internal RibbonEditBox editBoxPassword;
+        internal RibbonToggleButton toggleButton1;
+        internal RibbonLabel label1;
         //
     }
 

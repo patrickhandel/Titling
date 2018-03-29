@@ -20,23 +20,16 @@ namespace DOT_Titling_Excel_VSTO
 
         }
 
-        private static Jira.Jira GetJira(Excel.Application app, string type)
+        private static Jira.Jira GetJira(Excel.Application app)
         {
             try
             {
-                if (type == "DOT") 
-                {
-                    return Jira.Jira.CreateRestClient(ThisAddIn.JiraSite, ThisAddIn.JiraUserName, ThisAddIn.JiraPassword);
-                }
-                else
-                {
-                    Excel.Worksheet wsUser = app.Sheets["User"];
-                    Excel.Range rangeJiraUserName = wsUser.get_Range("JiraUserName");
-                    Excel.Range rangeJiraPassword = wsUser.get_Range("JiraPassword");
-                    string jiraUserName = rangeJiraUserName.Value2;
-                    string jiraPassword = rangeJiraPassword.Value2;
-                    return Jira.Jira.CreateRestClient(ThisAddIn.JiraSite, jiraUserName, jiraPassword);
-                }
+                Excel.Worksheet wsUser = app.Sheets["User"];
+                Excel.Range rangeJiraUserName = wsUser.get_Range("JiraUserName");
+                Excel.Range rangeJiraPassword = wsUser.get_Range("JiraPassword");
+                string jiraUserName = rangeJiraUserName.Value2;
+                string jiraPassword = rangeJiraPassword.Value2;
+                return Jira.Jira.CreateRestClient(ThisAddIn.JiraSite, jiraUserName, jiraPassword);
             }
             //catch (Exception ex)
             catch
@@ -46,45 +39,13 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static bool AuthenticateJira(Excel.Application app, string type)
-        {
-            try
-            {
-                if (type == "DOT")
-                {
-                    return true;
-                }
-                else
-                {
-                    Excel.Worksheet wsUser = app.Sheets["User"];
-                    Excel.Range rangeJiraUserName = wsUser.get_Range("JiraUserName");
-                    Excel.Range rangeJiraPassword = wsUser.get_Range("JiraPassword");
-                    string jiraUserName = rangeJiraUserName.Value2;
-                    string jiraPassword = rangeJiraPassword.Value2;
-                    if (jiraUserName.Trim() == string.Empty || jiraPassword.Trim() == string.Empty)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return false;
-            }
-        }
-
         // UPDATE, ADD, SAVE
         private void btnUpdateIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "DOT");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);
@@ -105,7 +66,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "Program");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);
@@ -125,7 +86,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "DOT");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);
@@ -146,7 +107,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "Program");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);
@@ -166,7 +127,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "DOT");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);
@@ -187,7 +148,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "Program");
+                Jira.Jira jira = GetJira(app);
 
                 if (jira != null)
                 {
@@ -208,7 +169,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "DOT");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);
@@ -234,7 +195,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "Program");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);
@@ -304,7 +265,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "DOT");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);
@@ -446,7 +407,7 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app, "Program");
+                Jira.Jira jira = GetJira(app);
                 if (jira != null)
                 {
                     SSUtils.BeginExcelOperation(app);

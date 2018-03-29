@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
 using Jira = Atlassian.Jira;
+using System.Windows.Forms;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -14,10 +14,10 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 Excel.Worksheet ws = app.ActiveSheet;
-                var activeCell = app.ActiveCell;
+                Excel.Range activeCell = app.ActiveCell;
                 if (activeCell != null && ws.Name == "Issues")
                 {
-                    var selection = app.Selection;
+                    Excel.Range selection = app.Selection;
                     var mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
                     CreateMailMergeDocuments(jira, app, ws, selection, mailMergeFields);
                 }
@@ -33,8 +33,8 @@ namespace DOT_Titling_Excel_VSTO
             try
             {
                 object template = @ThisAddIn.InputDir + "\\Requirement.docx";
-                var wordApp = new Word.Application();
-                var wordDocument = new Word.Document();
+                Word.Application wordApp = new Word.Application();
+                Word.Document wordDocument = new Word.Document();
                 wordApp.Visible = false;
 
                 for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)

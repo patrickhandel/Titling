@@ -9,8 +9,6 @@ namespace DOT_Titling_Excel_VSTO
         public static string InputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\In";
         public static string RoadMapDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Road Map";
         public static string JiraSite = "https://wiportal.atlassian.net";
-        public static string JiraUserName = "patrick.handel@egov.com";
-        public static string JiraPassword = "viPer47,,";
         public static int MaxJiraRequests = 1000;
         public static int PageSize = 100;
         public static string R3Folder = "https://wisdot.sharepoint.com/sites/bitsproj/3025/SitePages/Home.aspx?RootFolder=%2Fsites%2Fbitsproj%2F3025%2FProject%20Documents%2FDMV-BVS-DAS%20Project%20Team%20Docs%2FRelease%203&FolderCTID=0x0120008B2FF5906472224CB44A99C8A95ADAF9&View=%7BBB5263F9-5D41-4EC4-9518-EAF825B2CB19%7D";
@@ -18,14 +16,6 @@ namespace DOT_Titling_Excel_VSTO
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            ShowJiraLoginControl();
-        }
-        public void ShowJiraLoginControl()
-        {
-            //var txtObject = new ShanuExcelADDIn();
-            //customPane = this.CustomTaskPanes.Add(txtObject, "Enter Text");
-            //customPane.Width = txtObject.Width;
-            //customPane.Visible = true;
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
