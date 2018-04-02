@@ -10,6 +10,7 @@ namespace DOT_Titling_Excel_VSTO
         public static string RoadMapDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Road Map";
         public static string JiraSite = "https://wiportal.atlassian.net";
         public static int MaxJiraRequests = 1000;
+        public static int MaxRecordsToProcess = 100000;
         public static int PageSize = 100;
         public static string R3Folder = "https://wisdot.sharepoint.com/sites/bitsproj/3025/SitePages/Home.aspx?RootFolder=%2Fsites%2Fbitsproj%2F3025%2FProject%20Documents%2FDMV-BVS-DAS%20Project%20Team%20Docs%2FRelease%203&FolderCTID=0x0120008B2FF5906472224CB44A99C8A95ADAF9&View=%7BBB5263F9-5D41-4EC4-9518-EAF825B2CB19%7D";
         public static string ProjectKeyDOT = "DOTTITLNG";

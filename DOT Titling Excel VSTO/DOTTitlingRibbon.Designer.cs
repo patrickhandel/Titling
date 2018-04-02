@@ -61,12 +61,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_DOT = this.Factory.CreateRibbonButton();
-            this.grpLogin = this.Factory.CreateRibbonGroup();
-            this.editBoxUserName = this.Factory.CreateRibbonEditBox();
-            this.editBoxPassword = this.Factory.CreateRibbonEditBox();
-            this.button1 = this.Factory.CreateRibbonButton();
-            this.toggleButton1 = this.Factory.CreateRibbonToggleButton();
-            this.label1 = this.Factory.CreateRibbonLabel();
             this.tabPM = this.Factory.CreateRibbonTab();
             this.grpPM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_Program = this.Factory.CreateRibbonButton();
@@ -82,7 +76,6 @@ namespace DOT_Titling_Excel_VSTO
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
             this.grpStandardization_DOT.SuspendLayout();
-            this.grpLogin.SuspendLayout();
             this.tabPM.SuspendLayout();
             this.grpPM.SuspendLayout();
             this.grpStandardization_PM.SuspendLayout();
@@ -99,7 +92,6 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.tabDOT.Groups.Add(this.grpDOT);
             this.tabDOT.Groups.Add(this.grpStandardization_DOT);
-            this.tabDOT.Groups.Add(this.grpLogin);
             this.tabDOT.Label = "DOT";
             this.tabDOT.Name = "tabDOT";
             // 
@@ -305,44 +297,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_DOT.ShowImage = true;
             this.btnToggleProperties_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
-            // grpLogin
-            // 
-            this.grpLogin.Items.Add(this.editBoxUserName);
-            this.grpLogin.Items.Add(this.editBoxPassword);
-            this.grpLogin.Items.Add(this.button1);
-            this.grpLogin.Items.Add(this.toggleButton1);
-            this.grpLogin.Items.Add(this.label1);
-            this.grpLogin.Label = "Login";
-            this.grpLogin.Name = "grpLogin";
-            // 
-            // editBoxUserName
-            // 
-            this.editBoxUserName.Label = "User Name";
-            this.editBoxUserName.Name = "editBoxUserName";
-            this.editBoxUserName.Text = null;
-            // 
-            // editBoxPassword
-            // 
-            this.editBoxPassword.Label = "Password";
-            this.editBoxPassword.Name = "editBoxPassword";
-            this.editBoxPassword.Text = null;
-            // 
-            // button1
-            // 
-            this.button1.Label = "button1";
-            this.button1.Name = "button1";
-            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
-            // 
-            // toggleButton1
-            // 
-            this.toggleButton1.Label = "toggleButton1";
-            this.toggleButton1.Name = "toggleButton1";
-            // 
-            // label1
-            // 
-            this.label1.Label = "label1";
-            this.label1.Name = "label1";
-            // 
             // tabPM
             // 
             this.tabPM.Groups.Add(this.grpPM);
@@ -456,8 +410,6 @@ namespace DOT_Titling_Excel_VSTO
             this.grpDOT.PerformLayout();
             this.grpStandardization_DOT.ResumeLayout(false);
             this.grpStandardization_DOT.PerformLayout();
-            this.grpLogin.ResumeLayout(false);
-            this.grpLogin.PerformLayout();
             this.tabPM.ResumeLayout(false);
             this.tabPM.PerformLayout();
             this.grpPM.ResumeLayout(false);
@@ -508,12 +460,6 @@ namespace DOT_Titling_Excel_VSTO
         private RibbonButton btnViewEpicsEstimateActual_DOT;
         internal RibbonButton bntUpdateProjects;
         internal RibbonButton btnSaveSelected_Program;
-        internal RibbonGroup grpLogin;
-        internal RibbonButton button1;
-        internal RibbonEditBox editBoxUserName;
-        internal RibbonEditBox editBoxPassword;
-        internal RibbonToggleButton toggleButton1;
-        internal RibbonLabel label1;
         //
     }
 

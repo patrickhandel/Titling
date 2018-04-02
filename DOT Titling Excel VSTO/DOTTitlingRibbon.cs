@@ -1,6 +1,7 @@
 ﻿using Microsoft.Office.Tools.Ribbon;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using Excel = Microsoft.Office.Interop.Excel;
 using Jira = Atlassian.Jira;
@@ -20,39 +21,21 @@ namespace DOT_Titling_Excel_VSTO
 
         }
 
-        private static Jira.Jira GetJira(Excel.Application app)
-        {
-            try
-            {
-                Excel.Worksheet wsUser = app.Sheets["User"];
-                Excel.Range rangeJiraUserName = wsUser.get_Range("JiraUserName");
-                Excel.Range rangeJiraPassword = wsUser.get_Range("JiraPassword");
-                string jiraUserName = rangeJiraUserName.Value2;
-                string jiraPassword = rangeJiraPassword.Value2;
-                return Jira.Jira.CreateRestClient(ThisAddIn.JiraSite, jiraUserName, jiraPassword);
-            }
-            //catch (Exception ex)
-            catch
-            {
-                MessageBox.Show("Error : Not a properly formatted workbook.");
-                return null;
-            }
-        }
-
         // UPDATE, ADD, SAVE
-        private void btnUpdateIssues_DOT_Click(object sender, RibbonControlEventArgs e)
+        private async void btnUpdateIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
                     List<string> listofProjects = new List<string>();
                     listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                    JiraShared.ExecuteUpdateTable(jira, app, listofProjects);
-                    SSUtils.EndExcelOperation(app, string.Empty);
+                    success = await JiraShared.ExecuteUpdateTable(jira, app, listofProjects);
+                    success = await SSUtils.EndExcelOperation(app, string.Empty);
                 }
             }
             catch (Exception ex)
@@ -61,18 +44,19 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdateIssues_Program_Click(object sender, RibbonControlEventArgs e)
+        private async void btnUpdateIssues_Program_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
-                    List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                    JiraShared.ExecuteUpdateTable(jira, app, listofProjects);
-                    SSUtils.EndExcelOperation(app, string.Empty);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
+                    List<string> listofProjects = await SSUtils.GetListOfProjects(app);
+                    success = await JiraShared.ExecuteUpdateTable(jira, app, listofProjects);
+                    success = await SSUtils.EndExcelOperation(app, string.Empty);
                 }
             }
             catch (Exception ex)
@@ -81,19 +65,20 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnAddIssues_DOT_Click(object sender, RibbonControlEventArgs e)
+        private async void btnAddIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
                     List<string> listofProjects = new List<string>();
                     listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                    JiraShared.ExecuteAddNewRowsToTable(jira, app, listofProjects);
-                    SSUtils.EndExcelOperation(app, string.Empty);
+                    success = await JiraShared.ExecuteAddNewRowsToTable(jira, app, listofProjects);
+                    success = await SSUtils.EndExcelOperation(app, string.Empty);
                 }
             }
             catch (Exception ex)
@@ -102,18 +87,19 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnAddIssues_Progam_Click(object sender, RibbonControlEventArgs e)
+        private async void btnAddIssues_Progam_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
-                    List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                    JiraShared.ExecuteAddNewRowsToTable(jira, app, listofProjects);
-                    SSUtils.EndExcelOperation(app, string.Empty);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
+                    List<string> listofProjects = await SSUtils.GetListOfProjects(app);
+                    success = await JiraShared.ExecuteAddNewRowsToTable(jira, app, listofProjects);
+                    success = await SSUtils.EndExcelOperation(app, string.Empty);
                 }
             }
             catch (Exception ex)
@@ -122,19 +108,20 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdateSelectedIssues_DOT_Click(object sender, RibbonControlEventArgs e)
+        private async void btnUpdateSelectedIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
                     List<string> listofProjects = new List<string>();
                     listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                    JiraShared.ExecuteUpdateSelectedRows(jira, app, listofProjects);
-                    SSUtils.EndExcelOperation(app, "Selected Items Updated");
+                    success = await JiraShared.ExecuteUpdateSelectedRows(jira, app, listofProjects);
+                    success = await SSUtils.EndExcelOperation(app, "Selected Items Updated");
                 }
             }
             catch (Exception ex)
@@ -143,19 +130,19 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnUpdateSelectedIssues_Program_Click(object sender, RibbonControlEventArgs e)
+        private async void btnUpdateSelectedIssues_Program_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
-
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
-                    List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                    JiraShared.ExecuteUpdateSelectedRows(jira, app, listofProjects);
-                    SSUtils.EndExcelOperation(app, "Selected Items Updated");
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
+                    List<string> listofProjects = await SSUtils.GetListOfProjects(app);
+                    success = await JiraShared.ExecuteUpdateSelectedRows(jira, app, listofProjects);
+                    success = await SSUtils.EndExcelOperation(app, "Selected Items Updated");
                 }
             }
             catch (Exception ex)
@@ -164,24 +151,25 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnSaveSelectedIssues_DOT_Click(object sender, RibbonControlEventArgs e)
+        private async void btnSaveSelectedIssues_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
                     List<string> listofProjects = new List<string>();
                     listofProjects.Add(ThisAddIn.ProjectKeyDOT);
-                    bool multiple = JiraShared.ExecuteSaveSelectedCellsToJira(jira, app, listofProjects);
+                    bool multiple = await JiraShared.ExecuteSaveSelectedCellsToJira(jira, app, listofProjects);
                     string msg = string.Empty;
                     if (multiple == true)
                     {
                         msg = "Selected Items Saved.";
                     }
-                    SSUtils.EndExcelOperation(app, msg);
+                    success = await SSUtils.EndExcelOperation(app, msg);
                 }
             }
             catch (Exception ex)
@@ -190,23 +178,24 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void btnSaveSelected_Program_Click(object sender, RibbonControlEventArgs e)
+        private async void btnSaveSelected_Program_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
-                    List<string> listofProjects = SSUtils.GetListOfProjects(app);
-                    bool multiple = JiraShared.ExecuteSaveSelectedCellsToJira(jira, app, listofProjects);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
+                    List<string> listofProjects = await SSUtils.GetListOfProjects(app);
+                    bool multiple = await JiraShared.ExecuteSaveSelectedCellsToJira(jira, app, listofProjects);
                     string msg = string.Empty;
                     if (multiple == true)
                     {
                         msg = "Selected Items Saved.";
                     }
-                    SSUtils.EndExcelOperation(app, msg);
+                    bool sucess = await SSUtils.EndExcelOperation(app, msg);
                 }
             }
             catch (Exception ex)
@@ -216,14 +205,15 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         // STANDARDIZE TABLES
-        private void btnStandardizeTable_Click(object sender, RibbonControlEventArgs e)
+        private async void btnStandardizeTable_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                SSUtils.BeginExcelOperation(app);
-                TableStandardization.Execute(app, TableStandardization.StandardizationType.Thorough);
-                SSUtils.EndExcelOperation(app, string.Empty);
+                bool success;
+                success = await SSUtils.BeginExcelOperation(app);
+                success = await TableStandardization.Execute(app, TableStandardization.StandardizationType.Thorough);
+                success = await SSUtils.EndExcelOperation(app, string.Empty);
             }
             catch (Exception ex)
             {
@@ -260,17 +250,18 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         // DOT-ONLY
-        private void btnMailMerge_DOT_Click(object sender, RibbonControlEventArgs e)
+        private async void btnMailMerge_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
-                    MailMerge.ExecuteMailMerge_DOT(jira, app);
-                    SSUtils.EndExcelOperation(app, string.Empty);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
+                    success = await MailMerge.ExecuteMailMerge_DOT(jira, app);
+                    success = await SSUtils.EndExcelOperation(app, string.Empty);
                 }
             }
             catch (Exception ex)
@@ -402,28 +393,24 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private void bntUpdateProjects_Click(object sender, RibbonControlEventArgs e)
+        private async void bntUpdateProjects_Click(object sender, RibbonControlEventArgs e)
         {
             try
             {
                 Excel.Application app = Globals.ThisAddIn.Application;
-                Jira.Jira jira = GetJira(app);
+                Jira.Jira jira = await JiraShared.GetJira(app);
                 if (jira != null)
                 {
-                    SSUtils.BeginExcelOperation(app);
-                    JiraProjects.ExecuteUpdateTable(jira, app);
-                    SSUtils.EndExcelOperation(app, string.Empty);
+                    bool success;
+                    success = await SSUtils.BeginExcelOperation(app);
+                    success = await JiraProjects.ExecuteUpdateTable(jira, app);
+                    success = await SSUtils.EndExcelOperation(app, string.Empty);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
             }
-        }
-
-        private void button1_Click(object sender, RibbonControlEventArgs e)
-        {
-
         }
     }
 }

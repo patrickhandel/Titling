@@ -11,7 +11,7 @@ namespace DOT_Titling_Excel_VSTO
     class JiraProjects
     {
         //Public Methods
-        public static void ExecuteUpdateTable(Jira.Jira jira, Excel.Application app)
+        public async static Task<bool> ExecuteUpdateTable(Jira.Jira jira, Excel.Application app)
         {
             try
             {
@@ -21,26 +21,30 @@ namespace DOT_Titling_Excel_VSTO
                     string missingColumns = SSUtils.MissingColumns(ws);
                     if (missingColumns == string.Empty)
                     {
-                        UpdateTable(jira, app, ws);
+                        bool success = await UpdateTable(jira, app, ws);
+                        return success;
                     }
                     else
                     {
                         MessageBox.Show("Missing Columns: " + missingColumns);
+                        return false;
                     }
                 }
                 else
                 {
                     MessageBox.Show(ws.Name + " can't be updated.");
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
 
         //Update Table Data
-        private static void UpdateTable(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws)
+        private async static Task<bool> UpdateTable(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws)
         {
             try
             {
@@ -63,17 +67,19 @@ namespace DOT_Titling_Excel_VSTO
                     string key = SSUtils.GetCellValue(ws, currentRow, keyCol);
                     var project = projects.FirstOrDefault(i => i.Key == key);
                     bool notFound = projects == null;
-                    UpdateValues(ws, jiraFields, currentRow, project, notFound);
+                    bool success = await UpdateValues(ws, jiraFields, currentRow, project, notFound);
                 }
                 SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
 
-        private static void UpdateValues(Excel.Worksheet ws, List<JiraFields> jiraFields, int row, Jira.Project project, bool notFound)
+        private async static Task<bool> UpdateValues(Excel.Worksheet ws, List<JiraFields> jiraFields, int row, Jira.Project project, bool notFound)
         {
             foreach (var jiraField in jiraFields)
             {
@@ -87,6 +93,7 @@ namespace DOT_Titling_Excel_VSTO
                 if (type == "Function")
                     SSUtils.SetCellValue(ws, row, column, ExtractValueBasedOnFunction(project, item), columnHeader);
             }
+            return true;
         }
 
         //Get From Jira

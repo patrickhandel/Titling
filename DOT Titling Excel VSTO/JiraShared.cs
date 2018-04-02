@@ -22,54 +22,90 @@ namespace DOT_Titling_Excel_VSTO
             ChecklistTasksOnly = 5
         };
 
+        public async static Task<Jira.Jira> GetJira(Excel.Application app)
+        {
+            try
+            {
+                string jiraUserName = app.get_Range("JiraUserName").Value2;
+                string jiraPassword = app.get_Range("JiraPassword").Value2;
+                Jira.Jira jira = Jira.Jira.CreateRestClient(ThisAddIn.JiraSite, jiraUserName, jiraPassword);
+                return jira;
+            }
+            //catch (Exception ex)
+            catch
+            {
+                MessageBox.Show("Error : Not a properly formatted workbook.");
+                return null;
+            }
+        }
+
         //Public Methods
-        public static void ExecuteUpdateTable(Jira.Jira jira, Excel.Application app, List<string> listofProjects)
+        public async static Task<bool> ExecuteUpdateTable(Jira.Jira jira, Excel.Application app, List<string> listofProjects)
         {
             try
             {
                 Excel.Worksheet ws = app.ActiveSheet;
-                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
+
+                string tableRangeName = SSUtils.GetSelectedTable(app);
+                Int32 rowCount = SSUtils.TableRowCount(ws, tableRangeName);
+                if (rowCount <= ThisAddIn.MaxRecordsToProcess)
                 {
-                    string missingColumns = SSUtils.MissingColumns(ws);
-                    if (missingColumns == string.Empty)
+                    if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
                     {
-                        string idColumnName = "Issue ID";
-                        ImportType importType = ImportType.StoriesAndBugsOnly;
-                        if (ws.Name == "Program Issues")
+                        string missingColumns = SSUtils.MissingColumns(ws);
+                        if (missingColumns == string.Empty)
                         {
-                            importType = ImportType.AllIssues;
+                            string idColumnName = "Issue ID";
+                            ImportType importType = ImportType.StoriesAndBugsOnly;
+                            if (ws.Name == "Program Issues")
+                            {
+                                importType = ImportType.AllIssues;
+                            }
+                            if (ws.Name == "Epics")
+                            {
+                                idColumnName = "Epic ID";
+                                importType = ImportType.EpicsOnly;
+                            }
+                            List<Jira.Issue> issues = await UpdateTable(jira, app, ws, listofProjects, importType, idColumnName);
+                            if (issues != null)
+                            {
+                                bool success = await AddNewRowsToTable(jira, app, ws, issues, listofProjects, importType, idColumnName);
+                                string dt = DateTime.Now.ToString("MM/dd/yyyy");
+                                string val = ws.Name + " (Updated on " + dt + ")";
+                                SSUtils.SetCellValue(ws, 1, 1, val, "Updated On");
+                                return success;
+                            }
+                            else
+                            {
+                                return false;
+                            }
                         }
-                        if (ws.Name == "Epics")
+                        else
                         {
-                            idColumnName = "Epic ID";
-                            importType = ImportType.EpicsOnly;
-                        }
-                        List<Jira.Issue> issues = UpdateTable(jira, app, ws, listofProjects, importType, idColumnName);
-                        if (issues != null)
-                        {
-                            AddNewRowsToTable(jira, app, ws, issues, listofProjects, importType, idColumnName);
-                            string dt = DateTime.Now.ToString("MM/dd/yyyy");
-                            string val = ws.Name + " (Updated on " + dt + ")";
-                            SSUtils.SetCellValue(ws, 1, 1, val, "Updated On");
+                            MessageBox.Show("Missing Columns: " + missingColumns);
+                            return false;
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Missing Columns: " + missingColumns);
+                        MessageBox.Show(ws.Name + " can't be updated.");
+                        return false;
                     }
                 }
                 else
                 {
-                    MessageBox.Show(ws.Name + " can't be updated.");
+                    MessageBox.Show("Cannot update more than " + ThisAddIn.MaxRecordsToProcess + " rows. Please select few rows.");
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
 
-        public static void ExecuteAddNewRowsToTable(Jira.Jira jira, Excel.Application app, List<string> listofProjects)
+        public async static Task<bool> ExecuteAddNewRowsToTable(Jira.Jira jira, Excel.Application app, List<string> listofProjects)
         {
             try
             {
@@ -90,71 +126,8 @@ namespace DOT_Titling_Excel_VSTO
                             idColumnName = "Epic ID";
                             importType = ImportType.EpicsOnly;
                         }
-                        AddNewRowsToTable(jira, app, ws, null, listofProjects, importType, idColumnName);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Missing Columns: " + missingColumns);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show(ws.Name + " can't be updated.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        public static void ExecuteUpdateSelectedRows(Jira.Jira jira, Excel.Application app, List<string> listofProjects)
-        {
-            try
-            {
-                Excel.Worksheet ws = app.ActiveSheet;
-                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
-                {
-                    Excel.Range selection = app.Selection;
-                    string missingColumns = SSUtils.MissingColumns(ws);
-                    if (missingColumns == string.Empty)
-                    {
-                        string idColumnName = "Issue ID";
-                        if (ws.Name == "Epics")
-                            idColumnName = "Epic ID";
-                        UpdateSelectedRows(jira, app, ws, selection, idColumnName);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Missing Columns: " + missingColumns);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show(ws.Name + " can't be updated.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-            }
-        }
-
-        public static bool ExecuteSaveSelectedCellsToJira(Jira.Jira jira, Excel.Application app, List<string> listofProjects)
-        {
-            try
-            {
-                Excel.Worksheet ws = app.ActiveSheet;
-                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
-                {
-                    Excel.Range selection = app.Selection;
-                    string missingColumns = SSUtils.MissingColumns(ws);
-                    if (missingColumns == string.Empty)
-                    {
-                        string idColumnName = "Issue ID";
-                        if (ws.Name == "Epics")
-                            idColumnName = "Epic ID";
-                        return SaveSelectedCellsToJira(jira, ws, selection, idColumnName);
+                        bool success = await AddNewRowsToTable(jira, app, ws, null, listofProjects, importType, idColumnName);
+                        return success;
                     }
                     else
                     {
@@ -165,8 +138,8 @@ namespace DOT_Titling_Excel_VSTO
                 else
                 {
                     MessageBox.Show(ws.Name + " can't be updated.");
+                    return false;
                 }
-                return false;
             }
             catch (Exception ex)
             {
@@ -175,23 +148,107 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void ExecuteUpdateRowBeforeOperation(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, string issueID, string idColumnName)
+        public async static Task<bool> ExecuteUpdateSelectedRows(Jira.Jira jira, Excel.Application app, List<string> listofProjects)
+        {
+            try
+            {
+                Excel.Worksheet ws = app.ActiveSheet;
+                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
+                {
+                    Excel.Range selection = app.Selection;
+                    Int32 rowCount = SSUtils.TableSelectedRowCount(ws, selection);
+                    if (rowCount <= ThisAddIn.MaxRecordsToProcess)
+                    {
+                        string missingColumns = SSUtils.MissingColumns(ws);
+                        if (missingColumns == string.Empty)
+                        {
+                            string idColumnName = "Issue ID";
+                            if (ws.Name == "Epics")
+                                idColumnName = "Epic ID";
+                            bool success = await UpdateSelectedRows(jira, app, ws, selection, idColumnName);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Missing Columns: " + missingColumns);
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cannot update more than " + ThisAddIn.MaxRecordsToProcess + " rows. Please select few rows.");
+                        return false;
+                    }
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show(ws.Name + " can't be updated.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return false;
+            }
+        }
+
+        public async static Task<bool> ExecuteSaveSelectedCellsToJira(Jira.Jira jira, Excel.Application app, List<string> listofProjects)
+        {
+            try
+            {
+                Excel.Worksheet ws = app.ActiveSheet;
+                if (ws.Name == "Issues" || ws.Name == "Program Issues" || ws.Name == "Epics")
+                {
+                    Excel.Range selection = app.Selection;
+                    string missingColumns = SSUtils.MissingColumns(ws);
+                    if (missingColumns == string.Empty)
+                    {
+                        string idColumnName = "Issue ID";
+                        if (ws.Name == "Epics")
+                            idColumnName = "Epic ID";
+                        bool multiple = await SaveSelectedCellsToJira(jira, ws, selection, idColumnName);
+                        return multiple;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Missing Columns: " + missingColumns);
+                        return false;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(ws.Name + " can't be updated.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return false;
+            }
+        }
+
+        public async static Task<bool> ExecuteUpdateRowBeforeOperation(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, string issueID, string idColumnName)
         {
             try
             {
                 string missingColumns = SSUtils.MissingColumns(ws);
                 if (missingColumns == string.Empty)
                 {
-                    UpdateRowBeforeOperation(jira, app, ws, issueID, idColumnName);
+                    bool success = await UpdateRowBeforeOperation(jira, app, ws, issueID, idColumnName);
+                    return success;
                 }
                 else
                 {
                     MessageBox.Show("Missing Columns: " + missingColumns);
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
 
@@ -210,6 +267,9 @@ namespace DOT_Titling_Excel_VSTO
                 jql.Append(jqlIssueTypes);
                 jql.Append(" AND ");
                 jql.Append("summary ~ \"!DELETE\"");
+
+                int totalItems = await GetIssueCountFromJira(jira, jql);
+
                 List<Jira.Issue> filteredIssues = await Filter(jira, jql);
                 return filteredIssues;
             }
@@ -218,6 +278,98 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
                 return null;
             }
+        }
+
+        public async static Task<List<Jira.Issue>> GetSelectedFromJira(Jira.Jira jira, List<string> listofIssueIDs)
+        {
+            try
+            {
+                jira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+                //Create the JQL
+                var jql = new StringBuilder();
+                jql.Append("key in (");
+                jql.Append(FormatListofIDs(listofIssueIDs));
+                jql.Append(")");
+
+                int totalItems = await GetIssueCountFromJira(jira, jql);
+
+                List<Jira.Issue> filteredIssues = await Filter(jira, jql);
+                return filteredIssues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }
+
+        private async static Task<List<Jira.Issue>> GetAllTasksFromJira(Jira.Jira jira, List<string> listofProjects)
+        {
+            try
+            {
+                jira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
+
+                //Create the JQL
+                var jql = new StringBuilder();
+                jql.Append("project = " + listofProjects[0]);
+                jql.Append(" AND ");
+                jql.Append("issuetype in (\"Task\")");
+                jql.Append(" AND ");
+                jql.Append("\"Epic Link\" = " + listofProjects[0] + "-945");
+
+                int totalItems = await GetIssueCountFromJira(jira, jql);
+
+                List<Jira.Issue> filteredIssues = await Filter(jira, jql);
+                return filteredIssues;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }
+
+        public async static Task<Jira.Issue> GetSingleFromJira(Jira.Jira jira, string issueID)
+        {
+            try
+            {
+                jira.Issues.MaxIssuesPerRequest = 1;
+                var issue = await jira.Issues.GetIssueAsync(issueID);
+                return issue;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return null;
+            }
+        }
+
+        public static async Task<List<Jira.Issue>> Filter(Jira.Jira jira, StringBuilder jql)
+        {
+            var issues = await jira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
+            var totalIssues = issues.TotalItems;
+            var totalPages = (double)totalIssues / (double)ThisAddIn.PageSize;
+            totalPages = Math.Ceiling(totalPages);
+            var allIssues = issues.ToList();
+            for (int currentPage = 1; currentPage < totalPages; currentPage++)
+            {
+                int startRecord = ThisAddIn.PageSize * currentPage;
+                issues = await jira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize, startRecord);
+                allIssues.AddRange(issues.ToList());
+                if (issues.Count() == 0)
+                {
+                    break;
+                }
+            }
+            var filteredIssues = allIssues.Where(i =>
+                        i.Summary != "DELETE").ToList();
+            return filteredIssues;
+        }
+
+        private static async Task<int> GetIssueCountFromJira(Jira.Jira jira, StringBuilder jql)
+        {
+            var issues = await jira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
+            return issues.TotalItems;
         }
 
         private static string GetJQLForImportType(ImportType importType)
@@ -245,103 +397,8 @@ namespace DOT_Titling_Excel_VSTO
             return jql;
         }
 
-        public async static Task<Jira.Issue> GetSingleFromJira(Jira.Jira jira, string issueID)
-        {
-            try
-            {
-                jira.Issues.MaxIssuesPerRequest = 1;
-                var issue = await jira.Issues.GetIssueAsync(issueID);
-                return issue;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return null;
-            }
-        }
-
-        public async static Task<List<Jira.Issue>> GetSelectedFromJira(Jira.Jira jira, List<string> listofIssueIDs)
-        {
-            try
-            {
-                jira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-                //Create the JQL
-                var jql = new StringBuilder();
-                jql.Append("key in (");
-                jql.Append(FormatListofIDs(listofIssueIDs));
-                jql.Append(")");
-                List<Jira.Issue> filteredIssues = await Filter(jira, jql);
-                return filteredIssues;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return null;
-            }
-        }
-
-        //private async static Task<IDictionary<string, Jira.Issue>> GetSelectedFromJiraAlternative(bool authenticate, params string[] listofIssueIDs)
-        //{
-        //    try
-        //    {
-        //        jira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-        //        var issues = await jira.Issues.GetIssuesAsync(listofIssueIDs);
-        //        return issues;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show("Error :" + ex);
-        //        return null;
-        //    }
-        //}
-
-        public static async Task<List<Jira.Issue>> Filter(Jira.Jira jira, StringBuilder jql)
-        {
-            var issues = await jira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize);
-            var totalIssues = issues.TotalItems;
-            var totalPages = (double)totalIssues / (double)ThisAddIn.PageSize;
-            totalPages = Math.Ceiling(totalPages);
-            var allIssues = issues.ToList();
-            for (int currentPage = 1; currentPage < totalPages; currentPage++)
-            {
-                int startRecord = ThisAddIn.PageSize * currentPage;
-                issues = await jira.Issues.GetIssuesFromJqlAsync(jql.ToString(), ThisAddIn.PageSize, startRecord);
-                allIssues.AddRange(issues.ToList());
-                if (issues.Count() == 0)
-                {
-                    break;
-                }
-            }
-            var filteredIssues = allIssues.Where(i =>
-                        i.Summary != "DELETE").ToList();
-            return filteredIssues;
-        }
-
-        private async static Task<List<Jira.Issue>> GetAllTasksFromJira(Jira.Jira jira, List<string> listofProjects)
-        {
-            try
-            {
-                jira.Issues.MaxIssuesPerRequest = ThisAddIn.MaxJiraRequests;
-
-                //Create the JQL
-                var jql = new StringBuilder();
-                jql.Append("project = " + listofProjects[0]);
-                jql.Append(" AND ");
-                jql.Append("issuetype in (\"Task\")");
-                jql.Append(" AND ");
-                jql.Append("\"Epic Link\" = " + listofProjects[0] + "-945");
-                List<Jira.Issue> filteredIssues = await Filter(jira, jql);
-                return filteredIssues;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error :" + ex);
-                return null;
-            }
-        }
-
         //Update Table Data
-        public static List<Jira.Issue> UpdateTable(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, List<string> listofProjects, ImportType importType, string idColumnName)
+        public async static Task<List<Jira.Issue>> UpdateTable(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, List<string> listofProjects, ImportType importType, string idColumnName)
         {
             try
             {
@@ -359,7 +416,7 @@ namespace DOT_Titling_Excel_VSTO
                     {
                         string id = SSUtils.GetCellValue(ws, currentRow, idColumn);
                         var issue = issues.FirstOrDefault(i => i.Key == id);
-                        UpdateRow(ws, jiraFields, currentRow, issue, issue != null);
+                        bool success = await UpdateRow(ws, jiraFields, currentRow, issue, issue != null);
                     }
                 }
                 SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
@@ -372,7 +429,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void UpdateSelectedRows(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, Excel.Range selection, string idColumnName)
+        public static async Task<bool> UpdateSelectedRows(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, Excel.Range selection, string idColumnName)
         {
             List<Jira.Issue> issues = GetListofSelectedIssuesIDsFromTable(jira, ws, selection, idColumnName);
             var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
@@ -385,13 +442,56 @@ namespace DOT_Titling_Excel_VSTO
                     int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
                     string id = SSUtils.GetCellValue(ws, row, idColumn).Trim();
                     var issue = issues.FirstOrDefault(i => i.Key == id);
-                    UpdateRow(ws, jiraFields, row, issue, issue != null);
+                    bool success = await UpdateRow(ws, jiraFields, row, issue, issue != null);
                     SSUtils.SetStandardRowHeight(ws, row, row);
                 }
             }
+            return true;
         }
 
-        public static void AddNewRowsToTable(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, List<Jira.Issue> issues, List<string> listofProjects, ImportType importType, string idColumnName)
+        public static Int32 GetNumberOfIssuesToAdd(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, List<Jira.Issue> issues, List<string> listofProjects, ImportType importType, string idColumnName)
+        {
+            try
+            {
+                if (issues == null)
+                    issues = GetAllFromJira(jira, listofProjects, importType).Result;
+                string wsRangeName = SSUtils.GetWorksheetRangeName(ws.Name);
+                int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
+                var jiraFields = WorksheetPropertiesManager.GetJiraFields(ws);
+
+                List<string> listofIDs = new List<string>();
+                Excel.Range idColumnRange = ws.get_Range(wsRangeName + "[" + idColumnName + "]", Type.Missing);
+                foreach (Excel.Range cell in idColumnRange.Cells)
+                {
+                    listofIDs.Add(cell.Value);
+                }
+                foreach (var id in listofIDs)
+                {
+                    issues.Remove(issues.FirstOrDefault(x => x.Key.Value == id.ToString()));
+                }
+
+                string sFooterRowRange = SSUtils.GetFooterRangeName(ws.Name);
+                foreach (var issue in issues)
+                {
+                    Excel.Range footerRangeRange = ws.get_Range(sFooterRowRange, Type.Missing);
+                    int footerRow = footerRangeRange.Row;
+                    Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
+                    rToInsert.Insert();
+                    string status = GetStatus(ws, footerRow);
+                    UpdateRow(ws, jiraFields, footerRow, issue, issue != null);
+                    UpdateRowAfterAdd(app, ws, issue, footerRow, status);
+                    SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
+                }
+                return 999;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return 0;
+            }
+        }
+
+        public static async Task<bool> AddNewRowsToTable(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, List<Jira.Issue> issues, List<string> listofProjects, ImportType importType, string idColumnName)
         {
             try
             {
@@ -423,24 +523,28 @@ namespace DOT_Titling_Excel_VSTO
                         Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                         rToInsert.Insert();
                         string status = GetStatus(ws, footerRow);
-                        UpdateRow(ws, jiraFields, footerRow, issue, issue != null);
-                        UpdateRowAfterAdd(app, ws, issue, footerRow, status);
+                        bool success = await UpdateRow(ws, jiraFields, footerRow, issue, issue != null);
+                        if (ws.Name == "Issues" || ws.Name == "Epics")
+                            UpdateRowAfterAdd(app, ws, issue, footerRow, status);
                         SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                     }
                     MessageBox.Show(issues.Count() + " Rows Added.");
+                    return true;
                 }
                 else
                 {
                     MessageBox.Show("Missing Columns: " + missingColumns);
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
 
-        public static void UpdateRow(Excel.Worksheet ws, List<JiraFields> jiraFields, int row, Jira.Issue issue, bool found)
+        public static async Task<bool> UpdateRow(Excel.Worksheet ws, List<JiraFields> jiraFields, int row, Jira.Issue issue, bool found)
         {
             try
             {
@@ -473,14 +577,16 @@ namespace DOT_Titling_Excel_VSTO
                     if (type == "Formula")
                         SSUtils.SetCellFormula(ws, row, column, formula);
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
 
-        public static void UpdateRowBeforeOperation(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, string issueID, string idColumnName)
+        public async static Task<bool> UpdateRowBeforeOperation(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, string issueID, string idColumnName)
         {
             try
             {
@@ -489,12 +595,15 @@ namespace DOT_Titling_Excel_VSTO
                 var issue = GetSingleFromJira(jira, issueID).Result;
                 int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
                 int row = SSUtils.FindTextInColumn(ws, rangeName + "[" + idColumnName + "]", issueID);
-                UpdateRow(ws, jiraFields, row, issue, issue != null);
+                bool success = await UpdateRow(ws, jiraFields, row, issue, issue != null);
                 SSUtils.SetStandardRowHeight(ws, row, row);
+                return success;
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
 
@@ -653,7 +762,7 @@ namespace DOT_Titling_Excel_VSTO
         }
 
         //Save to Jira
-        public static bool SaveSelectedCellsToJira(Jira.Jira jira, Excel.Worksheet ws, Excel.Range selection, string idColumnName)
+        public async static Task<bool> SaveSelectedCellsToJira(Jira.Jira jira, Excel.Worksheet ws, Excel.Range selection, string idColumnName)
         {
             try
             {
@@ -938,7 +1047,6 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        //PWH
         public static bool SaveAffectsVersion(Jira.Jira jira, string issueID, string newValue, bool multiple)
         {
             try

@@ -4,12 +4,13 @@ using Excel = Microsoft.Office.Interop.Excel;
 using Word = Microsoft.Office.Interop.Word;
 using Jira = Atlassian.Jira;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace DOT_Titling_Excel_VSTO
 {
     class MailMerge
     {
-        public static void ExecuteMailMerge_DOT(Jira.Jira jira, Excel.Application app)
+        public async static Task<bool> ExecuteMailMerge_DOT(Jira.Jira jira, Excel.Application app)
         {
             try
             {
@@ -19,16 +20,22 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     Excel.Range selection = app.Selection;
                     var mailMergeFields = WorksheetPropertiesManager.GetMailMergeFields();
-                    CreateMailMergeDocuments(jira, app, ws, selection, mailMergeFields);
+                    bool success = await CreateMailMergeDocuments(jira, app, ws, selection, mailMergeFields);
+                    return success;
+                }
+                else
+                {
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
 
-        public static void CreateMailMergeDocuments(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, Excel.Range selection, List<MailMergeFields> mailMergeFields)
+        public async static Task<bool> CreateMailMergeDocuments(Jira.Jira jira, Excel.Application app, Excel.Worksheet ws, Excel.Range selection, List<MailMergeFields> mailMergeFields)
         {
             try
             {
@@ -48,7 +55,7 @@ namespace DOT_Titling_Excel_VSTO
                         string projectKey = ThisAddIn.ProjectKeyDOT;
                         if (issueID.Length > 10 && issueID.Substring(0, 10) == projectKey + "-")
                         {
-                            JiraShared.ExecuteUpdateRowBeforeOperation(jira, app, ws, issueID, "Issue ID");
+                            bool success = await JiraShared.ExecuteUpdateRowBeforeOperation(jira, app, ws, issueID, "Issue ID");
                             string summary = string.Empty;
                             string epicID = string.Empty;
                             foreach (var mailMergeField in mailMergeFields)
@@ -115,10 +122,12 @@ namespace DOT_Titling_Excel_VSTO
                         System.Diagnostics.Process.Start(ThisAddIn.OutputDir);
                     }
                 }
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error :" + ex);
+                return false;
             }
         }
     }

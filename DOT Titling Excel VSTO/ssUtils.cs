@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -340,22 +341,22 @@ namespace DOT_Titling_Excel_VSTO
             return currentFind;
         }
 
-        public static void BeginExcelOperation(Excel.Application app)
+        public async static Task<bool> BeginExcelOperation(Excel.Application app)
         {
             app.Cursor = Excel.XlMousePointer.xlWait;
             app.Calculation = Excel.XlCalculation.xlCalculationManual;
             app.ScreenUpdating = false;
-            UnProtect(app);
+            return true;
         }
 
-        public static void EndExcelOperation(Excel.Application app, string operationName)
+        public async static Task<bool> EndExcelOperation(Excel.Application app, string operationName)
         {
             app.Cursor = Excel.XlMousePointer.xlDefault;
             app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
             app.ScreenUpdating = true;
             if (operationName != string.Empty)
                 MessageBox.Show(operationName + " - Operation Complete");
-            Protect(app);
+            return true;
         }
 
         private static void Protect(Excel.Application app)
@@ -376,12 +377,13 @@ namespace DOT_Titling_Excel_VSTO
             //            AllowFormattingColumns: true,
             //            AllowUsingPivotTables: true);
         }
+
         private static void UnProtect(Excel.Application app)
         {
             // https://msdn.microsoft.com/library/microsoft.office.interop.excel._worksheet.protect(v=office.15).aspx
-            Excel.Worksheet ws = app.Worksheets.OfType<Excel.Worksheet>().FirstOrDefault(w => w.Name == "DOT Releases");
-            if (ws != null)
-                app.Worksheets["DOT Releases"].Unprotect(Password: "dot333");
+            //Excel.Worksheet ws = app.Worksheets.OfType<Excel.Worksheet>().FirstOrDefault(w => w.Name == "DOT Releases");
+            //if (ws != null)
+            //    app.Worksheets["DOT Releases"].Unprotect(Password: "dot333");
         }
 
         public static int GetLastRow(Excel.Worksheet ws)
@@ -451,6 +453,41 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        public static Int32 TableRowCount(Excel.Worksheet ws, string tableRangeName)
+        {
+            try
+            {
+                Excel.ListObject list = GetListObjectFromTableName(ws, tableRangeName);
+                return list.ListRows.Count;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return 0;
+            }
+        }
+
+        public static Int32 TableSelectedRowCount(Excel.Worksheet ws, Excel.Range selection)
+        {
+            try
+            {
+                Int32 rowCount = 0;
+                for (int row = selection.Row; row < selection.Row + selection.Rows.Count; row++)
+                {
+                    if (ws.Rows[row].EntireRow.Height != 0)
+                    {
+                        rowCount++;
+                    }
+                }
+                return rowCount;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+                return 0;
+            }
+        }
+
         public static void SortTable(Excel.Worksheet ws, string tableRangeName, string sortColumn, Excel.XlSortOrder sortOrder)
         {
             try
@@ -479,16 +516,16 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static List<string> GetListOfProjects(Excel.Application app)
+        public async static Task<List<string>> GetListOfProjects(Excel.Application app)
         {
             try
             {
                 List<string> listofProjects = new List<string>();
                 Excel.Worksheet wsProjects = app.Worksheets["Projects"];
-                string sHeaderRangeName = SSUtils.GetHeaderRangeName(wsProjects.Name);
+                string sHeaderRangeName = GetHeaderRangeName(wsProjects.Name);
                 Excel.Range headerRowRange = wsProjects.get_Range(sHeaderRangeName, Type.Missing);
 
-                string sFooterRangeName = SSUtils.GetFooterRangeName(wsProjects.Name);
+                string sFooterRangeName = GetFooterRangeName(wsProjects.Name);
                 Excel.Range footerRowRange = wsProjects.get_Range(sFooterRangeName, Type.Missing);
 
                 int headerRow = headerRowRange.Row;
