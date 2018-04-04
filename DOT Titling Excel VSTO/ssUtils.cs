@@ -254,7 +254,7 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        public static void SetCellValue(Excel.Worksheet sheet, int row, int column, string val, string columnHeader)
+        public static void SetCellValue(Excel.Worksheet sheet, int row, int column, string val)
         {
             try
             {

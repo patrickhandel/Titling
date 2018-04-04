@@ -72,7 +72,7 @@ namespace DOT_Titling_Excel_VSTO
                                 bool success = await AddNewRowsToTable(jira, app, ws, issues, listofProjects, importType, idColumnName);
                                 string dt = DateTime.Now.ToString("MM/dd/yyyy");
                                 string val = ws.Name + " (Updated on " + dt + ")";
-                                SSUtils.SetCellValue(ws, 1, 1, val, "Updated On");
+                                SSUtils.SetCellValue(ws, 1, 1, val);
                                 return success;
                             }
                             else
@@ -523,9 +523,8 @@ namespace DOT_Titling_Excel_VSTO
                         Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", footerRow), Type.Missing);
                         rToInsert.Insert();
                         string status = GetStatus(ws, footerRow);
-                        bool success = await UpdateRow(ws, jiraFields, footerRow, issue, issue != null);
-                        if (ws.Name == "Issues" || ws.Name == "Epics")
-                            UpdateRowAfterAdd(app, ws, issue, footerRow, status);
+                        bool success = await UpdateRow(ws, jiraFields, footerRow, issue, issue != null);                        
+                        UpdateRowAfterAdd(app, ws, issue, footerRow, status);
                         SSUtils.SetStandardRowHeight(ws, footerRow, footerRow);
                     }
                     MessageBox.Show(issues.Count() + " Rows Added.");
@@ -558,11 +557,11 @@ namespace DOT_Titling_Excel_VSTO
                     if (found)
                     {
                         if (type == "Standard")
-                            SSUtils.SetCellValue(ws, row, column, ExtractStandardValue(issue, item), columnHeader);
+                            SSUtils.SetCellValue(ws, row, column, ExtractStandardValue(issue, item));
                         if (type == "Custom")
-                            SSUtils.SetCellValue(ws, row, column, ExtractCustomValue(issue, item), columnHeader);
+                            SSUtils.SetCellValue(ws, row, column, ExtractCustomValue(issue, item));
                         if (type == "Function")
-                            SSUtils.SetCellValue(ws, row, column, ExtractValueBasedOnFunction(issue, item), columnHeader);
+                            SSUtils.SetCellValue(ws, row, column, ExtractValueBasedOnFunction(issue, item));
                     }
                     else
                     {
@@ -570,9 +569,9 @@ namespace DOT_Titling_Excel_VSTO
                         {
                             int issueTypeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
                             if (issueTypeCol != 0)
-                                SSUtils.SetCellValue(ws, row, issueTypeCol, "{DELETED}", columnHeader);
+                                SSUtils.SetCellValue(ws, row, issueTypeCol, "{DELETED}");
                         }
-                        SSUtils.SetCellValue(ws, row, column, string.Empty, columnHeader);
+                        SSUtils.SetCellValue(ws, row, column, string.Empty);
                     }
                     if (type == "Formula")
                         SSUtils.SetCellFormula(ws, row, column, formula);
@@ -609,67 +608,91 @@ namespace DOT_Titling_Excel_VSTO
 
         private static void UpdateRowAfterAdd(Excel.Application app, Excel.Worksheet ws, Jira.Issue issue, int row, string previousStatus)
         {
-            if (issue.Type.Name == "Story" || issue.Type.Name == "Software Bug" || issue.Type.Name == "Bug")
+            if (ws.Name == "Issues" | ws.Name == "Program Issues")
             {
                 //Issue ID
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Issue ID"), issue.Key.Value, "Issue ID");
+                int issueIDCol = SSUtils.GetColumnFromHeader(ws, "Issue ID");
+                if (issueIDCol != 0)
+                    SSUtils.SetCellValue(ws, row, issueIDCol, issue.Key.Value);
 
                 //Summary (Local)
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Summary (Local)"), issue.Summary, "Summary (Local)");
-                
-                //Release (Local)
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Release (Local)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Fix Version")), "Release (Local)");
+                int summaryLocalColumn = SSUtils.GetColumnFromHeader(ws, "Summary (Local)");
+                if (summaryLocalColumn != 0)
+                    SSUtils.SetCellValue(ws, row, summaryLocalColumn, issue.Summary);
 
                 //Release (Local)
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Affects Version"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Fix Version")), "Affects Version");
+                int releaseLocalColumn = SSUtils.GetColumnFromHeader(ws, "Release (Local)");
+                int fixVersionColumn = SSUtils.GetColumnFromHeader(ws, "Fix Version");
+                if (releaseLocalColumn != 0 && fixVersionColumn != 0)
+                {
+                    string fixVersion = SSUtils.GetCellValue(ws, row, fixVersionColumn);
+                    SSUtils.SetCellValue(ws, row, releaseLocalColumn, fixVersion);
+                }
 
                 //Epic (Local)
                 app.Calculation = Excel.XlCalculation.xlCalculationAutomatic;
+                int epicLocalColumn = SSUtils.GetColumnFromHeader(ws, "Epic (Local)");
                 int epicColumn = SSUtils.GetColumnFromHeader(ws, "Epic");
-                string newEpic = SSUtils.GetCellValue(ws, row, epicColumn);
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Epic (Local)"), newEpic, "Epic (Local)");
+                if (epicLocalColumn != 0 && epicColumn != 0)
+                {
+                    string newEpic = SSUtils.GetCellValue(ws, row, epicColumn);
+                    SSUtils.SetCellValue(ws, row, epicLocalColumn, newEpic);
+                }
                 app.Calculation = Excel.XlCalculation.xlCalculationManual;
-                
+            }
+
+            if (ws.Name == "Issues")
+            {
                 //Sprint Number (Local)
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Sprint Number (Local)"), SSUtils.GetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Sprint Number")), "Sprint Number (Local)");
+                int sprintNumberLocalCol = SSUtils.GetColumnFromHeader(ws, "Sprint Number (Local)");
+                int sprintNumberCol = SSUtils.GetColumnFromHeader(ws, "Sprint Number (Local)");
+                if (sprintNumberLocalCol != 0 && sprintNumberCol != 0)
+                {
+                    string sprintNumber = SSUtils.GetCellValue(ws, row, sprintNumberCol);
+                    SSUtils.SetCellValue(ws, row, sprintNumberLocalCol, sprintNumber);
+                }
 
                 //Status (Last Changed)
                 if (issue.Project == ThisAddIn.ProjectKeyDOT)
                 {
                     string newStatus = GetStatus(ws, row);
-                    int statusLastChangedColumn = SSUtils.GetColumnFromHeader(ws, "Status (Last Changed)");
-                    if (statusLastChangedColumn != 0)
+                    int statusLastChangedCol = SSUtils.GetColumnFromHeader(ws, "Status (Last Changed)");
+                    if (statusLastChangedCol != 0)
                     {
                         string currentSprint = SSUtils.GetCellValueFromNamedRange("CurrentSprintToUse");
                         int sprintColumn = SSUtils.GetColumnFromHeader(ws, "DOT Sprint Number (Local)");
                         string sprint = SSUtils.GetCellValue(ws, row, sprintColumn);
-
                         if (sprint != currentSprint)
                         {
-                            SSUtils.SetCellValue(ws, row, statusLastChangedColumn, string.Empty, "Status (Last Changed)");
+                            SSUtils.SetCellValue(ws, row, statusLastChangedCol, string.Empty);
                         }
                         else
                         {
                             if (newStatus == "Done" || newStatus == "Ready for Development" || newStatus == "")
                             {
-                                SSUtils.SetCellValue(ws, row, statusLastChangedColumn, string.Empty, "Status (Last Changed)");
+                                SSUtils.SetCellValue(ws, row, statusLastChangedCol, string.Empty);
                             }
                             else
                             if (newStatus != previousStatus)
                             {
-                                SSUtils.SetCellValue(ws, row, statusLastChangedColumn, DateTime.Now.ToString("MM/dd/yyyy"), "Status (Last Changed)");
+                                SSUtils.SetCellValue(ws, row, statusLastChangedCol, DateTime.Now.ToString("MM/dd/yyyy"));
                             }
                         }
                     }
                 }
             }
 
-            if (issue.Type.Name == "Epic")
+            if (ws.Name == "Epics")
             {
-                //Epic ID
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Epic ID"), issue.Key.Value, "Epic ID");
                 //Epic
-                SSUtils.SetCellValue(ws, row, SSUtils.GetColumnFromHeader(ws, "Epic"), issue.Summary, "Epic");
+                int epicCol = SSUtils.GetColumnFromHeader(ws, "Epic");
+                if (epicCol != 0)
+                    SSUtils.SetCellValue(ws, row, epicCol, issue.Summary);
+
+                //Epic ID
+                int epicIDCol = SSUtils.GetColumnFromHeader(ws, "Epic ID");
+                if (epicIDCol != 0)
+                    SSUtils.SetCellValue(ws, row, epicIDCol, issue.Key.Value);
             }
         }
 
@@ -940,10 +963,10 @@ namespace DOT_Titling_Excel_VSTO
                                 case "Reason Blocked or Delayed":
                                     SaveCustomField(jira, id, "Reason Blocked or Delayed", newValue, multiple);
                                     break;
-                                case "Sprint":
-                                    //SaveCustomField(id, "Sprint", newValue, multiple);
-                                    SaveSprint(jira, id, newValue, multiple);
-                                    break;
+                                //case "Sprint":
+                                //    //SaveCustomField(id, "Sprint", newValue, multiple);
+                                //    SaveSprint(jira, id, newValue, multiple);
+                                //    break;
                                 default:
                                     MessageBox.Show(fieldToSave + " can't be updated. (" + row + ")");
                                     break;

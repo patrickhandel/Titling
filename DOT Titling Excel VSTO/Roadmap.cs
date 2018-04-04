@@ -228,53 +228,53 @@ namespace DOT_Titling_Excel_VSTO
                 switch (rowType)
                 {
                     case "BFP":
-                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Bug Fixing", "?");
-                        SSUtils.SetCellValue(ws, row, 2, string.Empty, "?");
-                        SSUtils.SetCellValue(ws, row, 3, rowType, "?");
-                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString(), "?");
-                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString(), "?");
+                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Bug Fixing");
+                        SSUtils.SetCellValue(ws, row, 2, string.Empty);
+                        SSUtils.SetCellValue(ws, row, 3, rowType);
+                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString());
+                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString());
                         break;
                     case "UAT":
-                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Release and UAT", "?");
-                        SSUtils.SetCellValue(ws, row, 2, string.Empty, "?");
-                        SSUtils.SetCellValue(ws, row, 3, rowType, "?");
-                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString(), "?");
-                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString(), "?");
+                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Release and UAT");
+                        SSUtils.SetCellValue(ws, row, 2, string.Empty);
+                        SSUtils.SetCellValue(ws, row, 3, rowType);
+                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString());
+                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString());
                         break;
                     case "VENDOR":
-                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Vendor Release", "?");
-                        SSUtils.SetCellValue(ws, row, 2, string.Empty, "?");
-                        SSUtils.SetCellValue(ws, row, 3, rowType, "?");
-                        SSUtils.SetCellValue(ws, row, 4, vendorSprint.ToString(), "?");
-                        SSUtils.SetCellValue(ws, row, 5, vendorSprint.ToString(), "?");
+                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Vendor Release");
+                        SSUtils.SetCellValue(ws, row, 2, string.Empty);
+                        SSUtils.SetCellValue(ws, row, 3, rowType);
+                        SSUtils.SetCellValue(ws, row, 4, vendorSprint.ToString());
+                        SSUtils.SetCellValue(ws, row, 5, vendorSprint.ToString());
                         break;
                     case "REL":
-                        SSUtils.SetCellValue(ws, row, 1, releaseName, "?");
-                        SSUtils.SetCellValue(ws, row, 2, status, "?");
-                        SSUtils.SetCellValue(ws, row, 3, rowType, "?");
-                        SSUtils.SetCellValue(ws, row, 4, string.Empty, "?");
-                        SSUtils.SetCellValue(ws, row, 5, string.Empty, "?");
+                        SSUtils.SetCellValue(ws, row, 1, releaseName);
+                        SSUtils.SetCellValue(ws, row, 2, status);
+                        SSUtils.SetCellValue(ws, row, 3, rowType);
+                        SSUtils.SetCellValue(ws, row, 4, string.Empty);
+                        SSUtils.SetCellValue(ws, row, 5, string.Empty);
                         break;
                     case "DEV":
-                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Development", "?");
-                        SSUtils.SetCellValue(ws, row, 2, status, "?");
-                        SSUtils.SetCellValue(ws, row, 3, "Epic (Local)", "?");
-                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString(), "?");
-                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString(), "?");
+                        SSUtils.SetCellValue(ws, row, 1, "R" + releaseNumber.ToString() + " Development");
+                        SSUtils.SetCellValue(ws, row, 2, status);
+                        SSUtils.SetCellValue(ws, row, 3, "Epic (Local)");
+                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString());
+                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString());
                         break;
                     case "EPIC":
-                        SSUtils.SetCellValue(ws, row, 1, epicName, "?");
-                        SSUtils.SetCellValue(ws, row, 2, status, "?");
-                        SSUtils.SetCellValue(ws, row, 3, rowType, "?");
-                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString(), "?");
-                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString(), "?");
+                        SSUtils.SetCellValue(ws, row, 1, epicName);
+                        SSUtils.SetCellValue(ws, row, 2, status);
+                        SSUtils.SetCellValue(ws, row, 3, rowType);
+                        SSUtils.SetCellValue(ws, row, 4, sprintFrom.ToString());
+                        SSUtils.SetCellValue(ws, row, 5, sprintTo.ToString());
                         break;
                     case "FINAL ROW":
-                        SSUtils.SetCellValue(ws, row, 1, "FINAL ROW", "?");
-                        SSUtils.SetCellValue(ws, row, 2, string.Empty, "?");
-                        SSUtils.SetCellValue(ws, row, 3, string.Empty, "?");
-                        SSUtils.SetCellValue(ws, row, 4, string.Empty, "?");
-                        SSUtils.SetCellValue(ws, row, 5, string.Empty, "?");
+                        SSUtils.SetCellValue(ws, row, 1, "FINAL ROW");
+                        SSUtils.SetCellValue(ws, row, 2, string.Empty);
+                        SSUtils.SetCellValue(ws, row, 3, string.Empty);
+                        SSUtils.SetCellValue(ws, row, 4, string.Empty);
+                        SSUtils.SetCellValue(ws, row, 5, string.Empty);
                         break;
                     default:
                         break;
