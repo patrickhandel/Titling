@@ -83,9 +83,9 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("ERR Workflow Ready");
                     ColumnsToShow.Add("ERR Workflow Approved Not Groomed");
                     ColumnsToShow.Add("ERR Workflow Bug Bucket");
-                    ColumnsToShow.Add("ERR Has Workflow Issue");
+                    ColumnsToShow.Add("Has Workflow Issue");
 
-                    SSUtils.FilterTable(ws, tableRangeName, "ERR Has Workflow Issue", "x");
+                    SSUtils.FilterTable(ws, tableRangeName, "Has Workflow Issue", "x");
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
                     SSUtils.SortTable(ws, tableRangeName, "Sprint", Excel.XlSortOrder.xlAscending);
                 }
@@ -114,7 +114,7 @@ namespace DOT_Titling_Excel_VSTO
 
                     ColumnsToShow.Add("Epic");
                     ColumnsToShow.Add("R");
-                    ColumnsToShow.Add("Estimate 2");
+                    ColumnsToShow.Add("Estimate 3");
                     ColumnsToShow.Add("Actual");
                     ColumnsToShow.Add("Actual vs Estimate");
 
@@ -187,14 +187,17 @@ namespace DOT_Titling_Excel_VSTO
 
                     List<string> ColumnsToShow = new List<string>();
                     ColumnsToShow.Add("R");
-                    ColumnsToShow.Add("Vendor Release");
-                    ColumnsToShow.Add("Fix Version");
+                    ColumnsToShow.Add("Release");
+                    ColumnsToShow.Add("Status");
+                    ColumnsToShow.Add("FRS Delivery Date");
                     ColumnsToShow.Add("Mid/Long");
                     ColumnsToShow.Add("From (Date)");
                     ColumnsToShow.Add("To (Date)");
                     ColumnsToShow.Add("UAT From (Date)");
                     ColumnsToShow.Add("UAT To (Date)");
-                    ColumnsToShow.Add("Deliver to Vendors From");
+                    ColumnsToShow.Add("Vendor Release");
+                    ColumnsToShow.Add("Deliver to Vendors To (Reported)");
+                    ColumnsToShow.Add("Deliver to Vendors To (Actual)");
 
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
                     SSUtils.SortTable(ws, tableRangeName, "Release Number", Excel.XlSortOrder.xlAscending);

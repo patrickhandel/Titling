@@ -409,14 +409,14 @@ namespace DOT_Titling_Excel_VSTO
 
                 int projectKeyCol = SSUtils.GetColumnFromHeader(ws, "Project Key");
                 int idColumn = SSUtils.GetColumnFromHeader(ws, idColumnName);
-                for (int currentRow = headerRow + 1; currentRow < footerRow; currentRow++)
+                for (int row = headerRow + 1; row < footerRow; row++)
                 {
-                    string projectKey = SSUtils.GetCellValue(ws, currentRow, projectKeyCol);
+                    string projectKey = SSUtils.GetCellValue(ws, row, projectKeyCol);
                     if (listofProjects.Contains(projectKey))
                     {
-                        string id = SSUtils.GetCellValue(ws, currentRow, idColumn);
+                        string id = SSUtils.GetCellValue(ws, row, idColumn);
                         var issue = issues.FirstOrDefault(i => i.Key == id);
-                        bool success = await UpdateRow(ws, jiraFields, currentRow, issue, issue != null);
+                        bool success = await UpdateRow(ws, jiraFields, row, issue, issue != null);                        
                     }
                 }
                 SSUtils.SetStandardRowHeight(ws, headerRow + 1, footerRow);
@@ -547,34 +547,44 @@ namespace DOT_Titling_Excel_VSTO
         {
             try
             {
-                foreach (var jiraField in jiraFields)
+                bool isDeleted = false;
+                int issueTypeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
+                if (issueTypeCol != 0)
                 {
-                    string columnHeader = jiraField.ColumnHeader;
-                    string type = jiraField.Type;
-                    string item = jiraField.Value;
-                    string formula = jiraField.Formula;
-                    int column = SSUtils.GetColumnFromHeader(ws, columnHeader);
-                    if (found)
+                    string issueType = SSUtils.GetCellValue(ws, row, issueTypeCol);
+                    if (issueType == "{DELETED}")
+                        isDeleted = true;
+                }
+                if (isDeleted == false)
+                {
+                    foreach (var jiraField in jiraFields)
                     {
-                        if (type == "Standard")
-                            SSUtils.SetCellValue(ws, row, column, ExtractStandardValue(issue, item));
-                        if (type == "Custom")
-                            SSUtils.SetCellValue(ws, row, column, ExtractCustomValue(issue, item));
-                        if (type == "Function")
-                            SSUtils.SetCellValue(ws, row, column, ExtractValueBasedOnFunction(issue, item));
-                    }
-                    else
-                    {
-                        if (item == "issue.Summary")
+                        string columnHeader = jiraField.ColumnHeader;
+                        string type = jiraField.Type;
+                        string item = jiraField.Value;
+                        string formula = jiraField.Formula;
+                        int column = SSUtils.GetColumnFromHeader(ws, columnHeader);
+                        if (found)
                         {
-                            int issueTypeCol = SSUtils.GetColumnFromHeader(ws, "Issue Type");
-                            if (issueTypeCol != 0)
-                                SSUtils.SetCellValue(ws, row, issueTypeCol, "{DELETED}");
+                            if (type == "Standard")
+                                SSUtils.SetCellValue(ws, row, column, ExtractStandardValue(issue, item));
+                            if (type == "Custom")
+                                SSUtils.SetCellValue(ws, row, column, ExtractCustomValue(issue, item));
+                            if (type == "Function")
+                                SSUtils.SetCellValue(ws, row, column, ExtractValueBasedOnFunction(issue, item));
                         }
-                        SSUtils.SetCellValue(ws, row, column, string.Empty);
+                        else
+                        {
+                            if (item == "issue.Summary")
+                            {
+                                if (issueTypeCol != 0)
+                                    SSUtils.SetCellValue(ws, row, issueTypeCol, "{DELETED}");
+                            }
+                            SSUtils.SetCellValue(ws, row, column, string.Empty);
+                        }
+                        if (type == "Formula")
+                            SSUtils.SetCellFormula(ws, row, column, formula);
                     }
-                    if (type == "Formula")
-                        SSUtils.SetCellFormula(ws, row, column, formula);
                 }
                 return true;
             }

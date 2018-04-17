@@ -17,21 +17,26 @@ namespace DOT_Titling_Excel_VSTO
             TextTiny = 9,
             Priority = 20,
             Number = 9,
+            NumberTiny = 7,
+            BaseballAvg = 7,
             Dollar = 9,
             Decimal = 9,
             Percent = 9,
             Date = 12,
+            Time = 12,
             Error = 7,
             YesNoGreen = 7,
             YesNoGold = 7,
             YesNoRed = 7,
             YesNo = 7,
+            YesOrNo = 7,
             MidLong = 13,
             R = 7,
             IssueType = 20,
             ProjectKey = 15,
             Hidden = 0,
-            Default = 15
+            Default = 15,
+            Special = 10
         };
 
         //Other Colors
@@ -51,6 +56,7 @@ namespace DOT_Titling_Excel_VSTO
         // Standard Colors
         public static Excel.XlRgbColor colorWhite = Excel.XlRgbColor.rgbGhostWhite;
         public static Excel.XlRgbColor colorBlack = Excel.XlRgbColor.rgbBlack;
+        public static Excel.XlRgbColor colorNavy = Excel.XlRgbColor.rgbNavyBlue;
 
         //Row Colors
         public static Color colorBugRow = colorLightDullYellow;
@@ -229,6 +235,13 @@ namespace DOT_Titling_Excel_VSTO
                                     columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
                                     columnRange.NumberFormat = "#,##0.00";
                                     break;
+                                case "BaseballAvg":
+                                    columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+                                    columnRange.NumberFormat = "#,##0.000";
+                                    break;
+                                case "NumberTiny":
+                                    columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+                                    break;
                                 case "Number":
                                     columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
                                     break;
@@ -239,6 +252,13 @@ namespace DOT_Titling_Excel_VSTO
                                 case "Date":
                                     columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
                                     columnRange.NumberFormat = "m/d/yyyy";
+                                    break;
+                                case "Time":
+                                    columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                                    columnRange.NumberFormat = "h:mm AM/PM";
+                                    break;
+                                case "YesOrNo":
+                                    FormatYesOrNo(columnRange);
                                     break;
                                 case "YesNoGreen":
                                     FormatYesNo(columnRange, colType);
@@ -253,6 +273,9 @@ namespace DOT_Titling_Excel_VSTO
                                     break;
                                 case "MidLong":
                                     FormatMidLong(columnRange);
+                                    break;
+                                case "Special":
+                                    FormatSpecial(columnRange);
                                     break;
                                 case "R":
                                     FormatR(columnRange);
@@ -312,6 +335,8 @@ namespace DOT_Titling_Excel_VSTO
                 success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket", new string[] { "Sprint", "Status", "Sprint Number"});
                 success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket but Not a Bug", new string[] { "Sprint" });
                 success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story from Previous Release should be done", new string[] { "WIN Release", "Epic Release Number" });
+                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Is Bucket Required", new string[] { "Is Bucket Story", "Bucket" });
+                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bucket Required", new string[] { "Is Bucket Story", "Bucket" });
             }
 
             if (tableRangeName == "DOTReleaseData")
@@ -330,7 +355,7 @@ namespace DOT_Titling_Excel_VSTO
             if (tableRangeName == "EpicData")
             {
                 success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Epic", "Summary" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Story Points", "Estimate 2" });
+                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Story Points", "Estimate 3" });
             }
 
             if (tableRangeName == "ProjectsData")
@@ -551,6 +576,41 @@ namespace DOT_Titling_Excel_VSTO
             columnRange.Font.Bold = true;
         }
 
+
+        private static void FormatSpecial(Excel.Range columnRange)
+        {
+            // WON
+            Excel.FormatCondition cWON = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "Won", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            ColorConverter cc = new ColorConverter();
+            cWON.Interior.Color = colorCat1;
+            cWON.Font.Color = colorCat1Font;
+
+            // LOST
+            Excel.FormatCondition cLOST = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "Lost", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            cLOST.Interior.Color = colorYesNoRedFont;
+            cLOST.Font.Color = colorCat1Font;
+
+
+            // HOME
+            Excel.FormatCondition cHOME = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "Home", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            cHOME.Interior.Color = colorNavy;
+            cHOME.Font.Color = colorCat1Font;
+
+            // AWAY
+            Excel.FormatCondition cAWAY = (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "Away", Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
+            cAWAY.Interior.Color = colorDarkGrey;
+            cAWAY.Font.Color = colorCat1Font;
+
+
+            columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+            columnRange.Font.Bold = true;
+        }
+
+
         private static void FormatYesNo(Excel.Range columnRange, string colType)
         {
             // RGB Colors
@@ -585,6 +645,40 @@ namespace DOT_Titling_Excel_VSTO
                     break;
             }
             condition.Font.Bold = true;
+            columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
+        }
+
+
+        private static void FormatYesOrNo(Excel.Range columnRange)
+        {
+            // RGB Colors
+            // http://www.flounder.com/csharp_color_table.htm
+
+            Excel.FormatCondition conditionYes =
+                   (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "Yes",
+                   Type.Missing,
+                   Type.Missing,
+                   Type.Missing,
+                   Type.Missing,
+                   Type.Missing);
+
+            Excel.FormatCondition conditionNo =
+                   (Excel.FormatCondition)columnRange.FormatConditions.Add(Excel.XlFormatConditionType.xlCellValue,
+                   Excel.XlFormatConditionOperator.xlEqual, "No",
+                   Type.Missing,
+                   Type.Missing,
+                   Type.Missing,
+                   Type.Missing,
+                   Type.Missing);
+
+                    conditionNo.Interior.Color = colorYesNoRed;
+                    conditionNo.Font.Color = colorYesNoRedFont;
+
+                    conditionYes.Interior.Color = colorYesNoGreen;
+                    conditionYes.Font.Color = colorYesNoGreenFont;
+            conditionYes.Font.Bold = true;
+            conditionNo.Font.Bold = true;
             columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
         }
 

@@ -303,6 +303,7 @@ namespace DOT_Titling_Excel_VSTO
             this.tabPM.Groups.Add(this.grpStandardization_PM);
             this.tabPM.Label = "WIN PM";
             this.tabPM.Name = "tabPM";
+            this.tabPM.Visible = false;
             // 
             // grpPM
             // 
