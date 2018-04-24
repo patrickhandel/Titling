@@ -8,7 +8,7 @@ using Jira = Atlassian.Jira;
 
 namespace DOT_Titling_Excel_VSTO
 {
-    class JiraProjects
+    class ImportData
     {
         //Public Methods
         public async static Task<bool> ExecuteUpdateTable(Jira.Jira jira, Excel.Application app)

@@ -72,6 +72,8 @@ namespace DOT_Titling_Excel_VSTO
             this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
             this.btnResetView_PM = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
+            this.grpMisc = this.Factory.CreateRibbonGroup();
+            this.btnImportData = this.Factory.CreateRibbonButton();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
@@ -79,6 +81,7 @@ namespace DOT_Titling_Excel_VSTO
             this.tabPM.SuspendLayout();
             this.grpPM.SuspendLayout();
             this.grpStandardization_PM.SuspendLayout();
+            this.grpMisc.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabHome
@@ -92,6 +95,7 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.tabDOT.Groups.Add(this.grpDOT);
             this.tabDOT.Groups.Add(this.grpStandardization_DOT);
+            this.tabDOT.Groups.Add(this.grpMisc);
             this.tabDOT.Label = "DOT";
             this.tabDOT.Name = "tabDOT";
             // 
@@ -395,6 +399,21 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_PM.ShowImage = true;
             this.btnToggleProperties_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
+            // grpMisc
+            // 
+            this.grpMisc.Items.Add(this.btnImportData);
+            this.grpMisc.Label = "Misc";
+            this.grpMisc.Name = "grpMisc";
+            // 
+            // btnImportData
+            // 
+            this.btnImportData.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportData.Image = ((System.Drawing.Image)(resources.GetObject("btnImportData.Image")));
+            this.btnImportData.Label = "Import";
+            this.btnImportData.Name = "btnImportData";
+            this.btnImportData.ShowImage = true;
+            this.btnImportData.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportData_Click);
+            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -417,6 +436,8 @@ namespace DOT_Titling_Excel_VSTO
             this.grpPM.PerformLayout();
             this.grpStandardization_PM.ResumeLayout(false);
             this.grpStandardization_PM.PerformLayout();
+            this.grpMisc.ResumeLayout(false);
+            this.grpMisc.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -461,6 +482,8 @@ namespace DOT_Titling_Excel_VSTO
         private RibbonButton btnViewEpicsEstimateActual_DOT;
         internal RibbonButton bntUpdateProjects;
         internal RibbonButton btnSaveSelected_Program;
+        internal RibbonGroup grpMisc;
+        internal RibbonButton btnImportData;
         //
     }
 

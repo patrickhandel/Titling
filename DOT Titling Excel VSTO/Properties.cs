@@ -61,6 +61,8 @@ namespace DOT_Titling_Excel_VSTO
                 range = "IssueData";
             if (ws.Name == "Projects")
                 range = "ProjectsData";
+            if (ws.Name == "Metrics")
+                range = "MetricsData";
             return lst.FindAll(y => y.Range == range);
         }
 

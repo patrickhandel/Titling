@@ -22,6 +22,7 @@ namespace DOT_Titling_Excel_VSTO
             Dollar = 9,
             Decimal = 9,
             Percent = 9,
+            Percent1 = 9,
             Date = 12,
             Time = 12,
             Error = 7,
@@ -146,10 +147,12 @@ namespace DOT_Titling_Excel_VSTO
                     headerRowRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignCenter;
                     headerRowRange.VerticalAlignment = Excel.XlVAlign.xlVAlignTop;
                     headerRowRange.Font.Size = 9;
+                    headerRowRange.Font.Name = "Calibri Light";
                     headerRowRange.VerticalAlignment = Excel.XlVAlign.xlVAlignTop;
 
                     // Format the table properties row
                     headerRowRange.Offset[-1, 0].Font.Size = 9;
+                    headerRowRange.Offset[-1, 0].Font.Name = "Calibri Light";
                     headerRowRange.EntireRow.Offset[-1, 0].Hidden = true;
 
                     // Perform thorough standardization
@@ -183,7 +186,9 @@ namespace DOT_Titling_Excel_VSTO
                     footerRow = footerRowRange.Row;
                     footerRowOffset = footerRow - headerRow;
                     headerRowRange.Copy(Type.Missing);
+                    // ERROR MIGHT BE HERE PWH
                     footerRowRange.PasteSpecial(Excel.XlPasteType.xlPasteFormats, Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                    footerRowRange.Font.Name = "Calibri Light";
                 }
 
                 // Get the footer row and format it
@@ -249,6 +254,10 @@ namespace DOT_Titling_Excel_VSTO
                                     columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
                                     columnRange.NumberFormat = "0%";
                                     break;
+                                case "Percent1":
+                                    columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
+                                    columnRange.NumberFormat = "0.0%";
+                                    break;
                                 case "Date":
                                     columnRange.HorizontalAlignment = Excel.XlHAlign.xlHAlignRight;
                                     columnRange.NumberFormat = "m/d/yyyy";
@@ -296,6 +305,7 @@ namespace DOT_Titling_Excel_VSTO
                     bool success;
                     success = await FormatErrorColumns(app, tableRange, tableRangeName, firstDataRow);
                     success = await FormatRowsConditionally(app, tableRange, tableRangeName, firstDataRow);
+                    tableRange.Font.Name = "Calibri Light";
                 }
                 return true;
             }

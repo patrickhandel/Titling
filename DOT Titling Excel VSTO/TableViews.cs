@@ -196,8 +196,8 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("UAT From (Date)");
                     ColumnsToShow.Add("UAT To (Date)");
                     ColumnsToShow.Add("Vendor Release");
-                    ColumnsToShow.Add("Deliver to Vendors To (Reported)");
-                    ColumnsToShow.Add("Deliver to Vendors To (Actual)");
+                    ColumnsToShow.Add("Deliver to Vendors (Reported)");
+                    ColumnsToShow.Add("Deliver to Vendors (Actual)");
 
                     SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
                     SSUtils.SortTable(ws, tableRangeName, "Release Number", Excel.XlSortOrder.xlAscending);

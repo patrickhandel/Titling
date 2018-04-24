@@ -5,6 +5,7 @@ namespace DOT_Titling_Excel_VSTO
 {
     public partial class ThisAddIn
     {
+        public static string DesktopDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         public static string OutputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Out";
         public static string InputDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\In";
         public static string RoadMapDir = @Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Road Map";

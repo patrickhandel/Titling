@@ -208,6 +208,7 @@
   -->
   <ItemGroup>
     <Compile Include="DataTypeExtensions.cs" />
+    <Compile Include="ImportMetrics.cs" />
     <Compile Include="JiraShared.cs" />
     <Compile Include="Objects\Epic.cs" />
     <Compile Include="FileIO.cs" />

@@ -403,7 +403,7 @@ namespace DOT_Titling_Excel_VSTO
                 {
                     bool success;
                     success = await SSUtils.BeginExcelOperation(app);
-                    success = await JiraProjects.ExecuteUpdateTable(jira, app);
+                    success = await ImportData.ExecuteUpdateTable(jira, app);
                     success = await SSUtils.EndExcelOperation(app, string.Empty);
                 }
             }
@@ -411,6 +411,23 @@ namespace DOT_Titling_Excel_VSTO
             {
                 MessageBox.Show("Error :" + ex);
             }
+        }
+
+        private void btnImportData_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                    bool success;
+                    //success = await SSUtils.BeginExcelOperation(app);
+                    success = Metrics.Import(app);
+                    //success = await SSUtils.EndExcelOperation(app, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+
         }
     }
 }
