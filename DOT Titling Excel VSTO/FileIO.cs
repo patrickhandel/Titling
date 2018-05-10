@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.Linq;
 
 namespace DOT_Titling_Excel_VSTO
 {
@@ -68,6 +69,25 @@ namespace DOT_Titling_Excel_VSTO
             return System.Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
         }
 
+        public static string GetLastFileInDirectory(string directory, string pattern = "*.*")
+        {
+            if (directory.Trim().Length == 0)
+                return string.Empty; //Error handler can go here
+
+            if ((pattern.Trim().Length == 0) || (pattern.Substring(pattern.Length - 1) == "."))
+                return string.Empty; //Error handler can go here
+
+            if (Directory.GetFiles(directory, pattern).Length == 0)
+                return string.Empty; //Error handler can go here
+
+            //string pattern = "*.txt"
+
+            DirectoryInfo dirInfo = new DirectoryInfo(directory);
+            FileInfo file = (from f in dirInfo.GetFiles(pattern) orderby f.LastWriteTime descending select f).First();
+
+            return file.ToString();
+        }
+
         public static string GetDownloadFolderPath()
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix)
@@ -84,6 +104,5 @@ namespace DOT_Titling_Excel_VSTO
                 )
             );
         }
-
     }
 }

@@ -12,6 +12,8 @@ namespace DOT_Titling_Excel_VSTO
         public string DevName { get; set; }
 
         public string ReplaceWith { get; set; }
+
+        public string Initials { get; set; }
     }
 
     public class WorksheetProperties

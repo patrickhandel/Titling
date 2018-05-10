@@ -40,6 +40,13 @@ namespace DOT_Titling_Excel_VSTO
             Special = 10
         };
 
+        public enum ColumnExceptionType
+        {
+            Error,
+            Warning,
+            Workflow
+        }
+
         //Other Colors
         public static Color colorDullGreen = Color.FromArgb(169, 208, 142);
         public static Color colorDullBlue = Color.FromArgb(143, 172, 227);
@@ -86,7 +93,17 @@ namespace DOT_Titling_Excel_VSTO
         //Error Cells
         public static Color colorErrorCell = colorYesNoRed;
         public static Excel.XlRgbColor colorErrorCellFont = colorYesNoRedFont;
-        public static Excel.XlRgbColor colorErrorCellBorder = Excel.XlRgbColor.rgbDimGrey; 
+        public static Excel.XlRgbColor colorErrorCellBorder = Excel.XlRgbColor.rgbDimGrey;
+
+        //Warning Cells
+        public static Excel.XlRgbColor colorWarningCell = colorYesNoGold;
+        public static Excel.XlRgbColor colorWarningCellFont = colorYesNoGoldFont;
+        public static Excel.XlRgbColor colorWarningCellBorder = Excel.XlRgbColor.rgbDimGrey;
+
+        //Workflow Cells
+        public static Color colorWorkflowCell = colorLightGreen;
+        public static Excel.XlRgbColor colorWorkflowCellFont = colorYesNoGreenFont;
+        public static Excel.XlRgbColor colorWorkflowCellBorder = Excel.XlRgbColor.rgbDimGrey;
 
         public enum StandardizationType
         {
@@ -186,9 +203,9 @@ namespace DOT_Titling_Excel_VSTO
                     footerRow = footerRowRange.Row;
                     footerRowOffset = footerRow - headerRow;
                     headerRowRange.Copy(Type.Missing);
-                    // ERROR MIGHT BE HERE PWH
-                    footerRowRange.PasteSpecial(Excel.XlPasteType.xlPasteFormats, Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
-                    footerRowRange.Font.Name = "Calibri Light";
+                    // PWH TO DO - NEED TO FIX THIS
+                    //footerRowRange.PasteSpecial(Excel.XlPasteType.xlPasteFormats, Excel.XlPasteSpecialOperation.xlPasteSpecialOperationNone, false, false);
+                    //footerRowRange.Font.Name = "Calibri Light";
                 }
 
                 // Get the footer row and format it
@@ -303,7 +320,7 @@ namespace DOT_Titling_Excel_VSTO
                         }
                     }
                     bool success;
-                    success = await FormatErrorColumns(app, tableRange, tableRangeName, firstDataRow);
+                    success = await FormatExceptionColumns(app, tableRange, tableRangeName, firstDataRow);
                     success = await FormatRowsConditionally(app, tableRange, tableRangeName, firstDataRow);
                     tableRange.Font.Name = "Calibri Light";
                 }
@@ -316,66 +333,64 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private async static Task<bool> FormatErrorColumns(Excel.Application app, Excel.Range tableRange, string tableRangeName, int firstDataRow)
+        private async static Task<bool> FormatExceptionColumns(Excel.Application app, Excel.Range tableRange, string tableRangeName, int firstDataRow)
         {
             bool success;
             if (tableRangeName == "IssueData")
             {
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary (Local)", "Summary" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic (Local)", "Epic", "Epic Link" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Releases Dont Match", new string[] { "Release (Local)", "Fix Version" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Sprint", new string[] { "Sprint Number (Local)", "Sprint Number" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Sprints Dont Match", new string[] { "Sprint Number (Local)", "Sprint Number" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Issue ID" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Epic (Local)", "Epic", "Epic Link" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Story Points", "Status" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Current Sprint But No Points", new string[] { "Story Points" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Sprint Number" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Issue Type" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story Not Moving or Blocked", new string[] { "Days in Same Status", "Status", "Status (Last Changed)" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Need Reason for Blocker", new string[] { "Reason Blocked or Delayed"});
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Should be Assigned to Dev", new string[] { "Status", "Role", "Sprint Number (Local)" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Created", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Written", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Groomed", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Submitted", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Ready", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Approved Not Groomed", new string[] { "Sprint", "Date Submitted to DOT", "Date Approved by DOT", "Story Points" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket", new string[] { "Sprint", "Status", "Sprint Number"});
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Workflow Bug Bucket but Not a Bug", new string[] { "Sprint" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Story from Previous Release should be done", new string[] { "WIN Release", "Epic Release Number" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Is Bucket Required", new string[] { "Is Bucket Story", "Bucket" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bucket Required", new string[] { "Is Bucket Story", "Bucket" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary (Local)", "Summary" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic (Local)", "Epic", "Epic Link" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Releases Dont Match", new string[] { "Release (Local)", "Fix Version" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR No Sprint", new string[] { "Sprint Number (Local)", "Sprint Number" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Sprints Dont Match", new string[] { "Sprint Number (Local)", "Sprint Number" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Issue ID" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Epic (Local)", "Epic", "Epic Link" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Story Points", "Status" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Current Sprint But No Points", new string[] { "Story Points" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Sprint Number" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Issue Type" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Should be Assigned to Dev", new string[] { "Status", "Role", "Sprint Number (Local)" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Story from Previous Release should be done", new string[] { "WIN Release", "Epic Release Number" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Is Bucket Required", new string[] { "Is Bucket Story", "Bucket" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Bucket Required", new string[] { "Is Bucket Story", "Bucket" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Warning, tableRangeName, firstDataRow, "WARN Story Not Moving or Blocked", new string[] { "Days in Same Status", "Status", "Status (Last Changed)" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Warning, tableRangeName, firstDataRow, "WARN Need Reason for Blocker", new string[] { "Reason Blocked or Delayed" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Warning, tableRangeName, firstDataRow, "WARN Check Bypass Approval", new string[] { "Bypass Approval", "Date Submitted to DOT", "Date Approved by DOT" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Workflow, tableRangeName, firstDataRow, "WFLOW Created", new string[] { "Sprint", "Story Points" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Workflow, tableRangeName, firstDataRow, "WFLOW Written", new string[] { "Sprint", "Story Points" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Workflow, tableRangeName, firstDataRow, "WFLOW Ready", new string[] { "Sprint", "Story Points" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Workflow, tableRangeName, firstDataRow, "WFLOW Bug Bucket", new string[] { "Sprint", "Status", "Sprint Number" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Workflow, tableRangeName, firstDataRow, "WFLOW Bug Bucket but Not a Bug", new string[] { "Sprint" });
             }
 
             if (tableRangeName == "DOTReleaseData")
             {
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary (Local)", "Summary" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic (Local)", "Epic", "Epic Link" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Issue ID" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Epic(Local)", "Epic", "Epic Link" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Status" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Sprint Number" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Issue Type" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Multiple Releases", new string[] { "Fix Version" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Summary (Local)", "Summary" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Epics Dont Match", new string[] { "Epic (Local)", "Epic", "Epic Link" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Dupe", new string[] { "Issue ID" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR No Epic", new string[] { "Epic(Local)", "Epic", "Epic Link" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Points but To Do", new string[] { "Status" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Done No Sprint", new string[] { "Sprint Number" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Bug Not Categorized", new string[] { "DOT Jira ID" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Issue Type" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Multiple Releases", new string[] { "Fix Version" });
             }
 
             if (tableRangeName == "EpicData")
             {
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Epic", "Summary" });
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Story Points", "Estimate 3" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Epic", "Summary" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Story Points", "Estimate 3" });
             }
 
             if (tableRangeName == "ProjectsData")
             {
-                success = await FormatErrorColumn(app, tableRangeName, firstDataRow, "ERR Project Names Dont Match", new string[] { "Project Name (Local)", "Project Name" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Project Names Dont Match", new string[] { "Project Name (Local)", "Project Name" });
             }
             return true;
         }
 
-        private async static Task<bool> FormatErrorColumn(Excel.Application app, string tableRangeName, int firstDataRow, string errField, string[] columns)
+        private async static Task<bool> FormatExceptionColumn(Excel.Application app, ColumnExceptionType cType, string tableRangeName, int firstDataRow, string errField, string[] columns)
         {
             try
             {
@@ -394,9 +409,26 @@ namespace DOT_Titling_Excel_VSTO
                                 string cond = "=$" + errorCol + firstDataRow + "=" + @"""x""";
                                 Excel.FormatCondition fc = (Excel.FormatCondition)columnRange.FormatConditions.Add
                                     (Excel.XlFormatConditionType.xlExpression, Type.Missing, cond, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                                fc.Interior.Color = colorErrorCell;
-                                fc.Font.Color = colorErrorCellFont;
                                 fc.Font.Bold = true;
+                                switch (cType)
+                                {
+                                    case ColumnExceptionType.Error:
+                                        fc.Interior.Color = colorErrorCell;
+                                        fc.Font.Color = colorErrorCellFont;
+                                        break;
+                                    case ColumnExceptionType.Warning:
+                                        fc.Interior.Color = colorWarningCell;
+                                        fc.Font.Color = colorWarningCellFont;
+                                        break;
+                                    case ColumnExceptionType.Workflow:
+                                        fc.Interior.Color = colorWorkflowCell;
+                                        fc.Font.Color = colorWorkflowCellFont;
+                                        break;
+                                    default:
+                                        fc.Interior.Color = colorErrorCell;
+                                        fc.Font.Color = colorErrorCellFont;
+                                        break;
+                                }
                             }
                         }
                     }

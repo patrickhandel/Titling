@@ -46,6 +46,49 @@ namespace DOT_Titling_Excel_VSTO
                 MessageBox.Show("Error :" + ex);
             }
         }
+
+        public static void ExecuteViewStoriesNotApproved_DOT(Excel.Application app)
+        {
+            try
+            {
+                Excel.Worksheet ws = app.Worksheets["Issues"];
+                ws.Activate();
+
+                string tableRangeName = SSUtils.GetSelectedTable(app);
+                string headerRangeName = SSUtils.GetSelectedTableHeader(app);
+                if (headerRangeName != string.Empty)
+                {
+                    Excel.Range headerRowRange = app.get_Range(headerRangeName, Type.Missing);
+                    int headerRow = headerRowRange.Row;
+
+                    List<string> ColumnsToShow = new List<string>();
+
+                    ColumnsToShow.Add("Issue Type");
+                    ColumnsToShow.Add("Issue ID");
+                    SSUtils.SetColumnWidth(ws, "Issue ID", 20);
+                    ColumnsToShow.Add("Epic");
+                    ColumnsToShow.Add("Summary");
+                    SSUtils.SetColumnWidth(ws, "Summary", 150);
+                    ColumnsToShow.Add("Epic ID");
+                    ColumnsToShow.Add("WIN Release");
+                    ColumnsToShow.Add("Epic Release");
+                    ColumnsToShow.Add("Agreed Upon Release");
+                    ColumnsToShow.Add("Date Submitted to DOT");
+                    ColumnsToShow.Add("Date Approved by DOT");
+                    ColumnsToShow.Add("Days Waiting for Approval");
+                    ColumnsToShow.Add("Bypass Approval");
+
+                    SSUtils.FilterTable(ws, tableRangeName, "Days Waiting for Approval", "<>0");
+                    SSUtils.HideTableColumns(headerRowRange, ColumnsToShow);
+                    SSUtils.SortTable(ws, tableRangeName, "Days Waiting for Approval", Excel.XlSortOrder.xlDescending);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         public static void ExecuteViewRequirementsErrors(Excel.Application app)
         {
             try
@@ -78,10 +121,7 @@ namespace DOT_Titling_Excel_VSTO
                     ColumnsToShow.Add("Days Waiting for Approval");
                     ColumnsToShow.Add("ERR Workflow Created");
                     ColumnsToShow.Add("ERR Workflow Written");
-                    ColumnsToShow.Add("ERR Workflow Groomed");
-                    ColumnsToShow.Add("ERR Workflow Submitted");
                     ColumnsToShow.Add("ERR Workflow Ready");
-                    ColumnsToShow.Add("ERR Workflow Approved Not Groomed");
                     ColumnsToShow.Add("ERR Workflow Bug Bucket");
                     ColumnsToShow.Add("Has Workflow Issue");
 

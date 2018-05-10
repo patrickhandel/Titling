@@ -665,30 +665,7 @@ namespace DOT_Titling_Excel_VSTO
                 //Status (Last Changed)
                 if (issue.Project == ThisAddIn.ProjectKeyDOT)
                 {
-                    string newStatus = GetStatus(ws, row);
-                    int statusLastChangedCol = SSUtils.GetColumnFromHeader(ws, "Status (Last Changed)");
-                    if (statusLastChangedCol != 0)
-                    {
-                        string currentSprint = SSUtils.GetCellValueFromNamedRange("CurrentSprintToUse");
-                        int sprintColumn = SSUtils.GetColumnFromHeader(ws, "DOT Sprint Number (Local)");
-                        string sprint = SSUtils.GetCellValue(ws, row, sprintColumn);
-                        if (sprint != currentSprint)
-                        {
-                            SSUtils.SetCellValue(ws, row, statusLastChangedCol, string.Empty);
-                        }
-                        else
-                        {
-                            if (newStatus == "Done" || newStatus == "Ready for Development" || newStatus == "")
-                            {
-                                SSUtils.SetCellValue(ws, row, statusLastChangedCol, string.Empty);
-                            }
-                            else
-                            if (newStatus != previousStatus)
-                            {
-                                SSUtils.SetCellValue(ws, row, statusLastChangedCol, DateTime.Now.ToString("MM/dd/yyyy"));
-                            }
-                        }
-                    }
+                    SetStatusLastChanged(ws, row, previousStatus);
                 }
             }
 
@@ -703,6 +680,34 @@ namespace DOT_Titling_Excel_VSTO
                 int epicIDCol = SSUtils.GetColumnFromHeader(ws, "Epic ID");
                 if (epicIDCol != 0)
                     SSUtils.SetCellValue(ws, row, epicIDCol, issue.Key.Value);
+            }
+        }
+
+        private static void SetStatusLastChanged(Excel.Worksheet ws, int row, string previousStatus)
+        {
+            string newStatus = GetStatus(ws, row);
+            int statusLastChangedCol = SSUtils.GetColumnFromHeader(ws, "Status (Last Changed)");
+            if (statusLastChangedCol != 0)
+            {
+                string currentSprint = SSUtils.GetCellValueFromNamedRange("CurrentSprintToUse");
+                int sprintColumn = SSUtils.GetColumnFromHeader(ws, "DOT Sprint Number (Local)");
+                string sprint = SSUtils.GetCellValue(ws, row, sprintColumn);
+                if (sprint != currentSprint)
+                {
+                    SSUtils.SetCellValue(ws, row, statusLastChangedCol, string.Empty);
+                }
+                else
+                {
+                    if (newStatus == "Done" || newStatus == "Ready for Development" || newStatus == "")
+                    {
+                        SSUtils.SetCellValue(ws, row, statusLastChangedCol, string.Empty);
+                    }
+                    else
+                    if (newStatus != previousStatus)
+                    {
+                        SSUtils.SetCellValue(ws, row, statusLastChangedCol, DateTime.Now.ToString("MM/dd/yyyy"));
+                    }
+                }
             }
         }
 
@@ -1114,7 +1119,6 @@ namespace DOT_Titling_Excel_VSTO
                 return false;
             }
         }
-
 
         public static bool SaveSprint(Jira.Jira jira, string issueID, string newValue, bool multiple)
         {

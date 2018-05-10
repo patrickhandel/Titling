@@ -19,58 +19,58 @@ namespace DOT_Titling_Excel_VSTO
                 if ((ws.Name == "Metrics"))
                 {
                     int headerRow = PrepTable(app, ws);
-
-                    string f = GetTextFileName();
-                    int counter = 0;
+                    string textFileName = GetTextFileName();
                     string line;
                     int row = 0;
-                    // Read the file and display it line by line.  
-                    System.IO.StreamReader file = new System.IO.StreamReader(f);
+                    System.IO.StreamReader file = new System.IO.StreamReader(textFileName);
                     while ((line = file.ReadLine()) != null)
                     {
                         if (line.Left(5) == "Time:")
                         {
+                            if (row != 0)
+                            {
+                                SetFormulas(ws, headerRow, row);
+                            }
                             row++;
-                            SetDateTime(ws, headerRow, line, row);
+                            if (row != 1)
+                            {
+                                Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", headerRow + row), Type.Missing);
+                                rToInsert.Insert();
+                            }
+                            SetValue(ws, headerRow, line, row, "Time:", ",");
                         }
                         if (line.Left(6) == "Weight")
                         {
-                            SetWeight(ws, headerRow, line, row);
+                            SetValue(ws, headerRow, line, row, "Weight", "lb");
                         }
                         if (line.Left(10) == "Body Water")
                         {
-                            SetBodyWater(ws, headerRow, line, row);
+                            SetValue(ws, headerRow, line, row, "Body Water", "%");
                         }
                         if (line.Left(8) == "Body Fat")
                         {
-                            SetBodyFat(ws, headerRow, line, row);
+                            SetValue(ws, headerRow, line, row, "Body Fat", "%");
                         }
-                        //Bone Mass
                         if (line.Left(9) == "Bone Mass")
                         {
-                            SetBoneMass(ws, headerRow, line, row);
+                            SetValue(ws, headerRow, line, row, "Bone Mass", "lb");
                         }
-                        //BMI
                         if (line.Left(3) == "BMI")
                         {
-                            SetBMI(ws, headerRow, line, row);
+                            SetValue(ws, headerRow, line, row, "BMI", "");
                         }
-                        //Visceral Fat
                         if (line.Left(12) == "Visceral Fat")
                         {
-                            SetVisceralFat(ws, headerRow, line, row);
+                            SetValue(ws, headerRow, line, row, "Visceral Fat", "");
                         }
-                        //BMR
                         if (line.Left(3) == "BMR")
                         {
-                            SetBMR(ws, headerRow, line, row);
+                            SetValue(ws, headerRow, line, row, "BMR", "Kcal");
                         }
-                        //Muscle Mass
                         if (line.Left(11) == "Muscle Mass")
                         {
-                            SetMuscleMass(ws, headerRow, line, row);
+                            SetValue(ws, headerRow, line, row, "Muscle Mass", "lb");
                         }
-                        counter++;
                     }
                     file.Close();
                     bool success = true;
@@ -89,72 +89,60 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void SetDateTime(Excel.Worksheet ws, int headerRow, string line, int row)
+        private static void SetFormulas(Excel.Worksheet ws, int headerRow, int row)
         {
-            string dateTime = GetDateTime(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "DateTime");
-            if (row != 1)
+            int col = SSUtils.GetColumnFromHeader(ws, "Target Weight 1");
+            SSUtils.SetCellFormula(ws, headerRow + row, col, "=TargetWeight1");
+            col = SSUtils.GetColumnFromHeader(ws, "Target Weight 2");
+            SSUtils.SetCellFormula(ws, headerRow + row, col, "=TargetWeight2");
+            col = SSUtils.GetColumnFromHeader(ws, "Target BMI");
+            SSUtils.SetCellFormula(ws, headerRow + row, col, "=TargetBMI1");
+        }
+
+        private static void SetValue(Excel.Worksheet ws, int headerRow, string line, int row, string column, string delimeter)
+        {
+            string value = string.Empty;
+            if (column == "Time:")
             {
-                Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", headerRow + row), Type.Missing);
-                rToInsert.Insert();
+                value = GetDateTimeFromLine(line, column, delimeter);
+                column = "DateTime";
             }
-            SSUtils.SetCellValue(ws, headerRow + row, col, dateTime);
-        }
-
-        private static void SetWeight(Excel.Worksheet ws, int headerRow, string line, int row)
-        {
-            string weight = GetWeight(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "Weight");
-            SSUtils.SetCellValue(ws, headerRow + row, col, weight);
-        }
-
-        private static void SetBodyWater(Excel.Worksheet ws, int headerRow, string line, int row)
-        {
-            string value = GetBodyWater(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "Body Water");
+            else
+            {
+                value = GetValueFromLine(line, column, delimeter);
+            }
+            if (delimeter == "%")
+            {
+                decimal percent = Decimal.Parse(value) * (decimal).01;
+                value = percent.ToString();
+            }
+            int col = SSUtils.GetColumnFromHeader(ws, column);
             SSUtils.SetCellValue(ws, headerRow + row, col, value);
         }
 
-        private static void SetBodyFat(Excel.Worksheet ws, int headerRow, string line, int row)
+        private static string GetDateTimeFromLine(string line, string value, string delimeter)
         {
-            string value = GetBodyFat(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "Body Fat");
-            SSUtils.SetCellValue(ws, headerRow + row, col, value);
+            line = line.Replace(value, "");
+            int delim1 = line.IndexOf(delimeter);
+            int delim2 = line.IndexOf(delimeter, line.IndexOf(delimeter) + 1);
+            string toRemove = line.Substring(delim1, delim2 - delim1 + 1);
+            line = line.Replace(toRemove, "");
+            return line;
         }
 
-        private static void SetBoneMass(Excel.Worksheet ws, int headerRow, string line, int row)
+        private static string GetValueFromLine(string line, string value, string delimeter)
         {
-            string value = GetBoneMass(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "Bone Mass");
-            SSUtils.SetCellValue(ws, headerRow + row, col, value);
+            line = line.Replace(value + "  ", "");
+            int index = line.IndexOf(delimeter + " ");
+            line = line.Left(index);
+            return line;
         }
 
-        private static void SetVisceralFat(Excel.Worksheet ws, int headerRow, string line, int row)
+        private static string GetTextFileName()
         {
-            string value = GetVisceralFat(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "Visceral Fat");
-            SSUtils.SetCellValue(ws, headerRow + row, col, value);
-        }
-
-        private static void SetMuscleMass(Excel.Worksheet ws, int headerRow, string line, int row)
-        {
-            string value = GetMuscleMass(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "Muscle Mass");
-            SSUtils.SetCellValue(ws, headerRow + row, col, value);
-        }
-
-        private static void SetBMR(Excel.Worksheet ws, int headerRow, string line, int row)
-        {
-            string value = GetBMR(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "BMR");
-            SSUtils.SetCellValue(ws, headerRow + row, col, value);
-        }
-
-        private static void SetBMI(Excel.Worksheet ws, int headerRow, string line, int row)
-        {
-            string value = GetBMI(line);
-            int col = SSUtils.GetColumnFromHeader(ws, "BMI");
-            SSUtils.SetCellValue(ws, headerRow + row, col, value);
+            string downloadPath = FileIO.GetDownloadFolderPath();
+            string textFile = FileIO.GetLastFileInDirectory(downloadPath, "1byone wellness*.txt");
+            return downloadPath + "\\" + textFile;
         }
 
         private static int PrepTable(Excel.Application app, Excel.Worksheet ws)
@@ -177,102 +165,6 @@ namespace DOT_Titling_Excel_VSTO
             }
 
             return headerRow;
-        }
-
-        private static string GetDateTime(string line)
-        {
-            line = line.Replace("Time:", "");
-            int comma1 = line.IndexOf(',');
-            int comma2 = line.IndexOf(',', line.IndexOf(',') + 1);
-            string toRemove = line.Substring(comma1, comma2 - comma1 + 1);
-            line = line.Replace(toRemove, "");
-            return line;
-        }
-
-        private static string GetWeight(string line)
-        {
-            line = line.Replace("Weight  ", "");
-            int index = line.IndexOf("lb ");
-            line = line.Left(index);
-            return line;
-        }
-
-        private static string GetBodyWater(string line)
-        {
-            line = line.Replace("Body Water  ", "");
-            int index = line.IndexOf("%");
-            line = line.Left(index);
-            decimal percent = Decimal.Parse(line) * (decimal).01;
-            return percent.ToString();
-        }
-
-        private static string GetBodyFat(string line)
-        {
-            line = line.Replace("Body Fat  ", "");
-            int index = line.IndexOf("%");
-            line = line.Left(index);
-            decimal percent = Decimal.Parse(line) * (decimal).01;
-            return percent.ToString();
-        }
-
-        private static string GetBoneMass(string line)
-        {
-            line = line.Replace("Bone Mass  ", "");
-            int index = line.IndexOf("lb");
-            line = line.Left(index);
-            return line;
-        }
-
-        private static string GetBMI(string line)
-        {
-            line = line.Replace("BMI  ", "");
-            int index = line.IndexOf(" ");
-            line = line.Left(index);
-            return line;
-        }
-
-        private static string GetVisceralFat(string line)
-        {
-            line = line.Replace("Visceral Fat  ", "");
-            int index = line.IndexOf(" ");
-            line = line.Left(index);
-            return line;
-        }
-
-        private static string GetBMR(string line)
-        {
-            line = line.Replace("BMR  ", "");
-            int index = line.IndexOf("Kcal");
-            line = line.Left(index);
-            return line;
-        }
-
-        private static string GetMuscleMass(string line)
-        {
-            line = line.Replace("Muscle Mass  ", "");
-            int index = line.IndexOf("lb");
-            line = line.Left(index);
-            return line;
-        }
-
-        private static string GetTextFileName()
-        {
-            string downloadPath = FileIO.GetDownloadFolderPath();
-            return downloadPath + "\\" + "1byone wellness 2.0.txt";
-
-            // Displays an OpenFileDialog so the user can select a Cursor.  
-            //System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            //openFileDialog1.Filter = "Cursor Files|*.cur";
-            //openFileDialog1.Title = "Select a Cursor File";
-
-            // Show the Dialog.  
-            // If the user clicked OK in the dialog and  
-            // a .CUR file was selected, open it.  
-            //if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            // Assign the cursor in the Stream to the Form's Cursor property.  
-            //this.Cursor = new Cursor(openFileDialog1.OpenFile());
-            //}
         }
     }
 }

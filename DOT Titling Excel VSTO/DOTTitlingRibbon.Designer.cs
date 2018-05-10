@@ -61,6 +61,8 @@ namespace DOT_Titling_Excel_VSTO
             this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_DOT = this.Factory.CreateRibbonButton();
+            this.grpMisc = this.Factory.CreateRibbonGroup();
+            this.btnImportData = this.Factory.CreateRibbonButton();
             this.tabPM = this.Factory.CreateRibbonTab();
             this.grpPM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_Program = this.Factory.CreateRibbonButton();
@@ -72,16 +74,15 @@ namespace DOT_Titling_Excel_VSTO
             this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
             this.btnResetView_PM = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
-            this.grpMisc = this.Factory.CreateRibbonGroup();
-            this.btnImportData = this.Factory.CreateRibbonButton();
+            this.btnStoriesNotApproved_DOT = this.Factory.CreateRibbonButton();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
             this.grpStandardization_DOT.SuspendLayout();
+            this.grpMisc.SuspendLayout();
             this.tabPM.SuspendLayout();
             this.grpPM.SuspendLayout();
             this.grpStandardization_PM.SuspendLayout();
-            this.grpMisc.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabHome
@@ -199,6 +200,7 @@ namespace DOT_Titling_Excel_VSTO
             this.Views_DOT.Buttons.Add(this.btnViewEpicsEstimateActual_DOT);
             this.Views_DOT.Buttons.Add(this.btnViewReleasePlan_DOT);
             this.Views_DOT.Buttons.Add(this.btnViewReleaseNotes_DOT);
+            this.Views_DOT.Buttons.Add(this.btnStoriesNotApproved_DOT);
             this.Views_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.Views_DOT.Image = ((System.Drawing.Image)(resources.GetObject("Views_DOT.Image")));
             this.Views_DOT.Label = "Views";
@@ -266,6 +268,16 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewReleaseNotes_DOT.ShowImage = true;
             this.btnViewReleaseNotes_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnViewReleaseNotes_DOT_Click);
             // 
+            // btnStoriesNotApproved_DOT
+            // 
+            this.btnStoriesNotApproved_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnStoriesNotApproved_DOT.Description = "Stories Not Approved";
+            this.btnStoriesNotApproved_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewReleaseNotes_DOT.Image")));
+            this.btnStoriesNotApproved_DOT.Label = "Issues: Stories Not Approved";
+            this.btnStoriesNotApproved_DOT.Name = "btnStoriesNotApproved_DOT";
+            this.btnStoriesNotApproved_DOT.ShowImage = true;
+            this.btnStoriesNotApproved_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStoriesNotApproved_DOT_Click);
+            // 
             // grpStandardization_DOT
             // 
             this.grpStandardization_DOT.Items.Add(this.btnStandardizeTable_DOT);
@@ -300,6 +312,21 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_DOT.Name = "btnToggleProperties_DOT";
             this.btnToggleProperties_DOT.ShowImage = true;
             this.btnToggleProperties_DOT.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
+            // 
+            // grpMisc
+            // 
+            this.grpMisc.Items.Add(this.btnImportData);
+            this.grpMisc.Label = "Misc";
+            this.grpMisc.Name = "grpMisc";
+            // 
+            // btnImportData
+            // 
+            this.btnImportData.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnImportData.Image = ((System.Drawing.Image)(resources.GetObject("btnImportData.Image")));
+            this.btnImportData.Label = "Import";
+            this.btnImportData.Name = "btnImportData";
+            this.btnImportData.ShowImage = true;
+            this.btnImportData.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportData_Click);
             // 
             // tabPM
             // 
@@ -399,21 +426,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnToggleProperties_PM.ShowImage = true;
             this.btnToggleProperties_PM.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnToggleProperties_Click);
             // 
-            // grpMisc
-            // 
-            this.grpMisc.Items.Add(this.btnImportData);
-            this.grpMisc.Label = "Misc";
-            this.grpMisc.Name = "grpMisc";
-            // 
-            // btnImportData
-            // 
-            this.btnImportData.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.btnImportData.Image = ((System.Drawing.Image)(resources.GetObject("btnImportData.Image")));
-            this.btnImportData.Label = "Import";
-            this.btnImportData.Name = "btnImportData";
-            this.btnImportData.ShowImage = true;
-            this.btnImportData.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportData_Click);
-            // 
             // DOTTitlingRibbon
             // 
             this.Name = "DOTTitlingRibbon";
@@ -430,14 +442,14 @@ namespace DOT_Titling_Excel_VSTO
             this.grpDOT.PerformLayout();
             this.grpStandardization_DOT.ResumeLayout(false);
             this.grpStandardization_DOT.PerformLayout();
+            this.grpMisc.ResumeLayout(false);
+            this.grpMisc.PerformLayout();
             this.tabPM.ResumeLayout(false);
             this.tabPM.PerformLayout();
             this.grpPM.ResumeLayout(false);
             this.grpPM.PerformLayout();
             this.grpStandardization_PM.ResumeLayout(false);
             this.grpStandardization_PM.PerformLayout();
-            this.grpMisc.ResumeLayout(false);
-            this.grpMisc.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -484,6 +496,7 @@ namespace DOT_Titling_Excel_VSTO
         internal RibbonButton btnSaveSelected_Program;
         internal RibbonGroup grpMisc;
         internal RibbonButton btnImportData;
+        private RibbonButton btnStoriesNotApproved_DOT;
         //
     }
 

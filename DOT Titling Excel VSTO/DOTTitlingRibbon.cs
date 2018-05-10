@@ -312,6 +312,19 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
+        private void btnStoriesNotApproved_DOT_Click(object sender, RibbonControlEventArgs e)
+        {
+            try
+            {
+                Excel.Application app = Globals.ThisAddIn.Application;
+                TableViews.ExecuteViewStoriesNotApproved_DOT(app);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error :" + ex);
+            }
+        }
+
         private void btnViewReleasePlan_DOT_Click(object sender, RibbonControlEventArgs e)
         {
             try
