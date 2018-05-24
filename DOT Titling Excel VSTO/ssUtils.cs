@@ -333,11 +333,15 @@ namespace DOT_Titling_Excel_VSTO
         public static Excel.Range GetSpecifiedRange(string valueToFind, Excel.Worksheet ws, string namedRange)
         {
             Excel.Range currentFind = null;
-            currentFind = ws.get_Range(namedRange).Find(valueToFind, Missing.Value,
+            currentFind = ws.get_Range(namedRange).Find(valueToFind, 
+                           Missing.Value,
                            Excel.XlFindLookIn.xlValues,
                            Excel.XlLookAt.xlPart,
                            Excel.XlSearchOrder.xlByRows,
-                           Excel.XlSearchDirection.xlNext, false, Missing.Value, Missing.Value);
+                           Excel.XlSearchDirection.xlNext, 
+                           false, 
+                           Missing.Value, 
+                           Missing.Value);
             return currentFind;
         }
 

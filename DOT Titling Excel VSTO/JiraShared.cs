@@ -972,6 +972,9 @@ namespace DOT_Titling_Excel_VSTO
                                 case "Epic Link":
                                     SaveCustomField(jira, id, "Epic Link", newValue, multiple);
                                     break;
+                                case "Sub Epic":
+                                    SaveCustomField(jira, id, "Sub Epic", newValue, multiple);
+                                    break;
                                 case "SWAG":
                                     SaveCustomField(jira, id, "SWAG", newValue, multiple);
                                     break;

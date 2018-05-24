@@ -207,6 +207,11 @@
     can be found.
   -->
   <ItemGroup>
+    <Compile Include="Connected Services\WebServices\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="DataTypeExtensions.cs" />
     <Compile Include="ImportMetrics.cs" />
     <Compile Include="JiraShared.cs" />
@@ -244,6 +249,7 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Connected Services\WebServices\calculator.wsdl" />
     <None Include="DOT Titling Excel VSTO_1_TemporaryKey.pfx" />
     <None Include="DOT Titling Excel VSTO_TemporaryKey.pfx" />
     <None Include="packages.config" />
@@ -275,6 +281,27 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\WebServices\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WebServices\calculator.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WebServices\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WebServices\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\WebServices\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

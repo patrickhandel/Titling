@@ -11,6 +11,15 @@ namespace DOT_Titling_Excel_VSTO
     class Metrics
     {
         //Public Methods
+
+        //public static bool ExecuteCalculator()
+        //{
+        //    WebServices.CalculatorSoapClient client = new WebServices.CalculatorSoapClient("CalculatorSoap");
+        //    int result = client.Add(5, 8);
+
+        //}
+
+
         public static bool Import(Excel.Application app)
         {
             try
@@ -18,60 +27,60 @@ namespace DOT_Titling_Excel_VSTO
                 Excel.Worksheet ws = app.ActiveSheet;
                 if ((ws.Name == "Metrics"))
                 {
-                    int headerRow = PrepTable(app, ws);
+                    int headerRow = SSUtils.GetHeaderRow(ws);
                     string textFileName = GetTextFileName();
                     string line;
-                    int row = 0;
                     System.IO.StreamReader file = new System.IO.StreamReader(textFileName);
+                    int row = 0;
                     while ((line = file.ReadLine()) != null)
                     {
                         if (line.Left(5) == "Time:")
                         {
-                            if (row != 0)
-                            {
-                                SetFormulas(ws, headerRow, row);
-                            }
-                            row++;
-                            if (row != 1)
-                            {
-                                Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", headerRow + row), Type.Missing);
-                                rToInsert.Insert();
-                            }
-                            SetValue(ws, headerRow, line, row, "Time:", ",");
+                            row = SSUtils.GetFooterRow(ws);
+                            Excel.Range rToInsert = ws.get_Range(String.Format("{0}:{0}", row), Type.Missing);
+                            rToInsert.Insert();
+                            SetFormulas(ws, row);
+                            SetValue(ws, line, row, "Time:", ",");
                         }
                         if (line.Left(6) == "Weight")
                         {
-                            SetValue(ws, headerRow, line, row, "Weight", "lb");
+                            SetValue(ws, line, row, "Weight", "lb");
                         }
                         if (line.Left(10) == "Body Water")
                         {
-                            SetValue(ws, headerRow, line, row, "Body Water", "%");
+                            SetValue(ws, line, row, "Body Water", "%");
                         }
                         if (line.Left(8) == "Body Fat")
                         {
-                            SetValue(ws, headerRow, line, row, "Body Fat", "%");
+                            SetValue(ws, line, row, "Body Fat", "%");
                         }
                         if (line.Left(9) == "Bone Mass")
                         {
-                            SetValue(ws, headerRow, line, row, "Bone Mass", "lb");
+                            SetValue(ws, line, row, "Bone Mass", "lb");
                         }
                         if (line.Left(3) == "BMI")
                         {
-                            SetValue(ws, headerRow, line, row, "BMI", "");
+                            SetValue(ws, line, row, "BMI", "");
                         }
                         if (line.Left(12) == "Visceral Fat")
                         {
-                            SetValue(ws, headerRow, line, row, "Visceral Fat", "");
+                            SetValue(ws, line, row, "Visceral Fat", "");
                         }
                         if (line.Left(3) == "BMR")
                         {
-                            SetValue(ws, headerRow, line, row, "BMR", "Kcal");
+                            SetValue(ws, line, row, "BMR", "Kcal");
                         }
                         if (line.Left(11) == "Muscle Mass")
                         {
-                            SetValue(ws, headerRow, line, row, "Muscle Mass", "lb");
+                            SetValue(ws, line, row, "Muscle Mass", "lb");
                         }
                     }
+
+                    //Remove duplicates based on the first column
+                    Excel.Range rngToDedupe = ws.get_Range("MetricsData", Type.Missing);
+                    object cols = new object[] { 1, 1 };
+                    rngToDedupe.RemoveDuplicates(cols, Excel.XlYesNoGuess.xlYes);
+
                     file.Close();
                     bool success = true;
                     return success;
@@ -89,17 +98,17 @@ namespace DOT_Titling_Excel_VSTO
             }
         }
 
-        private static void SetFormulas(Excel.Worksheet ws, int headerRow, int row)
+        private static void SetFormulas(Excel.Worksheet ws, int row)
         {
             int col = SSUtils.GetColumnFromHeader(ws, "Target Weight 1");
-            SSUtils.SetCellFormula(ws, headerRow + row, col, "=TargetWeight1");
+            SSUtils.SetCellFormula(ws, row, col, "=TargetWeight1");
             col = SSUtils.GetColumnFromHeader(ws, "Target Weight 2");
-            SSUtils.SetCellFormula(ws, headerRow + row, col, "=TargetWeight2");
+            SSUtils.SetCellFormula(ws, row, col, "=TargetWeight2");
             col = SSUtils.GetColumnFromHeader(ws, "Target BMI");
-            SSUtils.SetCellFormula(ws, headerRow + row, col, "=TargetBMI1");
+            SSUtils.SetCellFormula(ws, row, col, "=TargetBMI1");
         }
 
-        private static void SetValue(Excel.Worksheet ws, int headerRow, string line, int row, string column, string delimeter)
+        private static void SetValue(Excel.Worksheet ws, string line, int row, string column, string delimeter)
         {
             string value = string.Empty;
             if (column == "Time:")
@@ -117,7 +126,7 @@ namespace DOT_Titling_Excel_VSTO
                 value = percent.ToString();
             }
             int col = SSUtils.GetColumnFromHeader(ws, column);
-            SSUtils.SetCellValue(ws, headerRow + row, col, value);
+            SSUtils.SetCellValue(ws, row, col, value);
         }
 
         private static string GetDateTimeFromLine(string line, string value, string delimeter)
