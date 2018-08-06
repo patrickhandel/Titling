@@ -442,5 +442,14 @@ namespace DOT_Titling_Excel_VSTO
             }
 
         }
+
+        private async void btnGeocode_Click(object sender, RibbonControlEventArgs e)
+        {
+            Excel.Application app = Globals.ThisAddIn.Application;
+                bool success;
+                success = await SSUtils.BeginExcelOperation(app);
+                success = await Geocode.ExecuteGeocode(app);
+                success = await SSUtils.EndExcelOperation(app, string.Empty);
+        }
     }
 }

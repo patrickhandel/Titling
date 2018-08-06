@@ -865,6 +865,15 @@ namespace DOT_Titling_Excel_VSTO
                                         MessageBox.Show(fieldToSave + " can't be updated because it is not a story. (" + row + ")");
                                     }
                                     break;
+                                case "Is Deleted":
+                                    newValue = newValue.Trim();
+                                    if (newValue != string.Empty && newValue != "x")
+                                    {
+                                        MessageBox.Show(fieldToSave + " is not valid. Required blank of x. (" + row + ")");
+                                        break;
+                                    }
+                                    SaveYesNo(jira, id, fieldToSave, newValue, multiple);
+                                    break;
                                 case "Date Submitted to DOT":
                                     if (type == "Story")
                                     {
@@ -1285,6 +1294,9 @@ namespace DOT_Titling_Excel_VSTO
                     val = ExtractDOTWebServices(issue);
                     break;
                 case "Bypass Approval":
+                    val = ExtractYesNo(issue, item);
+                    break;
+                case "Is Deleted":
                     val = ExtractYesNo(issue, item);
                     break;
                 case "Labels":

@@ -352,8 +352,6 @@ namespace DOT_Titling_Excel_VSTO
                 success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Can be Deleted", new string[] { "Issue Type" });
                 success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Should be Assigned to Dev", new string[] { "Status", "Role", "Sprint Number (Local)" });
                 success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Story from Previous Release should be done", new string[] { "WIN Release", "Epic Release Number" });
-                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Is Bucket Required", new string[] { "Is Bucket Story", "Bucket" });
-                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Bucket Required", new string[] { "Is Bucket Story", "Bucket" });
                 success = await FormatExceptionColumn(app, ColumnExceptionType.Warning, tableRangeName, firstDataRow, "WARN Story Not Moving or Blocked", new string[] { "Days in Same Status", "Status", "Status (Last Changed)" });
                 success = await FormatExceptionColumn(app, ColumnExceptionType.Warning, tableRangeName, firstDataRow, "WARN Need Reason for Blocker", new string[] { "Reason Blocked or Delayed" });
                 success = await FormatExceptionColumn(app, ColumnExceptionType.Warning, tableRangeName, firstDataRow, "WARN Check Bypass Approval", new string[] { "Bypass Approval", "Date Submitted to DOT", "Date Approved by DOT" });
@@ -380,7 +378,7 @@ namespace DOT_Titling_Excel_VSTO
             if (tableRangeName == "EpicData")
             {
                 success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Summaries Dont Match", new string[] { "Epic", "Summary" });
-                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Story Points", "Estimate 3" });
+                success = await FormatExceptionColumn(app, ColumnExceptionType.Error, tableRangeName, firstDataRow, "ERR Points Dont Match", new string[] { "Story Points", "Estimate 4" });
             }
 
             if (tableRangeName == "ProjectsData")

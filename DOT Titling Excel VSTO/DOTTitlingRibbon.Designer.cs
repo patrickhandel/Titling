@@ -57,12 +57,14 @@ namespace DOT_Titling_Excel_VSTO
             this.btnViewEpicsEstimateActual_DOT = this.Factory.CreateRibbonButton();
             this.btnViewReleasePlan_DOT = this.Factory.CreateRibbonButton();
             this.btnViewReleaseNotes_DOT = this.Factory.CreateRibbonButton();
+            this.btnStoriesNotApproved_DOT = this.Factory.CreateRibbonButton();
             this.grpStandardization_DOT = this.Factory.CreateRibbonGroup();
             this.btnStandardizeTable_DOT = this.Factory.CreateRibbonButton();
             this.btnResetView_DOT = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_DOT = this.Factory.CreateRibbonButton();
             this.grpMisc = this.Factory.CreateRibbonGroup();
             this.btnImportData = this.Factory.CreateRibbonButton();
+            this.btnGeocode = this.Factory.CreateRibbonButton();
             this.tabPM = this.Factory.CreateRibbonTab();
             this.grpPM = this.Factory.CreateRibbonGroup();
             this.btnUpdate_Program = this.Factory.CreateRibbonButton();
@@ -74,7 +76,6 @@ namespace DOT_Titling_Excel_VSTO
             this.btnStandardizeTable_PM = this.Factory.CreateRibbonButton();
             this.btnResetView_PM = this.Factory.CreateRibbonButton();
             this.btnToggleProperties_PM = this.Factory.CreateRibbonButton();
-            this.btnStoriesNotApproved_DOT = this.Factory.CreateRibbonButton();
             this.tabHome.SuspendLayout();
             this.tabDOT.SuspendLayout();
             this.grpDOT.SuspendLayout();
@@ -158,6 +159,7 @@ namespace DOT_Titling_Excel_VSTO
             this.btnUpdateChecklist.Label = "Update Checklist";
             this.btnUpdateChecklist.Name = "btnUpdateChecklist";
             this.btnUpdateChecklist.ShowImage = true;
+            this.btnUpdateChecklist.Visible = false;
             this.btnUpdateChecklist.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUpdateChecklist_Click);
             // 
             // btnUpdateRoadMap_DOT
@@ -272,7 +274,7 @@ namespace DOT_Titling_Excel_VSTO
             // 
             this.btnStoriesNotApproved_DOT.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             this.btnStoriesNotApproved_DOT.Description = "Stories Not Approved";
-            this.btnStoriesNotApproved_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnViewReleaseNotes_DOT.Image")));
+            this.btnStoriesNotApproved_DOT.Image = ((System.Drawing.Image)(resources.GetObject("btnStoriesNotApproved_DOT.Image")));
             this.btnStoriesNotApproved_DOT.Label = "Issues: Stories Not Approved";
             this.btnStoriesNotApproved_DOT.Name = "btnStoriesNotApproved_DOT";
             this.btnStoriesNotApproved_DOT.ShowImage = true;
@@ -316,8 +318,10 @@ namespace DOT_Titling_Excel_VSTO
             // grpMisc
             // 
             this.grpMisc.Items.Add(this.btnImportData);
+            this.grpMisc.Items.Add(this.btnGeocode);
             this.grpMisc.Label = "Misc";
             this.grpMisc.Name = "grpMisc";
+            this.grpMisc.Visible = false;
             // 
             // btnImportData
             // 
@@ -326,7 +330,18 @@ namespace DOT_Titling_Excel_VSTO
             this.btnImportData.Label = "Import";
             this.btnImportData.Name = "btnImportData";
             this.btnImportData.ShowImage = true;
+            this.btnImportData.Visible = false;
             this.btnImportData.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportData_Click);
+            // 
+            // btnGeocode
+            // 
+            this.btnGeocode.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.btnGeocode.Image = global::DOT_Titling_Excel_VSTO.Properties.Resources.geocode;
+            this.btnGeocode.Label = "Geocode";
+            this.btnGeocode.Name = "btnGeocode";
+            this.btnGeocode.ShowImage = true;
+            this.btnGeocode.Visible = false;
+            this.btnGeocode.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnGeocode_Click);
             // 
             // tabPM
             // 
@@ -497,6 +512,7 @@ namespace DOT_Titling_Excel_VSTO
         internal RibbonGroup grpMisc;
         internal RibbonButton btnImportData;
         private RibbonButton btnStoriesNotApproved_DOT;
+        internal RibbonButton btnGeocode;
         //
     }
 

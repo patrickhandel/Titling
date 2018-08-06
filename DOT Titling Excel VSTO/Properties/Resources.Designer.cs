@@ -59,5 +59,15 @@ namespace DOT_Titling_Excel_VSTO.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap geocode {
+            get {
+                object obj = ResourceManager.GetObject("geocode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

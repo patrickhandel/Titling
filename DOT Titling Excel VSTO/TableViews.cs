@@ -154,7 +154,7 @@ namespace DOT_Titling_Excel_VSTO
 
                     ColumnsToShow.Add("Epic");
                     ColumnsToShow.Add("R");
-                    ColumnsToShow.Add("Estimate 3");
+                    ColumnsToShow.Add("Estimate 4");
                     ColumnsToShow.Add("Actual");
                     ColumnsToShow.Add("Actual vs Estimate");
 
