@@ -28,9 +28,7 @@ namespace DOT_Titling_Excel_VSTO
                 //    }
                 //}
 
-                //AIzaSyBU7taGZyxfMhiO99c8F40OznPiDFN9LR4
-
-                IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "AIzaSyBU7taGZyxfMhiO99c8F40OznPiDFN9LR4" };
+                IGeocoder geocoder = new GoogleGeocoder() { ApiKey = "" };
                 IEnumerable<Address> addresses = await geocoder.GeocodeAsync("1600 pennsylvania ave washington dc");
                 Console.WriteLine("Formatted: " + addresses.First().FormattedAddress); //Formatted: 1600 Pennsylvania Ave SE, Washington, DC 20003, USA
                 Console.WriteLine("Coordinates: " + addresses.First().Coordinates.Latitude + ", " + addresses.First().Coordinates.Longitude); //Coordinates: 38.8791981, -76.9818437
